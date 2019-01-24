@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -45,20 +46,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+
         $validatedData = $request->validate([
             'name' => 'required|unique:categories|min:3|max:255',
             'icon' => 'required|image',
         ]);
 
         $image_path = $request->file('icon')->store('categories');
-        if (config('filesystems.default') == 'public') {
-            $image_path = '/storage/' . $image_path;
-        }
+
         $result = new Category(
             [
                 'name' => $request->input('name'),
                 'slug' => str_slug($request->input('name')),
-                'icon' => '/storage/' . $image_path,
+                'icon' => Storage::url($image_path),
             ]
         );
         $result->save();

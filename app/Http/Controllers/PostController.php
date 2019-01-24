@@ -53,16 +53,14 @@ class PostController extends Controller
         ]);
 
         $image_path = $request->file('header_image')->store('header_images');
-        if (config('filesystems.default') == 'public') {
-            $image_path = '/storage/' . $image_path;
-        }
+
         $result = new \App\Post(
             [
                 'title' => $request->input('title'),
                 'body_markdown' => $request->input('body_markdown'),
                 'excerpt' => $request->input('excerpt'),
                 'slug' => str_slug($request->input('title')),
-                'header_image' => $image_path,
+                'header_image' => Storage::url($image_path),
                 'user_id' => $request->user()->id,
                 'published_at' => now(),
 
