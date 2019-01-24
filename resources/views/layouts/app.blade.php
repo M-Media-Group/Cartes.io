@@ -22,6 +22,15 @@
     <meta name="coverage" content="Worldwide">
     <meta name="distribution" content="Global">
 
+    <meta property="fb:app_id" content="291562968144309">
+    <meta property="og:url" content="{{url()->full()}}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('title', config('app.name'))">
+    <meta property="og:image" content="@yield('meta_description', config('app.url').'/images/logo.svg')">
+    <meta property="og:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <meta property="article:author" content="@yield('meta_author', config('app.name'))">
 
     <!-- STAY - Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -121,7 +130,7 @@
                         <hr>
                         <p>{{ config('app.name', 'Laravel') }} was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people visiting.</p>
                         <hr>
-                        <small><a href="#" class="text-muted">Privacy policy</a> <a class="text-muted" href="#">Terms and conditions</a></small>
+                        <small><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a></small>
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">

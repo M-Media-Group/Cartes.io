@@ -17,12 +17,12 @@
 	  @csrf
 	  <div class="form-group">
 		<label for="exampleFormControlInput1">Name</label>
-		<input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Title">
+		<input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Title" required>
 	  </div>
 
 	  <div class="form-group">
 	    <label for="exampleFormControlFile1">Icon (please proccess with jpeg.io)</label>
-	    <input type="file" class="form-control-file" name="icon" id="exampleFormControlFile1">
+	    <input type="file" class="form-control-file" name="icon" id="exampleFormControlFile1" required>
 	  </div>
 	  <button type="submit" class="btn btn-primary">Publish</button>
 	  <hr>

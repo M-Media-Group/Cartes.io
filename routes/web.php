@@ -13,6 +13,14 @@
 
 Route::get('/', 'PostController@index');
 
+Route::get('/privacy-policy', function () {
+    return view('privacy');
+});
+
+Route::get('/terms-and-conditions', function () {
+    return view('toc');
+});
+
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');

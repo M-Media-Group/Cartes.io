@@ -96,10 +96,10 @@
     <article>
         <h1 class="mt-5 mb-4">{{ $post->title }}</h1>
         @if ($post->published_at)
-            <p class="text-justify">
+            <div class="text-justify">
                 @markdown{{ $post->body_markdown }}
                 @endmarkdown
-            </p>
+            </div>
         @else
             <p>Stay tuned! This post is not yet published.</p>
         @endif
