@@ -59,6 +59,7 @@
         "genre":["Travel",
         @foreach($post->categories as $category)
             "{{$category->name}}",
+            "Explore"
         @endforeach
         ],
         "articleSection": "Uncategorized posts",
