@@ -18,7 +18,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
     /**
      * A basic test example.
@@ -42,7 +42,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/posts');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 
     /**
@@ -55,7 +55,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 
     /**
@@ -80,7 +80,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/register');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 
     /**
@@ -93,7 +93,7 @@ class ExampleTest extends TestCase
         $response = $this->actingAs(\App\User::firstOrFail())->get('/home');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 
     /**
@@ -107,7 +107,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/posts/' . $post->slug);
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 
     /**
@@ -120,7 +120,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/categories');
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
     /**
      * A basic test example.
@@ -133,7 +133,7 @@ class ExampleTest extends TestCase
         $response = $this->get('/categories/' . $category->slug);
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
     /**
      * A basic test example.
@@ -146,6 +146,6 @@ class ExampleTest extends TestCase
         $response = $this->get('/users/' . $user->username);
 
         $response->assertStatus(200);
-        $response->assertSeeText('Explore Villefranche');
+        $response->assertSeeText(config('app.name'));
     }
 }
