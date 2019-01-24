@@ -49,6 +49,10 @@ article img {
 	margin-bottom: 1rem;
 }
 
-.text-muted {
+article h2, article h3, article h4, article h5, article h6 {
+	text-align: left;
+}
+
+a.text-muted, p.text-muted, small.text-muted {
 	color:#565656!important;
 }

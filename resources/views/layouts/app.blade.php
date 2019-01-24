@@ -61,7 +61,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                        <img src="/images/logo.svg" width="45" height="45" alt="{{ config('app.name', 'Explore Villefranche') }}" alt="{{config('app.name')}}">
+                        <img src="/images/logo.svg" width="45" height="45" alt="{{config('app.name')}}">
                         {{ config('app.name', 'Explore Villefranche') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -130,7 +130,7 @@
                         <hr>
                         <p>{{ config('app.name', 'Laravel') }} was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people visiting.</p>
                         <hr>
-                        <small><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a></small>
+                        <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a></small>
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">
