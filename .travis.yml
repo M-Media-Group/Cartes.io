@@ -15,3 +15,6 @@ before_script:
 
 script:
   - vendor/bin/phpunit
+
+after_success:
+  - chmod +x ./post_test_deploy.sh; ./post_test_deploy.sh
