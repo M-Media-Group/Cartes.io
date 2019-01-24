@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -14,7 +15,7 @@ class PostController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('verified')->except(['index', 'show']);
+        $this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
     }
     /**
      * Display a listing of the resource.

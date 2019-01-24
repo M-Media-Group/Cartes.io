@@ -44,7 +44,7 @@
             "url": "{{ config('app.url') }}",
             "logo": {
                 "@type": "ImageObject",
-                "url": "{{config('app.url') }}/images/logo.svg",
+                "url": "{{config('app.url') }}/images/logo.png",
                 "width":"60",
                 "height":"60"
             }
@@ -73,14 +73,14 @@
 @endsection
 
 @section('sidebar')
-    <p><a href="/users/{{$post->user->username}}"><img class="rounded img-thumbnail mr-1" src="{{$post->user->avatar}}" height="45" width="45" alt="{{$post->user->username}}">{{$post->user->username}}</a></p>
+    <p><a href="/users/{{$post->user->username}}"><img class="rounded img-thumbnail mr-1" src="{{$post->user->avatar}}" height="45" width="45" alt="{{$post->user->username}}" title="{{$post->user->username}}">{{$post->user->username}}</a></p>
     <p class="mb-0">Last updated {{ $post->updated_at->diffForHumans() }}</p>
     @if ($post->published_at)
         <small>Published {{ $post->published_at->diffForHumans() }}</small>
     @endif
     <hr>
     @foreach($post->categories as $category)
-        <a href="/categories/{{$category->slug}}"><img class="rounded img-thumbnail mr-1" height="30" width="30" src="{{$category->icon}}" alt="{{$category->name}}">{{$category->name}}</a>
+        <a href="/categories/{{$category->slug}}"><img class="rounded img-thumbnail mr-1" height="30" width="30" src="{{$category->icon}}"  title="{{$category->name}}" alt="{{$category->name}}">{{$category->name}}</a>
     @endforeach
     <hr>
     @parent
@@ -88,7 +88,7 @@
 
 @section('above_container')
 
-        <img src="{{$post->header_image}}" style="height: 67vh;object-fit:cover;width:100%;" alt="{{ $post->title }}">
+        <img src="{{$post->header_image}}" title="{{$post->title}}" style="height: 63vh;object-fit:cover;width:100%;" alt="{{ $post->title }}">
 
 @endsection
 

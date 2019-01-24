@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('verified')->except(['index', 'show']);
+        $this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
     }
 
     /**

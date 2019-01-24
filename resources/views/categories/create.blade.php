@@ -21,7 +21,7 @@
 	  </div>
 
 	  <div class="form-group">
-	    <label for="exampleFormControlFile1">Icon</label>
+	    <label for="exampleFormControlFile1">Icon (please proccess with jpeg.io)</label>
 	    <input type="file" class="form-control-file" name="icon" id="exampleFormControlFile1">
 	  </div>
 	  <button type="submit" class="btn btn-primary">Publish</button>

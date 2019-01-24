@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //     ->everyMinute();
-        $schedule->command('telescope:prune')->daily();
+        $schedule->command('telescope:prune')->everyMinute();
     }
 
     /**

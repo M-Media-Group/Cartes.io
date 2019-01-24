@@ -36,7 +36,7 @@
 		</select>
 	  </div>
 	  <div class="form-group">
-	    <label for="exampleFormControlFile1">Header image</label>
+	    <label for="exampleFormControlFile1">Header image (please proccess with jpeg.io)</label>
 	    <input type="file" class="form-control-file" name="header_image" id="exampleFormControlFile1">
 	  </div>
 	  <button type="submit" class="btn btn-primary">Publish</button>
