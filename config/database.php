@@ -11,7 +11,7 @@ return [
     | to use as your default connection for all database work. Of course
     | you may use many connections at once using the Database library.
     |
-    */
+     */
 
     'default' => env('DB_CONNECTION', 'mysql'),
 
@@ -29,7 +29,7 @@ return [
     | so make sure you have the driver for your particular database of
     | choice installed on your machine before you begin development.
     |
-    */
+     */
 
     'connections' => [
 
@@ -54,6 +54,18 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+        ],
+
+        'testing' => [
+            'driver' => 'mysql',
+            'host' => env('DB_TEST_HOST', 'localhost'),
+            'database' => env('DB_TEST_DATABASE', 'homestead_test'),
+            'username' => env('DB_TEST_USERNAME', 'homestead'),
+            'password' => env('DB_TEST_PASSWORD', 'secret'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
         ],
 
         'pgsql' => [
@@ -93,7 +105,7 @@ return [
     | your application. Using this information, we can determine which of
     | the migrations on disk haven't actually been run in the database.
     |
-    */
+     */
 
     'migrations' => 'migrations',
 
@@ -106,7 +118,7 @@ return [
     | provides a richer body of commands than a typical key-value system
     | such as APC or Memcached. Laravel makes it easy to dig right in.
     |
-    */
+     */
 
     'redis' => [
 
