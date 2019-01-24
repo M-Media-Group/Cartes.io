@@ -12,7 +12,8 @@
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^10.2",
         "laravel/framework": "5.7.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "league/flysystem-aws-s3-v3": "~1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
