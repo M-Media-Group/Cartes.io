@@ -129,6 +129,7 @@
                         {{ config('app.name', 'Laravel') }} on <a href="https://instagram.com/villefranchesurmer">Instagram</a>!
                         <hr>
                         <p>{{ config('app.name', 'Laravel') }} was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people visiting.</p>
+                        <p>If you're from the city and would like to contribute to {{ config('app.name', 'us') }}, you can <a href="/register">sign up</a>.</p>
                         <hr>
                         <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a> <a class="text-muted" href="/login">Login</a></small>
                     @show

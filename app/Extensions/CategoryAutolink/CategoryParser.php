@@ -43,7 +43,7 @@ class CategoryParser extends AbstractInlineParser
         $cursor->advance();
 
         // Parse the handle
-        $handle = $cursor->match('/^[A-Za-z0-9_]{1,15}(?!\w)/');
+        $handle = $cursor->match('/^[A-Za-z0-9_-]{1,15}(?!\w)/');
         if (empty($handle)) {
             // Regex failed to match; this isn't a valid Twitter handle
             $cursor->restoreState($previousState);
