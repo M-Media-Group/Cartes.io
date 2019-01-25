@@ -83,9 +83,9 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit($slug)
     {
-        //
+        return view('categories.edit', ['category' => Category::where('slug', $slug)->firstOrFail()]);
     }
 
     /**
@@ -97,7 +97,19 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|unique:categories|min:3|max:255',
+        ]);
+
+        $category->update(
+            [
+                'name' => $request->input('name'),
+                'slug' => str_slug($request->input('name')),
+            ]
+        );
+
+        return redirect('/categories/' . str_slug($request->input('name')));
+
     }
 
     /**

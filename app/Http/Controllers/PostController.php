@@ -91,9 +91,9 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($slug)
     {
-        //
+        return view('posts.edit', ['post' => \App\Post::where('slug', $slug)->firstOrFail()]);
     }
 
     /**
@@ -105,7 +105,23 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        //return $request->toArray();
+        $validatedData = $request->validate([
+            'title' => 'required|unique:posts,title,' . $post->id . '|min:5|max:255',
+            'body_markdown' => 'required|min:10',
+            'excerpt' => 'required|min:10|max:255',
+        ]);
+
+        $post->update(
+            [
+                'title' => $request->input('title'),
+                'body_markdown' => $request->input('body_markdown'),
+                'excerpt' => $request->input('excerpt'),
+                'slug' => str_slug($request->input('title')),
+            ]
+        );
+
+        return redirect('/posts/' . str_slug($request->input('title')));
     }
 
     /**

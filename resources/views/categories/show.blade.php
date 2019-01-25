@@ -12,7 +12,7 @@
 		    <h2 class="float-left w-100">Posts</h2>
 	@foreach($category->posts as $post)
 		<a href="/posts/{{$post->slug}}">
-		    <img src="{{$post->header_image}}" class="rounded img-thumbnail" >
+		    <img src="{{$post->header_image}}" class="rounded img-thumbnail mb-2" >
 		    <h1>{{ $post->title }}</h1>
 		    <p class="text-muted">{{ $post->excerpt }}</p>
 		    <hr>
