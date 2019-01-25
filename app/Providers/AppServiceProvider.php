@@ -14,9 +14,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        view()->composer(
+            'layouts.app',
+            function ($view) {
+                $view->with('categories', \App\Category::latest()->take(4)->get());
+            }
+        );
     }
-
     /**
      * Register any application services.
      *

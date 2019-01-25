@@ -3,6 +3,8 @@
 @section('title', $post->title)
 @section('meta_description', $post->excerpt)
 @section('meta_author', $post->user->username)
+@section('meta_fb_type', 'article')
+
 
 @section('header_scripts')
 <script type="application/ld+json">

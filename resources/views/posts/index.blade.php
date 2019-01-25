@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Posts')
-@section('meta_description', 'Posts about '.config('app.name'))
+@section('title', 'A locals guide to Villefranche sur Mer')
 
 @section('content')
 	<h1 class="mt-3">Posts</h1>

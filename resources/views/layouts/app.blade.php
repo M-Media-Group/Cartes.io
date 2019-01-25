@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title') | {{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title') | {{ config('app.name') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -15,8 +15,6 @@
     <meta name="language" content="{{ str_replace('_', '-', app()->getLocale()) }}">
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
-    <meta name="google" content="nositelinkssearchbox">
-    <meta name="google-site-verification" content="verification_token">
 
     <meta name="author" content="@yield('meta_author', config('app.name'))">
     <meta name="coverage" content="Worldwide">
@@ -24,7 +22,7 @@
 
     <meta property="fb:app_id" content="291562968144309">
     <meta property="og:url" content="{{url()->full()}}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('meta_fb_type', 'website')">
     <meta property="og:title" content="@yield('title', config('app.name'))">
     <meta property="og:image" content="@yield('meta_description', config('app.url').'/images/logo.svg')">
     <meta property="og:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
@@ -76,15 +74,17 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+                        @foreach($categories as $category)
+                            <li class="nav-item">
+                                <a href="/categories/{{$category->slug}}" class="nav-link">
+                                    {{ $category->name }}
+                                </a>
+                            </li>
+                        @endforeach
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="/posts">{{ __('Posts') }}</a>
+                                <a class="nav-link" href="/categories">{{ __('Explore more') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/categories">{{ __('Categories') }}</a>
-                                </li>
-                            @endif
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -130,7 +130,7 @@
                         <hr>
                         <p>{{ config('app.name', 'Laravel') }} was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people visiting.</p>
                         <hr>
-                        <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a></small>
+                        <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a> <a class="text-muted" href="/login">Login</a></small>
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">
