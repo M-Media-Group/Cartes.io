@@ -21,4 +21,9 @@ class Category extends Model
     {
         return $this->belongsToMany('App\Post', 'post_categories');
     }
+
+    public function views()
+    {
+        return $this->hasMany('App\CategoryView');
+    }
 }

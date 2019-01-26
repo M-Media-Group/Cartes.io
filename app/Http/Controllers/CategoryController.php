@@ -25,7 +25,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('categories.index', ['categories' => Category::simplePaginate(7)]);
+        return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
     }
 
     /**
@@ -72,9 +72,22 @@ class CategoryController extends Controller
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
-        return view('categories.show', ['category' => Category::where('slug', $slug)->with('posts')->firstOrFail()]);
+        $category = Category::where('slug', $slug)->with('posts')->firstOrFail();
+        if (!$request->user()) {
+            $user_id = null;
+        } else {
+            $request->user()->id;
+        }
+        \App\CategoryView::create(
+            [
+                "category_id" => $category->id,
+                "user_id" => $user_id,
+                "ip" => $request->ip(),
+            ]
+        );
+        return view('categories.show', ['category' => $category]);
     }
 
     /**

@@ -1,7 +1,7 @@
-<p align="center"><img src="https://explorevillefranche.com/images/logo.svg"></p>
+<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
 <p align="center">
-	[![Build Status](https://travis-ci.org/mwargan/ExploreVillefranche.svg?branch=master)](https://travis-ci.org/mwargan/ExploreVillefranche)
+	<a href="https://travis-ci.org/mwargan/ExploreVillefranche"><img src="https://travis-ci.org/mwargan/ExploreVillefranche.svg?branch=master" alt="Build Status"></a>
 </p>
 
 ## About Explore VIllefranche

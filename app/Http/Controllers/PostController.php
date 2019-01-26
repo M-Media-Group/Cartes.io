@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index', ['posts' => \App\Post::with('categories')->orderBy('published_at', 'DESC')->simplePaginate(7)]);
+        return view('posts.index', ['posts' => \App\Post::with('categories')->withCount('views')->orderBy('published_at', 'DESC')->simplePaginate(7)]);
     }
 
     /**
@@ -80,9 +80,22 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
-        return view('posts.show', ['post' => \App\Post::where('slug', $slug)->with('user', 'categories')->firstOrFail()]);
+        $post = \App\Post::where('slug', $slug)->with('user', 'categories')->firstOrFail();
+        if (!$request->user()) {
+            $user_id = null;
+        } else {
+            $request->user()->id;
+        }
+        \App\PostView::create(
+            [
+                "post_id" => $post->id,
+                "user_id" => $user_id,
+                "ip" => $request->ip(),
+            ]
+        );
+        return view('posts.show', ['post' => $post]);
     }
 
     /**

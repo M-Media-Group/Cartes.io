@@ -34,4 +34,9 @@ class Post extends Model
     {
         return $this->belongsToMany('App\Category', 'post_categories');
     }
+
+    public function views()
+    {
+        return $this->hasMany('App\PostView');
+    }
 }

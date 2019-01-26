@@ -83,7 +83,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @foreach($categories as $category)
+                        @foreach($categories->sortByDesc('views_count') as $category)
                             <li class="nav-item">
                                 <a href="/categories/{{$category->slug}}" class="nav-link">
                                     {{ $category->name }}

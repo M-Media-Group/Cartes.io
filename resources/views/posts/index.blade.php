@@ -4,7 +4,7 @@
 
 @section('content')
 	<h1 class="mt-3">Posts</h1>
-	@foreach($posts as $post)
+	@foreach($posts->sortByDesc('views_count') as $post)
 		<a href="/posts/{{$post->slug}}" title="{{ $post->title }}">
 		    <img src="{{$post->header_image}}" class="rounded img-thumbnail mb-2" alt="{{ $post->title }}" >
 		    <h2>{{ $post->title }}</h2>
