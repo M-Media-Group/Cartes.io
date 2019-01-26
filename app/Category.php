@@ -17,6 +17,11 @@ class Category extends Model
         'icon',
     ];
 
+    public function user()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
     public function posts()
     {
         return $this->belongsToMany('App\Post', 'post_categories');

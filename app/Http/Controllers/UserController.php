@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('verified')->except(['show']);
+        $this->middleware('verified')->except(['index', 'show']);
     }
     /**
      * Display a listing of the resource.
@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return \App\User::with('posts.categories')->get();
     }
 
     /**

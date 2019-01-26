@@ -29,4 +29,4 @@ Route::resource('posts', 'PostController');
 
 Route::resource('categories', 'CategoryController');
 
-Route::get('users/{username}', 'UserController@show');
+Route::resource('users', 'UserController');

@@ -20,7 +20,7 @@
     <meta name="coverage" content="Worldwide">
     <meta name="distribution" content="Global">
 
-    <meta property="fb:app_id" content="291562968144309">
+    <meta property="fb:app_id" content="{{ config('blog.fb_app_id') }}">
     <meta property="og:url" content="{{url()->full()}}">
     <meta property="og:type" content="@yield('meta_fb_type', 'website')">
     <meta property="og:title" content="@yield('title', config('app.name'))">
@@ -56,20 +56,20 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-KBHVSGP');</script>
+    })(window,document,'script','dataLayer','{{ config('blog.google_tag_id') }}');</script>
     <!-- End Google Tag Manager -->
 </head>
 <body>
      <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KBHVSGP"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                        <img src="/images/logo.svg" width="45" height="45" alt="{{config('app.name')}}">
-                        {{ config('app.name', 'Explore Villefranche') }}
+                        <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
+                        {{ config('app.name') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -135,8 +135,10 @@
                 <div class="col-md-3 order-md-12 custom-small-text">
                     <hr>
                     @section('sidebar')
-                        {{ config('app.name', 'Laravel') }} on <a href="https://instagram.com/villefranchesurmer">Instagram</a>!
-                        <hr>
+                        @if( config('blog.instagram_url'))
+                            {{ config('app.name', 'Laravel') }} on <a href="https://instagram.com/villefranchesurmer">Instagram</a>!
+                            <hr>
+                        @endif
                         <p>{{ config('app.name', 'Laravel') }} was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people visiting.</p>
                         <p>If you're from the city and would like to contribute to {{ config('app.name', 'us') }}, you can <a href="/register">sign up</a>.</p>
                         <hr>
