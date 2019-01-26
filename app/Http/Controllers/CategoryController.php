@@ -78,7 +78,7 @@ class CategoryController extends Controller
         if (!$request->user()) {
             $user_id = null;
         } else {
-            $request->user()->id;
+            $user_id = $request->user()->id;
         }
         \App\CategoryView::create(
             [
