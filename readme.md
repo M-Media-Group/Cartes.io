@@ -4,6 +4,14 @@
 	<a href="https://travis-ci.org/mwargan/ExploreVillefranche"><img src="https://travis-ci.org/mwargan/ExploreVillefranche.svg?branch=master" alt="Build Status"></a>
 </p>
 
+## Live sites
+This template is live on:
+- [Explore Villefranche](https://explorevillefranche.com)
+- [Explore South of France](https://exploresouthoffrance.com)
+- [Explore Saint Jean Cap Ferrat](https://exploresaintjeancapferrat.com)
+- [Explore Beaulieu](https://explorebeaulieu.com)
+- [Explore Eze Village](https://exploreezevillage.com)
+
 ## About Explore VIllefranche
 
 This is an open source blog template based on Laravel 5.7. Feel free to fork and use!

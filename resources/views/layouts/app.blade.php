@@ -24,7 +24,7 @@
     <meta property="og:url" content="{{url()->full()}}">
     <meta property="og:type" content="@yield('meta_fb_type', 'website')">
     <meta property="og:title" content="@yield('title', config('app.name'))">
-    <meta property="og:image" content="@yield('meta_image', config('app.url').'/images/logo.svg')">
+    <meta property="og:image" content="@yield('meta_image', config('blog.logo_url'))">
     <meta property="og:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
     <meta property="og:site_name" content="{{ config('app.name') }}">
     <meta property="og:locale" content="{{ app()->getLocale() }}">
@@ -37,7 +37,7 @@
     <meta name="twitter:url" content="https://example.com/page.html"> --}}
     <meta name="twitter:title" content="@yield('title', config('app.name'))">
     <meta name="twitter:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
-    <meta name="twitter:image" content="@yield('meta_image', config('app.url').'/images/logo.svg')">
+    <meta name="twitter:image" content="@yield('meta_image', config('blog.logo_url'))">
 
     <link rel="icon" href="{{ config('blog.favicon_url') }}">
 
