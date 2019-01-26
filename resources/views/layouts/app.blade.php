@@ -27,9 +27,17 @@
     <meta property="og:image" content="@yield('meta_image', config('app.url').'/images/logo.svg')">
     <meta property="og:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
     <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <meta property="og:locale" content="{{ app()->getLocale() }}">
     <meta property="article:author" content="@yield('meta_author')">
     <meta property='article:publisher' content='{{ config('app.url') }}' />
+
+    <meta name="twitter:card" content="summary">
+{{--     <meta name="twitter:site" content="@site_account">
+    <meta name="twitter:creator" content="@individual_account">
+    <meta name="twitter:url" content="https://example.com/page.html"> --}}
+    <meta name="twitter:title" content="@yield('title', config('app.name'))">
+    <meta name="twitter:description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit Villefranche sur Mer.')">
+    <meta name="twitter:image" content="@yield('meta_image', config('app.url').'/images/logo.svg')">
 
     <!-- STAY - Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

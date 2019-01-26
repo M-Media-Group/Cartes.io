@@ -8,67 +8,72 @@
 
 
 @section('header_scripts')
-<script type="application/ld+json">
-    {
-        "@context":"http://schema.org",
-        "@type": "BlogPosting",
-        "image": "{{$post->header_image}}",
-        "url": "{{url()->full()}}",
-        "headline": "{{$post->title}}",
-        "dateCreated": "{{$post->created_at}}",
-        "datePublished": "{{$post->published_at}}",
-        "dateModified": "{{$post->updated_at}}",
-        "inLanguage": "en-FR",
-        "isFamilyFriendly": "true",
-        "copyrightYear": "2018",
-        "copyrightHolder": "",
-        "contentLocation": {
-            "@type": "Place",
-            "name": "Villefranche sur Mer, France"
-        },
-        "accountablePerson": {
-            "@type": "Person",
-            "name": "{{$post->user->username}}",
-            "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
-        },
-        "author": {
-            "@type": "Person",
-            "name": "{{$post->user->username}}",
-            "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
-        },
-        "creator": {
-            "@type": "Person",
-            "name": "{{$post->user->username}}",
-            "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "{{ config('app.name') }}",
-            "url": "{{ config('app.url') }}",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "{{config('app.url') }}/images/logo.png",
-                "width":"60",
-                "height":"60"
-            }
-        },
-        "mainEntityOfPage": "True",
-        "keywords": [
-        @foreach($post->categories as $category)
-            "{{$category->name}}",
-        @endforeach
-            "{{ config('app.name') }}"
-        ],
-        "genre":["Travel",
-        @foreach($post->categories as $category)
-            "{{$category->name}}",
-            "Explore"
-        @endforeach
-        ],
-        "articleSection": "Uncategorized posts",
-        "articleBody": "{{ $post->body_markdown }}"
-    }
-</script>
+    <meta property="og:updated_time" content="{{$post->updated_at}}" />
+    <meta property="article:published_time" content="{{$post->updated_at}}" />
+    <meta property="article:modified_time" content="{{$post->updated_at}}" />
+    <meta property="article:section" content="@if (isset($post->categories[0])) {{$post->categories[0]->name}} @endif" />
+
+    <script type="application/ld+json">
+        {
+            "@context":"http://schema.org",
+            "@type": "BlogPosting",
+            "image": "{{$post->header_image}}",
+            "url": "{{url()->full()}}",
+            "headline": "{{$post->title}}",
+            "dateCreated": "{{$post->created_at}}",
+            "datePublished": "{{$post->published_at}}",
+            "dateModified": "{{$post->updated_at}}",
+            "inLanguage": "en-FR",
+            "isFamilyFriendly": "true",
+            "copyrightYear": "{{ now()->year }}",
+            "copyrightHolder": "",
+            "contentLocation": {
+                "@type": "Place",
+                "name": "Villefranche sur Mer, France"
+            },
+            "accountablePerson": {
+                "@type": "Person",
+                "name": "{{$post->user->username}}",
+                "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
+            },
+            "author": {
+                "@type": "Person",
+                "name": "{{$post->user->username}}",
+                "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
+            },
+            "creator": {
+                "@type": "Person",
+                "name": "{{$post->user->username}}",
+                "url": "{{ config('app.url') }}/users/{{$post->user->username}}"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "{{ config('app.name') }}",
+                "url": "{{ config('app.url') }}",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "{{config('app.url') }}/images/logo.png",
+                    "width":"60",
+                    "height":"60"
+                }
+            },
+            "mainEntityOfPage": "True",
+            "keywords": [
+            @foreach($post->categories as $category)
+                "{{$category->name}}",
+            @endforeach
+                "{{ config('app.name') }}"
+            ],
+            "genre":["Travel",
+            @foreach($post->categories as $category)
+                "{{$category->name}}",
+                "Explore"
+            @endforeach
+            ],
+            "articleSection": "Uncategorized posts",
+            "articleBody": "{{ $post->body_markdown }}"
+        }
+    </script>
 @endsection
 
 @section('left_sidebar')
