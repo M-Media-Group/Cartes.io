@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer(
             'layouts.app',
             function ($view) {
-                $view->with('categories', \App\Category::latest()->withCount('views')->take(4)->get());
+                $view->with('categories', \App\Category::withCount('views')->orderBy('views_count', 'DESC')->take(4)->get());
             }
         );
     }

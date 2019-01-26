@@ -39,4 +39,15 @@ class Post extends Model
     {
         return $this->hasMany('App\PostView');
     }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('published_at', '!=', null);
+    }
 }
