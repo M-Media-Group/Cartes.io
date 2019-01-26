@@ -86,7 +86,7 @@
                         @foreach($categories->sortByDesc('views_count') as $category)
                             <li class="nav-item">
                                 <a href="/categories/{{$category->slug}}" class="nav-link">
-                                    <img class="rounded img-thumbnail mr-1" height="15" width="15" src="{{$category->icon}}" alt="{{$category->name}}">{{ $category->name }}
+                                    <img class="rounded img-thumbnail mr-1" height="17" width="17" src="{{$category->icon}}" alt="{{$category->name}}">{{ $category->name }}
                                 </a>
                             </li>
                         @endforeach
