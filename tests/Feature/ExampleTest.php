@@ -109,7 +109,31 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSeeCreatePostTest()
+    {
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/create');
 
+        $response->assertStatus(200);
+        $response->assertSeeText(config('app.name'));
+    }
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSeeEditPostTest()
+    {
+        $post = \App\Post::firstOrFail();
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/' . $post->slug . '/edit');
+
+        $response->assertStatus(200);
+        $response->assertSeeText(config('app.name'));
+    }
     /**
      * A basic test example.
      *
@@ -131,6 +155,31 @@ class ExampleTest extends TestCase
     {
         $category = \App\Category::firstOrFail();
         $response = $this->get('/categories/' . $category->slug);
+
+        $response->assertStatus(200);
+        $response->assertSeeText(config('app.name'));
+    }
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSeeCreateCateogryTest()
+    {
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/create');
+
+        $response->assertStatus(200);
+        $response->assertSeeText(config('app.name'));
+    }
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSeeEditCateogryTest()
+    {
+        $category = \App\Category::firstOrFail();
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/' . $category->slug . '/edit');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
