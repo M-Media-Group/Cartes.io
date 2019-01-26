@@ -7,5 +7,6 @@ return [
     'logo_url' => env('APP_LOGO_URL', '/images/logo.svg'),
     'instagram_username' => env('APP_INSTAGRAM_USERNAME', null),
     'instagram_url' => 'https://instagram.com/' . env('APP_INSTAGRAM_USERNAME', null),
+    'favicon_url' => env('FAVICON_URL', '/images/favicon.ico'),
 
 ];
