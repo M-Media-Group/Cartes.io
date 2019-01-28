@@ -111,7 +111,8 @@ class PostController extends Controller
     {
         $post = \App\Post::where('slug', $slug)->firstOrFail();
         $this->authorize('update', $post);
-        return view('posts.edit', ['post' => $post]);
+        $categories = \App\Category::get();
+        return view('posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -128,6 +129,7 @@ class PostController extends Controller
             'title' => 'required|unique:posts,title,' . $post->id . '|min:5|max:255',
             'body_markdown' => 'required|min:10',
             'excerpt' => 'required|min:10|max:255',
+            'category_id' => 'required',
         ]);
 
         $post->update(
@@ -138,6 +140,8 @@ class PostController extends Controller
                 'slug' => str_slug($request->input('title')),
             ]
         );
+
+        $post->categories()->sync($request->input('category_id'));
 
         return redirect('/posts/' . str_slug($request->input('title')));
     }
@@ -150,6 +154,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $this->authorize('delete', $post);
+        $post->categories()->detach();
+        $post->views()->delete();
+        $post->delete();
+        return redirect('/posts');
     }
 }

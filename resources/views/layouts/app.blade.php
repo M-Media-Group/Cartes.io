@@ -103,12 +103,15 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    @can('create posts')
+                                    <a class="dropdown-item" href="/home">
+                                        {{ __('Home') }}
+                                    </a>
+                                    @can('create', \App\Post::class)
                                         <a class="dropdown-item" href="/posts/create">
                                             {{ __('Create post') }}
                                         </a>
                                     @endcan
-                                    @can('create categories')
+                                    @can('create', \App\Category::class)
                                         <a class="dropdown-item" href="/categories/create">
                                             {{ __('Create category') }}
                                         </a>
@@ -117,7 +120,7 @@
                                         <a class="dropdown-item" href="/roles">
                                             {{ __('Manage roles') }}
                                         </a>
-                                        <a class="dropdown-item" href="/roles">
+                                        <a class="dropdown-item" href="/roles/create">
                                             {{ __('Create roles') }}
                                         </a>
                                     @endcan
@@ -152,7 +155,7 @@
                             <hr>
                         @endif
                         <p>{{ config('app.name') }} was made by English speaking residents of this area on the French Riviera. This site aims to show off the beauty of this region and make it more accessible to people visiting.</p>
-                        <p>If you're from the area and would like to contribute articles to {{ config('app.name', 'us') }}, you can <a href="/register">sign up</a>.</p>
+                        <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info and updates.</p>
                         <hr>
                         <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a> <a class="text-muted" href="/login">Login</a></small>
                     @show

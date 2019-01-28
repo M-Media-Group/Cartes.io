@@ -22,6 +22,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $this->authorize('create', Role::class);
         $roles = Role::simplePaginate(7); //Get all roles
         return view('roles.index')->with('roles', $roles);
     }
@@ -33,6 +34,7 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Role::class);
         $permissions = Permission::all(); //Get all permissions
 
         return view('roles.create', ['permissions' => $permissions]);
@@ -46,7 +48,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //Validate name and permissions field
+        $this->authorize('create', Role::class);
+
         $this->validate($request, [
             'name' => 'required|unique:roles|max:10',
             'permissions' => 'required',
@@ -63,8 +66,6 @@ class RoleController extends Controller
         //Looping thru selected permissions
         foreach ($permissions as $permission) {
             $p = Permission::where('id', '=', $permission)->firstOrFail();
-            //Fetch the newly created role and assign permission
-            $role = Role::where('name', '=', $name)->first();
             $role->givePermissionTo($p);
         }
 
@@ -90,9 +91,9 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Role $role)
     {
-        $role = Role::findOrFail($id);
+        $this->authorize('update', $role);
         $permissions = Permission::all();
 
         return view('roles.edit', compact('role', 'permissions'));
@@ -105,13 +106,12 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role)
     {
+        $this->authorize('update', $role);
 
-        $role = Role::findOrFail($id); //Get role with the given id
-        //Validate name and permission fields
         $this->validate($request, [
-            'name' => 'required|max:10|unique:roles,name,' . $id,
+            'name' => 'required|max:10|unique:roles,name,' . $role->id,
             'permissions' => 'required',
         ]);
 
@@ -143,6 +143,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', $role);
         $role = Role::findOrFail($id);
         $role->delete();
 

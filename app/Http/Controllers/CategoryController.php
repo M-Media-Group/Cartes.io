@@ -35,6 +35,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Category::class);
         return view('categories.create');
     }
 
@@ -46,7 +47,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-
+        $this->authorize('create', Category::class);
         $validatedData = $request->validate([
             'name' => 'required|unique:categories|min:3|max:255',
             'icon' => 'required|image',
@@ -98,7 +99,9 @@ class CategoryController extends Controller
      */
     public function edit($slug)
     {
-        return view('categories.edit', ['category' => Category::where('slug', $slug)->firstOrFail()]);
+        $category = Category::where('slug', $slug)->firstOrFail();
+        $this->authorize('update', $category);
+        return view('categories.edit', ['category' => $category]);
     }
 
     /**
@@ -110,6 +113,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        $this->authorize('update', $category);
         $validatedData = $request->validate([
             'name' => 'required|unique:categories|min:3|max:255',
         ]);
@@ -133,6 +137,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $this->authorize('delete', $category);
     }
 }

@@ -52,7 +52,7 @@
                 "url": "{{ config('app.url') }}",
                 "logo": {
                     "@type": "ImageObject",
-                    "url": "{{config('app.url') }}/images/logo.png",
+                    "url": "{{config('blog.logo_url') }}",
                     "width":"60",
                     "height":"60"
                 }
@@ -81,11 +81,33 @@
 @endsection
 
 @section('sidebar')
+    @can('update', $post)
+        <p>
+            <a href="/posts/{{$post->slug}}/edit">
+                {{ __('Edit post') }}
+            </a>
+        </p>
+        <hr>
+    @endcan
+    @can('delete', $post)
+        <p>
+            <form id="delete-form" action="/posts/{{$post->id}}" method="POST" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
+            <a href="/posts/{{$post->id}}"
+               onclick="event.preventDefault();document.getElementById('delete-form').submit();">
+                {{ __('Delete post') }}
+            </a>
+        </p>
+        <hr>
+    @endcan
     <p><a href="/users/{{$post->user->username}}"><img class="rounded img-thumbnail mr-1" src="{{$post->user->avatar}}" height="45" width="45" alt="{{$post->user->username}}" title="{{$post->user->username}}">{{$post->user->username}}</a></p>
     <p class="mb-0">Last updated {{ $post->updated_at->diffForHumans() }}</p>
     @if ($post->published_at)
         <small>Published {{ $post->published_at->diffForHumans() }}</small>
     @endif
+
     <hr>
     @foreach($post->categories as $category)
         <a href="/categories/{{$category->slug}}"><img class="rounded img-thumbnail mr-1" height="30" width="30" src="{{$category->icon}}"  title="{{$category->name}}" alt="{{$category->name}}">{{$category->name}}</a>
