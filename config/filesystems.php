@@ -63,6 +63,8 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'visibility' => 'public',
+            'options' => ['CacheControl' => 'max-age=315360000, no-transform, public',
+                'ContentEncoding' => 'gzip'],
         ],
 
     ],

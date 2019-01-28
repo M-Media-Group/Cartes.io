@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer(
-            'layouts.app',
+            'components.nav',
             function ($view) {
                 $view->with('categories', \App\Category::withCount('views')->orderBy('views_count', 'DESC')->take(4)->get());
             }
