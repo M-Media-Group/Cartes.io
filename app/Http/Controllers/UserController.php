@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return \App\User::with('posts.categories')->get();
+        return User::get();
     }
 
     /**
@@ -55,7 +56,7 @@ class UserController extends Controller
      */
     public function show($username)
     {
-        return view('user', ['user' => \App\User::where('username', $username)->with('posts')->firstOrFail()]);
+        return view('users.show', ['user' => User::where('username', $username)->with('posts')->firstOrFail()]);
 
     }
 
@@ -65,9 +66,12 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($username)
     {
-        //
+        $user = User::where('username', urldecode($username))->firstOrFail();
+        $this->authorize('update', $user);
+        $roles = Role::get();
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -79,7 +83,34 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->authorize('update', $user);
+        $validatedData = $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        ]);
+
+        $user->update(
+            [
+                'username' => $request->input('username'),
+                'name' => $request->input('name'),
+                'surname' => $request->input('surname'),
+                'email' => $request->input('email'),
+            ]
+        );
+
+        if ($request->user()->can('manage user roles')) {
+            $roles = $request->input('roles');
+            if (isset($roles)) {
+                $user->roles()->sync($roles);
+            } else {
+                $user->roles()->detach();
+            }
+        }
+
+        return redirect('/users/' . urlencode($request->input('username')));
+
     }
 
     /**

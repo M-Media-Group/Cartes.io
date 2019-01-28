@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index', ['posts' => \App\Post::published()->with('categories')->withCount(['views' => function ($q) {
+        return view('posts.index', ['posts' => Post::published()->with('categories')->withCount(['views' => function ($q) {
 
         }])->orderBy('published_at', 'DESC')->simplePaginate(7)]);
     }
@@ -34,9 +34,10 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('posts.create', ['posts' => \App\Post::with('categories')->simplePaginate(7), 'categories' => \App\Category::get()]);
+        $this->authorize('create', Post::class);
+        return view('posts.create', ['posts' => Post::with('categories')->simplePaginate(7), 'categories' => \App\Category::get()]);
     }
 
     /**
@@ -47,7 +48,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request->toArray();
+        $this->authorize('create', Post::class);
         $validatedData = $request->validate([
             'title' => 'required|unique:posts|min:5|max:255',
             'body_markdown' => 'required|min:10',
@@ -57,7 +58,7 @@ class PostController extends Controller
 
         $image_path = $request->file('header_image')->store('header_images');
 
-        $result = new \App\Post(
+        $result = new Post(
             [
                 'title' => $request->input('title'),
                 'body_markdown' => $request->input('body_markdown'),
@@ -108,7 +109,9 @@ class PostController extends Controller
      */
     public function edit($slug)
     {
-        return view('posts.edit', ['post' => \App\Post::where('slug', $slug)->firstOrFail()]);
+        $post = \App\Post::where('slug', $slug)->firstOrFail();
+        $this->authorize('update', $post);
+        return view('posts.edit', ['post' => $post]);
     }
 
     /**
@@ -120,7 +123,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //return $request->toArray();
+        $this->authorize('update', $post);
         $validatedData = $request->validate([
             'title' => 'required|unique:posts,title,' . $post->id . '|min:5|max:255',
             'body_markdown' => 'required|min:10',

@@ -99,18 +99,28 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    @if(Auth::user()->hasVerifiedEmail())
+                                    @can('create posts')
                                         <a class="dropdown-item" href="/posts/create">
                                             {{ __('Create post') }}
                                         </a>
+                                    @endcan
+                                    @can('create categories')
                                         <a class="dropdown-item" href="/categories/create">
                                             {{ __('Create category') }}
                                         </a>
-                                    @endif
+                                    @endcan
+                                    @can('manage roles')
+                                        <a class="dropdown-item" href="/roles">
+                                            {{ __('Manage roles') }}
+                                        </a>
+                                        <a class="dropdown-item" href="/roles">
+                                            {{ __('Create roles') }}
+                                        </a>
+                                    @endcan
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -142,7 +152,7 @@
                             <hr>
                         @endif
                         <p>{{ config('app.name') }} was made by English speaking residents of this area on the French Riviera. This site aims to show off the beauty of this region and make it more accessible to people visiting.</p>
-                        <p>If you're from the city and would like to contribute to {{ config('app.name', 'us') }}, you can <a href="/register">sign up</a>.</p>
+                        <p>If you're from the area and would like to contribute articles to {{ config('app.name', 'us') }}, you can <a href="/register">sign up</a>.</p>
                         <hr>
                         <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a> <a class="text-muted" href="/login">Login</a></small>
                     @show
