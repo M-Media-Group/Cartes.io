@@ -96,7 +96,7 @@
                 @method('DELETE')
             </form>
             <a href="/posts/{{$post->id}}"
-               onclick="event.preventDefault();document.getElementById('delete-form').submit();">
+               onclick="event.preventDefault();if (confirm('Are you sure?')) { document.getElementById('delete-form').submit() };">
                 {{ __('Delete post') }}
             </a>
         </p>
