@@ -13,6 +13,7 @@
 	        </ul>
 	    </div>
 	@endif
+	<p>You can <a href="/write">read the guidelines here</a>.</p>
 	<form action="/posts" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
 	  @csrf
 	  <div class="form-group">

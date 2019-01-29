@@ -55,6 +55,9 @@
                                     {{ __('Create roles') }}
                                 </a>
                             @endcan
+                            <a class="dropdown-item" href="/users/{{ Auth::user()->username }}/edit">
+                                    {{ __('Account settings') }}
+                                </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">

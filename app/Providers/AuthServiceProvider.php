@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Policy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // Implicitly grant "Admin" role all permissions
         Gate::before(function ($user, $ability) {
-            if ($user->hasRole('admin')) {
+            if ($user->hasRole('admin') || $user->isSuperAdmin()) {
                 return true;
             }
         });

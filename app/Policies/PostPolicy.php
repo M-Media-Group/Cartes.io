@@ -49,7 +49,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        return $user->{'user-id'} === $post->{'user-id'} && $user->can('edit posts');
+        return $user->id === $post->user_id && $user->can('edit posts');
     }
 
     /**
@@ -61,7 +61,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        return $user->{'user-id'} === $post->{'user-id'} && $user->can('delete posts');
+        return $user->id === $post->user_id && $user->can('delete posts');
     }
 
     /**
@@ -73,7 +73,7 @@ class PostPolicy
      */
     public function restore(User $user, Post $post)
     {
-        return $user->{'user-id'} === $post->{'user-id'} && $user->can('delete posts');
+        return $user->id === $post->user_id && $user->can('delete posts');
     }
 
     /**

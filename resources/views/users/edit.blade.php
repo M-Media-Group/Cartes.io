@@ -3,7 +3,7 @@
 @section('title', 'Edit a user')
 
 @section('content')
-	<h1>Edit a user</h1>
+	<h1>Edit account</h1>
 	@if ($errors->any())
 	    <div class="alert alert-danger">
 	        <ul>

@@ -25,9 +25,17 @@
                             <hr>
                         @endif
                         <p>{{ config('app.name') }} was made by English speaking residents of this area on the French Riviera. This site aims to show off the beauty of this region and make it more accessible to people visiting.</p>
+                        @if(!Auth::check())
                         <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info and updates.</p>
+                        @endif
                         <hr>
-                        <small class="mb-3"><a href="/privacy-policy" class="text-muted">Privacy policy</a> <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a> <a class="text-muted" href="/login">Login</a></small>
+                        <small class="mb-3">
+                            <a href="/privacy-policy" class="text-muted">Privacy policy</a>
+                            <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
+                            @if(!Auth::check())
+                                <a class="text-muted" href="/login">Login</a>
+                            @endif
+                        </small>
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">

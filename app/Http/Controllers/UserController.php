@@ -114,6 +114,25 @@ class UserController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function applyForWriter(Request $request)
+    {
+        $user = $request->user();
+
+        $this->authorize('update', $user);
+
+        $user->assignRole('writer');
+
+        return redirect('/posts/create');
+
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\User  $user

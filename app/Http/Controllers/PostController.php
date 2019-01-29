@@ -51,9 +51,9 @@ class PostController extends Controller
         $this->authorize('create', Post::class);
         $validatedData = $request->validate([
             'title' => 'required|unique:posts|min:5|max:255',
-            'body_markdown' => 'required|min:10',
-            'excerpt' => 'required|min:10|max:255',
-            'header_image' => 'required|image',
+            'body_markdown' => 'required|min:200',
+            'excerpt' => 'required|min:25|max:255',
+            'header_image' => 'required|image|dimensions:min_width=960,min_height=300,max_width=2560|max:512',
         ]);
 
         $image_path = $request->file('header_image')->store('header_images');

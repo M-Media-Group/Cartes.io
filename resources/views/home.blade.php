@@ -1,5 +1,23 @@
 @extends('layouts.app')
 
+@section('left_sidebar')
+@if(Auth::user()->canNot('create posts') && Auth::user()->hasVerifiedEmail())
+                <div class="card text-center mb-3 mt-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Write for {{config('app.name')}}</h5>
+                    <p class="card-text">Want to contribute articles to {{config('app.name')}}?</p>
+                    <a href="/write" class="btn btn-primary">Start writing</a>
+                  </div>
+                </div>
+            @endif
+ @foreach($categories as $category)
+    <hr>
+    <a href="/categories/{{$category->slug}}">
+        <img class="rounded img-thumbnail mr-1" height="25" width="25" src="{{$category->icon}}" alt="{{$category->name}}">{{ $category->name }}
+    </a>
+ @endforeach
+@endsection
+
 @section('content')
 
             <div class="card mb-3 mt-3">
@@ -14,12 +32,8 @@
                     Here your most recently viewed posts will show.
                     @if(Auth::user()->hasVerifiedEmail() == false)
                         <strong>Please verify your email address.</strong>
-                    @elseif(Auth::user()->canNot('create posts'))
-                    If you would like to write for {{config('app.name')}}, please <a href="#">click here</a>.
                     @endif
                 </div>
-
-
             </div>
         @foreach($posts as $post)
         <a href="/posts/{{$post->slug}}" title="{{ $post->title }}">
