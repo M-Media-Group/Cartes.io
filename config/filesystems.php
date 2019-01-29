@@ -64,7 +64,8 @@ return [
             'url' => env('AWS_URL'),
             'visibility' => 'public',
             'options' => ['CacheControl' => 'max-age=315360000, no-transform, public',
-                'ContentEncoding' => 'gzip'],
+                // 'ContentEncoding' => 'gzip' <--- Uploads but then fails to download from S3
+            ],
         ],
 
     ],

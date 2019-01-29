@@ -68,6 +68,7 @@
                 </div>
             </div>
         </div>
+        <a href="/register" class="mt-3 mb-3">Don't have an account? Sign up!</a>
     </div>
 </div>
 @endsection

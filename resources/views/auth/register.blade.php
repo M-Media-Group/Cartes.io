@@ -87,7 +87,15 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-
+                        {{-- <div class="form-group row">
+                            <label for="exampleFormControlFile1" class="col-md-4 col-form-label text-md-right">Avatar</label>
+                            <div class="col-md-6">
+                                <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1" required>
+                            </div>
+                        </div> --}}
+                        <div class="row">
+                            <p class="col-md-6 offset-md-4">By registering you understand the <a href="/privacy-policy">privacy policy</a> and agree to the <a href="terms-and-conditions">terms and conditions</a>.</p>
+                        </div>
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -99,6 +107,7 @@
                 </div>
             </div>
         </div>
+        <a href="/login" class="mt-3 mb-3">Already have an account? Log in!</a>
     </div>
 </div>
 @endsection
