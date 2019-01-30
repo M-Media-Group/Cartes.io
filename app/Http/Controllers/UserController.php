@@ -128,6 +128,8 @@ class UserController extends Controller
 
         $user->assignRole('writer');
 
+        $user->revokePermissionTo('apply to write');
+
         return redirect('/posts/create');
 
     }

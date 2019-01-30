@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Categories')
-@section('meta_description', "Coimg by car, ship or bus, there's plenty to explore and lots of things to do in Villefranche sur Mer!")
+@section('title', 'Visit Villefranche based on your interests')
+@section('meta_description', "See the French Riviera city Villefranche sur Mer! Explore the bay, beaches, citadel, and more in this charming small city in tucked away in the South of France (Cote d'Azur).")
 
 @section('content')
 	<h1 class="mt-3">Categories</h1>

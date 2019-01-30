@@ -1,5 +1,8 @@
 @extends('layouts.clean')
 
+@section('title', "Log in to ".config('app.name'))
+@section('meta_description', "Log in to comment, post articles, and interact with the community at ".config('app.name')."!")
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

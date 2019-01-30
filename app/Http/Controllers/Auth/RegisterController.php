@@ -54,7 +54,7 @@ class RegisterController extends Controller
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            //'avatar' => 'required|image|dimensions:min_width=30,max_width=256|max:256',
+            'avatar' => ['required', 'image', 'dimensions:min_width=15,max_width=512', 'max:256'],
         ]);
     }
 
@@ -66,14 +66,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        //$image_path = $data->file('header_image')->store('header_images');
+        $image_path = request()->file('avatar')->store('avatars');
 
-        return User::create([
+        $user = User::create([
             'username' => $data['username'],
             'name' => $data['name'],
             'surname' => $data['surname'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'avatar' => $image_path,
         ]);
+
+        $user->givePermissionTo('apply to write');
+
+        return $user;
     }
 }

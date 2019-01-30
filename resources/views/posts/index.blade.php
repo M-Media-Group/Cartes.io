@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'A locals guide to Villefranche sur Mer')
+@section('meta_description', "Read about Villefranche sur Mer in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
 
 @section('content')
 	<h1 class="mt-3">Posts</h1>

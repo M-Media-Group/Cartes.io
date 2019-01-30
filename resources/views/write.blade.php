@@ -30,10 +30,14 @@ Before you start publishing articles, we want you to read over the following gui
 
 - You must hold full rights to any image you upload
 
+- Write a minimum of 500 words; 2,000 words is the recommended length
+
 - Don't promote products, services, or businesses
 
+- You must live in the area or have extensive experience here
+
 @endmarkdown
-    @if(Auth::user()->canNot('create posts') && Auth::user()->hasVerifiedEmail())
+    @if(Auth::user()->can('apply to write') && Auth::user()->hasVerifiedEmail())
     	<a href="#" class="btn btn-primary mb-3" onclick="event.preventDefault();
                                              document.getElementById('writer-form').submit();">I understand and am ready to write
         </a>

@@ -18,11 +18,11 @@ This is an open source blog template based on Laravel 5.7. Feel free to fork and
 
 ## Install
 
-	After running composer and npm, run the following commands to create the permissions and roles:
-    - php artisan migrate
-    - php artisan permission:create-role admin web "manage posts|edit posts|create posts|delete posts|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles"
-    - php artisan permission:create-role editor web "manage posts|manage categories"
-    - php artisan permission:create-role writer web "edit posts|create posts|delete posts"
+After running composer and npm, run the following commands to create the permissions and roles:
+- php artisan migrate
+- php artisan permission:create-role admin web "manage posts|edit posts|create posts|delete posts|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to write"
+- php artisan permission:create-role editor web "manage posts|manage categories"
+- php artisan permission:create-role writer web "edit posts|create posts|delete posts"
 
 ## Contributing
 

@@ -1,6 +1,18 @@
 @extends('layouts.clean')
 
+@section('title', "Register to ".config('app.name'))
+@section('meta_description', "Register to comment, post articles, and interact with the community at ".config('app.name')."!")
+
 @section('content')
+@if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -8,7 +20,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group row">
                             <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
@@ -87,12 +99,17 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-                        {{-- <div class="form-group row">
+                        <div class="form-group row">
                             <label for="exampleFormControlFile1" class="col-md-4 col-form-label text-md-right">Avatar</label>
                             <div class="col-md-6">
                                 <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1" required>
+                                @if ($errors->has('avatar'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('avatar') }}</strong>
+                                    </span>
+                                @endif
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="row">
                             <p class="col-md-6 offset-md-4">By registering you understand the <a href="/privacy-policy">privacy policy</a> and agree to the <a href="terms-and-conditions">terms and conditions</a>.</p>
                         </div>

@@ -25,6 +25,10 @@ Route::get('/write', function () {
     return view('write');
 })->middleware('auth');
 
+Route::get('/notifications', function () {
+    return view('notifications');
+})->middleware('auth');
+
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
