@@ -14,8 +14,20 @@
 @endsection
 @section('content')
 <h1>Map of Villefranche sur Mer</h1>
-<p>Click on the bus icons to see the major bus stops in Villefranche of bus lines running in the South of France between Nice and Menton.</p>
+<p>You can control which icons you see on the map using the layer control on the top right of the map.</p>
+<div class="d-flex flex-column justify-content-start">
+    <div>
+        <img src='/images/icons/bus.svg' class='rounded img-thumbnail' style='height:35px;'> = Bus stop
+    </div>
+    <div>
+        <img src='/images/icons/car.svg' class='rounded img-thumbnail' style='height:35px;'> = Car park
+    </div>
+    <div class="mb-3">
+        <img src='/images/icons/train.svg' class='rounded img-thumbnail' style='height:35px;'> = Train station
+    </div>
+</div>
 <p>The {{config('app.name')}} logo pins on the map represent <a href="https://en.wikipedia.org/wiki/QR_code">QR codes</a> scattered throughout the city that you can scan to learn more about whatever you're looking at!</p>
+<button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 20});">Find my location on the map</button>
 @endsection
 @section('footer_scripts')
 <script>
@@ -38,7 +50,7 @@
     });
     @foreach(\App\QrCode::selectRaw('id, X(`location`) as x, Y(`location`) as y')->withCount('views')->get()->sortBy('views_count') as $qr)
 
-        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@if(Auth::check() && Auth::user()->isSuperAdmin()) <small>{{$qr->id}}</small>@endif<br/>{{$qr->views_count}} check-ins").openPopup();
+        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@if(Auth::check() && Auth::user()->isSuperAdmin()) <small>{{$qr->id}}</small>@endif<br/>{{$qr->views_count}} check-ins");
 
     @endforeach
 
@@ -151,18 +163,133 @@ var myIcon2 = L.icon({
     iconAnchor: [15, 15],
     popupAnchor: [0, 0]
 });
+var myIcon3 = L.icon({
+    iconUrl: "/images/icons/bus.svg",
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, 0]
+});
 
-L.geoJSON(geoJsonFeatureTourist, {
+var activeLayer = L.geoJson(geoJsonFeatureTourist, {
     pointToLayer: function(geoJsonPoint, latlng) {
     return L.marker(latlng, {icon: myIcon2});
     },
+  filter: function(feature, layer) {
+    return feature.properties.operator != null && feature.properties.operator == "Lignes d'Azur, N° 81 et 100" || feature.properties.operator == "Lignes d'Azur, N°81 et 100";
+  }
+}).bindPopup(function (layer) {
+    return "Bus stop <b>"+layer.feature.properties.name+"</b><br/>"+layer.feature.properties.operator+"<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
+}).addTo(mymap);
 
-    filter: function (layer) {
-    return layer.properties.operator != null && layer.properties.operator == "Lignes d'Azur, N° 81 et 100" || layer.properties.operator == "Lignes d'Azur, N°81 et 100";
-}
+var nonActiveLayer = L.geoJson(geoJsonFeatureTourist, {
+    pointToLayer: function(geoJsonPoint, latlng) {
+    return L.marker(latlng, {icon: myIcon3});
+    },
+  filter: function(feature, layer) {
+    return feature.properties.operator != null && feature.properties.operator == "Lignes d'Azur, N°80" ;
+  }
 }).bindPopup(function (layer) {
     return "Bus stop <b>"+layer.feature.properties.name+"</b><br/>"+layer.feature.properties.operator;
+});
+
+
+geoJsonFeatureParking = {
+    "type": "FeatureCollection",
+    "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+    "features": [
+    { "type": "Feature", "properties": { "full_id": "w42959391", "osm_id": "42959391", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3442981, 43.7140352 ], [ 7.3445692, 43.7140514 ], [ 7.3447799, 43.7141021 ], [ 7.3447957, 43.7139399 ], [ 7.3443579, 43.7138903 ], [ 7.3442981, 43.7140352 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w112633943", "osm_id": "112633943", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3078998, 43.6991712 ], [ 7.3079682, 43.6991164 ], [ 7.3079434, 43.699102 ], [ 7.3079844, 43.6990651 ], [ 7.3070467, 43.6984105 ], [ 7.3069733, 43.6984744 ], [ 7.3069944, 43.6984942 ], [ 7.3069696, 43.6985112 ], [ 7.3078998, 43.6991712 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w114543344", "osm_id": "114543344", "osm_type": "way", "amenity": "parking", "name": "Place Wilson", "parking": "surface", "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3117515, 43.702524 ], [ 7.3122247, 43.7023001 ], [ 7.3120048, 43.7019589 ], [ 7.3117714, 43.701953 ], [ 7.311602, 43.7022311 ], [ 7.3116293, 43.7023176 ], [ 7.3115354, 43.7024941 ], [ 7.3116561, 43.702688 ], [ 7.311706, 43.702687 ], [ 7.3117553, 43.702686 ], [ 7.3117515, 43.702524 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w159069810", "osm_id": "159069810", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3101755, 43.7025134 ], [ 7.3102503, 43.7024775 ], [ 7.3100226, 43.7016175 ], [ 7.3099934, 43.7016307 ], [ 7.3098429, 43.701699 ], [ 7.3099938, 43.7021036 ], [ 7.3100089, 43.702144 ], [ 7.3100816, 43.7023195 ], [ 7.3101135, 43.7023146 ], [ 7.3101755, 43.7025134 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w159069816", "osm_id": "159069816", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3097195, 43.7037155 ], [ 7.3099039, 43.7036799 ], [ 7.3098563, 43.703512 ], [ 7.3098304, 43.7034955 ], [ 7.3097892, 43.7034693 ], [ 7.3096557, 43.7035237 ], [ 7.3096417, 43.7035294 ], [ 7.3097195, 43.7037155 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w159522325", "osm_id": "159522325", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.308931, 43.7021353 ], [ 7.3090318, 43.7021965 ], [ 7.3090624, 43.7021644 ], [ 7.3091026, 43.702178 ], [ 7.3092135, 43.7020701 ], [ 7.3092501, 43.7020345 ], [ 7.3093789, 43.7018774 ], [ 7.309403, 43.7018057 ], [ 7.3093521, 43.7017669 ], [ 7.308931, 43.7021353 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w160193831", "osm_id": "160193831", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3094272, 43.7039618 ], [ 7.3094792, 43.7040056 ], [ 7.309615, 43.7039172 ], [ 7.3095919, 43.7038252 ], [ 7.3097233, 43.7037981 ], [ 7.309625, 43.7035356 ], [ 7.3094885, 43.7035689 ], [ 7.3094739, 43.7035269 ], [ 7.309325, 43.7035577 ], [ 7.3093361, 43.7035853 ], [ 7.3092831, 43.7035979 ], [ 7.3094272, 43.7039618 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w194664314", "osm_id": "194664314", "osm_type": "way", "amenity": "parking", "name": null, "parking": "surface", "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3173234, 43.7098736 ], [ 7.3173272, 43.7098292 ], [ 7.3166035, 43.7098104 ], [ 7.3166046, 43.7098562 ], [ 7.3173234, 43.7098736 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w204912602", "osm_id": "204912602", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3166037, 43.7181764 ], [ 7.3166229, 43.718245 ], [ 7.3166319, 43.7182771 ], [ 7.3167903, 43.7182555 ], [ 7.316894, 43.7182645 ], [ 7.3172009, 43.7181608 ], [ 7.3173477, 43.7181722 ], [ 7.3174057, 43.7179911 ], [ 7.3171229, 43.717981 ], [ 7.3170018, 43.7180175 ], [ 7.3166817, 43.7181344 ], [ 7.3166037, 43.7181764 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w219115894", "osm_id": "219115894", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3250613, 43.7147147 ], [ 7.3249796, 43.7148725 ], [ 7.3251623, 43.7148921 ], [ 7.3253198, 43.7149851 ], [ 7.3254346, 43.7147364 ], [ 7.3250613, 43.7147147 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w225393407", "osm_id": "225393407", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.320578, 43.7037291 ], [ 7.3207399, 43.703938 ], [ 7.3208183, 43.7041281 ], [ 7.3210759, 43.7041306 ], [ 7.3211578, 43.703977 ], [ 7.3211317, 43.7037593 ], [ 7.3209454, 43.7034471 ], [ 7.3208304, 43.703169 ], [ 7.3207364, 43.703169 ], [ 7.3205397, 43.7034887 ], [ 7.3207016, 43.7036145 ], [ 7.320578, 43.7037291 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w312561738", "osm_id": "312561738", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3096662, 43.7002203 ], [ 7.3098363, 43.7002187 ], [ 7.3099126, 43.7001826 ], [ 7.3088636, 43.6996718 ], [ 7.308803, 43.6997532 ], [ 7.3096018, 43.7001234 ], [ 7.3096662, 43.7002203 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w333876759", "osm_id": "333876759", "osm_type": "way", "amenity": "parking", "name": "Place Sainte-Élisabeth", "parking": null, "fee": "no", "capacity": null, "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3102358, 43.7042141 ], [ 7.3100883, 43.7040861 ], [ 7.3100513, 43.7041221 ], [ 7.3101044, 43.7041714 ], [ 7.3101849, 43.7042373 ], [ 7.3102358, 43.7042141 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w374859105", "osm_id": "374859105", "osm_type": "way", "amenity": "parking", "name": null, "parking": "surface", "fee": null, "capacity": "7", "addr_stree": null, "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3014647, 43.7063022 ], [ 7.301622, 43.7064196 ], [ 7.3017201, 43.706351 ], [ 7.3015628, 43.7062336 ], [ 7.3014647, 43.7063022 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w396756416", "osm_id": "396756416", "osm_type": "way", "amenity": "parking", "name": null, "parking": "surface", "fee": null, "capacity": null, "addr_stree": "Fossés de la Citadelle", "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3102581, 43.7023951 ], [ 7.3103735, 43.7023505 ], [ 7.3101964, 43.7017086 ], [ 7.3100891, 43.7017338 ], [ 7.3102581, 43.7023951 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w396756927", "osm_id": "396756927", "osm_type": "way", "amenity": "parking", "name": null, "parking": "surface", "fee": null, "capacity": null, "addr_stree": "Fossés de la Citadelle", "addr_city": null, "addr_postc": null, "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3092899, 43.700997 ], [ 7.3097834, 43.7008438 ], [ 7.3097271, 43.7007817 ], [ 7.3092523, 43.7009485 ], [ 7.3092899, 43.700997 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w399079577", "osm_id": "399079577", "osm_type": "way", "amenity": "parking", "name": null, "parking": "surface", "fee": "yes", "capacity": null, "addr_stree": "Avenue de l'Ange Gardien", "addr_city": "Villefranche-sur-Mer", "addr_postc": "06230", "surface": "asphalt" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3223958, 43.7035126 ], [ 7.3224816, 43.7033807 ], [ 7.3220444, 43.7031965 ], [ 7.3219022, 43.703373 ], [ 7.3221973, 43.7035707 ], [ 7.3223958, 43.7035126 ] ] ] } },
+    { "type": "Feature", "properties": { "full_id": "w399406375", "osm_id": "399406375", "osm_type": "way", "amenity": "parking", "name": null, "parking": null, "fee": null, "capacity": null, "addr_stree": "Fossés de la Citadelle", "addr_city": "Villefranche-sur-Mer", "addr_postc": "06230", "surface": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.3110817, 43.7019715 ], [ 7.31148, 43.7018096 ], [ 7.3114719, 43.7017669 ], [ 7.3114545, 43.701764 ], [ 7.3114263, 43.7017446 ], [ 7.3114062, 43.7017136 ], [ 7.3114089, 43.7016874 ], [ 7.3114263, 43.7016602 ], [ 7.3114599, 43.7016486 ], [ 7.3114357, 43.7016127 ], [ 7.3109301, 43.7018105 ], [ 7.3110817, 43.7019715 ] ] ] } }
+    ]
+};
+
+var myIconParking = L.icon({
+    iconUrl: "/images/icons/car.svg",
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, 0]
+});
+
+var myStyleParking = {
+    "color": "#e3342f",
+    "weight": 1.5,
+    "opacity": 1,
+    "fillOpacity": 0.2
+};
+
+
+var parkingLayer = L.geoJson(geoJsonFeatureParking, {
+    style: myStyleParking,
+    pointToLayer: function(geoJsonPoint, latlng) {
+    return L.marker(latlng, {icon: myIconParking});
+    }
+}).bindPopup(function (layer) {
+    return "Car parking<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
 }).addTo(mymap);
+
+
+geoJsonFeatureTrain = {
+    "type": "FeatureCollection",
+    "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+    "features": [
+    { "type": "Feature", "properties": { "full_id": "n33016767", "osm_id": "33016767", "osm_type": "node", "uic_ref": "8775636", "name": "Villefranche-sur-Mer", "official_n": "Villefranche-sur-Mer", "note_railw": "Un seul tag railway=station par gare. A mettre sur un node au milieu des voies", "name_it": "Villafranca", "operator": "SNCF", "railway": "station" }, "geometry": { "type": "Point", "coordinates": [ 7.3141702, 43.7069304 ] } }
+    ]
+};
+var myIconTrain = L.icon({
+    iconUrl: "/images/icons/train.svg",
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, 0]
+});
+var trainLayer = L.geoJson(geoJsonFeatureTrain, {
+    pointToLayer: function(geoJsonPoint, latlng) {
+    return L.marker(latlng, {icon: myIconTrain});
+    }
+}).bindPopup(function (layer) {
+    return "Train station <b>"+layer.feature.properties.name+"</b><br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
+}).addTo(mymap);
+
+
+var overlayMaps = {
+    "<img src='/images/icons/bus.svg' class='rounded img-thumbnail' style='height:35px;'> Bus stop": activeLayer,
+    //"Bus line 80": nonActiveLayer,
+    "<img src='/images/icons/car.svg' class='rounded img-thumbnail' style='height:35px;'> Car parking": parkingLayer,
+    "<img src='/images/icons/train.svg' class='rounded img-thumbnail' style='height:35px;'> Train station": trainLayer,
+
+};
+L.control.layers(null, overlayMaps).addTo(mymap);
+
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    L.marker(e.latlng).addTo(mymap)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+    L.circle(e.latlng, radius).addTo(mymap);
+}
+
+mymap.on('locationfound', onLocationFound);
+
+function onLocationError(e) {
+    alert(e.message);
+}
+
+mymap.on('locationerror', onLocationError);
 //L.geoJSON(geoJsonFeatureTourist).addTo(mymap);
 </script>
 @endsection

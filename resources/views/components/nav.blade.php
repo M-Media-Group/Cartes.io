@@ -23,12 +23,14 @@
                         </a>
                     </li>
                 @endforeach
+                <li class="nav-item">
+                    <a href="/map" class="nav-link">
+                        Map
+                    </a>
+                </li>
                 @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="/register">{{ __('Sign up') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">{{ __('Login') }}</a>
+                        <a class="nav-link" href="/login">{{ __('Sign up') }} / {{ __('Login') }}</a>
                     </li>
                 @else
                     <li class="nav-item dropdown">
