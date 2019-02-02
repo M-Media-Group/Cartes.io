@@ -25,6 +25,10 @@ Route::get('/write', function () {
     return view('write');
 })->middleware('auth');
 
+Route::get('/map', function () {
+    return view('map');
+});
+
 Route::get('/notifications', function () {
     return view('notifications');
 })->middleware('auth');
@@ -42,3 +46,5 @@ Route::resource('users', 'UserController');
 Route::post('me/apply/writer', 'UserController@applyForWriter');
 
 Route::resource('roles', 'RoleController');
+
+Route::resource('qr', 'QrCodeController');
