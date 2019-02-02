@@ -1,7 +1,7 @@
 @extends('layouts.clean')
 
 @section('title', 'Map of Villefranche sur Mer')
-@section('meta_description', "Read about Villefranche sur Mer in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
+@section('meta_description', "Check out the interactive map of the South of France city Villefranche sur Mer showing bus stps, train stations, and car parkings.")
 
 @section('header_scripts')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
@@ -44,8 +44,8 @@
 
     var myIcon = L.icon({
         iconUrl: "{{config('blog.logo_url')}}",
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
         popupAnchor: [0, 0]
     });
     @foreach(\App\QrCode::selectRaw('id, X(`location`) as x, Y(`location`) as y')->withCount('views')->get()->sortBy('views_count') as $qr)
