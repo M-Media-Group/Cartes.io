@@ -20,7 +20,12 @@
 
             </div>
         </div>
-        <div class="footer">
+        <hr/>
+        <div class="footer d-flex justify-content-center">
+            <small class="mb-3">
+                <a href="/privacy-policy" class="text-muted">Privacy policy</a>
+                <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
+            </small>
         </div>
     </div>
 @include('components.footer')

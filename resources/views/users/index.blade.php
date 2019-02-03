@@ -3,7 +3,7 @@
 @section('title', 'A locals guide to Villefranche sur Mer')
 
 @section('content')
-	<h1 class="mt-3">Posts</h1>
+	<h1>Posts</h1>
 	@foreach($posts->sortByDesc('views_count') as $post)
 		<a href="/posts/{{$post->slug}}" title="{{ $post->title }}">
 		    <img src="{{$post->header_image}}" class="rounded img-thumbnail mb-2" alt="{{ $post->title }}" >

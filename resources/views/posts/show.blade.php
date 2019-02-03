@@ -124,7 +124,7 @@
 
 @section('content')
     <article>
-        <h1 class="mt-5 mb-4">{{ $post->title }}</h1>
+        <h1 class="mb-4">{{ $post->title }}</h1>
         @if ($post->published_at)
             <div class="text-justify">
                 @markdown{{ $post->body_markdown }}

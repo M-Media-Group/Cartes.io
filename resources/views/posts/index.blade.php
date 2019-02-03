@@ -4,7 +4,7 @@
 @section('meta_description', "Read about Villefranche sur Mer in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
 
 @section('content')
-	<h1 class="mt-3">Posts</h1>
+	<h1>Posts</h1>
 	@foreach($posts->sortByDesc('views_count') as $post)
 		<a href="/posts/{{$post->slug}}" title="{{ $post->title }}">
 		    <img src="{{$post->header_image}}" class="rounded img-thumbnail mb-2" alt="{{ $post->title }}" >

@@ -13,7 +13,7 @@
         @include('components.nav')
         @yield('above_container')
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mt-5">
                 <main class="col-md-6 order-md-6">
                     @yield('content')
                 </main>
@@ -30,9 +30,9 @@
                     @endif
                     <hr>
                     <small class="mb-3">
-                            <a href="/privacy-policy" class="text-muted">Privacy policy</a>
-                            <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
-                        </small>
+                        <a href="/privacy-policy" class="text-muted">Privacy policy</a>
+                        <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
+                    </small>
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">

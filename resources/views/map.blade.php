@@ -2,6 +2,7 @@
 
 @section('title', 'Map of Villefranche sur Mer')
 @section('meta_description', "Check out the interactive map of the South of France city Villefranche sur Mer showing bus stps, train stations, and car parkings.")
+@section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('header_scripts')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
@@ -9,7 +10,7 @@
 @endsection
 
 @section('above_container')
-<div id="mapid" style="width: 100%; height: 450px;"></div>
+<div id="mapid" style="width: 100%; height: 71vh;"></div>
 
 @endsection
 @section('content')
@@ -17,16 +18,16 @@
 <p>You can control which icons you see on the map using the layer control on the top right of the map.</p>
 <div class="d-flex flex-column justify-content-start">
     <div>
-        <img src='/images/icons/bus.svg' class='rounded img-thumbnail' style='height:35px;'> = Bus stop
+        <img src='/images/icons/bus.svg' class='rounded img-thumbnail' alt="Bus stop" style='height:35px;'> = Bus stop
     </div>
     <div>
-        <img src='/images/icons/car.svg' class='rounded img-thumbnail' style='height:35px;'> = Car park
+        <img src='/images/icons/car.svg' class='rounded img-thumbnail' alt="Car park" style='height:35px;'> = Car park
     </div>
     <div class="mb-3">
-        <img src='/images/icons/train.svg' class='rounded img-thumbnail' style='height:35px;'> = Train station
+        <img src='/images/icons/train.svg' class='rounded img-thumbnail' alt="Train station" style='height:35px;'> = Train station
     </div>
 </div>
-<p>The {{config('app.name')}} logo pins on the map represent <a href="https://en.wikipedia.org/wiki/QR_code">QR codes</a> scattered throughout the city that you can scan to learn more about whatever you're looking at!</p>
+<p>The <img src='{{config('blog.logo_url')}}' alt="Logo" class='rounded img-thumbnail' style='height:25px;'> pins on the map represent <a href="https://explorevillefranche.com/posts/qr-codes-in-villefranche">QR codes</a> scattered throughout the city that you can scan to learn more about whatever you're looking at!</p>
 <button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 20});">Find my location on the map</button>
 @endsection
 @section('footer_scripts')
@@ -38,7 +39,7 @@
     maxZoom: 20,
     attribution: '&copy; Openstreetmap France | &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 
-    minZoom: 10,
+    minZoom: 11,
     detectRetina:true
 }).addTo(mymap);
 
