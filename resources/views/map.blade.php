@@ -15,7 +15,7 @@
 @endsection
 @section('content')
 <h1>Map of Villefranche sur Mer</h1>
-<p>You can control which icons you see on the map using the layer control on the top right of the map.</p>
+<p>You can control what you see on the map using the layers control (<span class="leaflet-control-layers-toggle d-inline-block" style="height:25px;"></span>) on the top right of the map.</p>
 <div class="d-flex flex-column justify-content-start">
     <div>
         <img src='/images/icons/bus.svg' class='rounded img-thumbnail' alt="Bus stop" style='height:35px;'> = Bus stop
@@ -34,13 +34,14 @@
 <script>
 
     var mymap = L.map('mapid').setView([43.7040, 7.3111], 16);
-
-     L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-    maxZoom: 20,
-    attribution: '&copy; Openstreetmap France | &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+// https://leaflet-extras.github.io/leaflet-providers/preview/
+     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
 
     minZoom: 11,
-    detectRetina:true
+   //detectRetina:true
 }).addTo(mymap);
 
     var myIcon = L.icon({
@@ -58,7 +59,6 @@
 var popup = L.popup();
 
 function onMapClick(e) {
-    console.log(e);
     popup
         .setLatLng(e.latlng)
         .setContent("Clicked at " + e.latlng.toString())
@@ -180,7 +180,7 @@ var activeLayer = L.geoJson(geoJsonFeatureTourist, {
   }
 }).bindPopup(function (layer) {
     return "Bus stop <b>"+layer.feature.properties.name+"</b><br/>"+layer.feature.properties.operator+"<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
-}).addTo(mymap);
+});
 
 var nonActiveLayer = L.geoJson(geoJsonFeatureTourist, {
     pointToLayer: function(geoJsonPoint, latlng) {
@@ -241,7 +241,7 @@ var parkingLayer = L.geoJson(geoJsonFeatureParking, {
     }
 }).bindPopup(function (layer) {
     return "Car parking<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
-}).addTo(mymap);
+});
 
 
 geoJsonFeatureTrain = {
@@ -263,7 +263,7 @@ var trainLayer = L.geoJson(geoJsonFeatureTrain, {
     }
 }).bindPopup(function (layer) {
     return "Train station <b>"+layer.feature.properties.name+"</b><br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
-}).addTo(mymap);
+});
 
 
 var overlayMaps = {
@@ -273,7 +273,7 @@ var overlayMaps = {
     "<img src='/images/icons/train.svg' class='rounded img-thumbnail' style='height:35px;'> Train station": trainLayer,
 
 };
-L.control.layers(null, overlayMaps).addTo(mymap);
+L.control.layers(overlayMaps, null).addTo(mymap);
 
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
@@ -282,6 +282,8 @@ function onLocationFound(e) {
         .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
     L.circle(e.latlng, radius).addTo(mymap);
+
+    dataLayer.push({'event': 'User location found'});
 }
 
 mymap.on('locationfound', onLocationFound);
@@ -291,6 +293,23 @@ function onLocationError(e) {
 }
 
 mymap.on('locationerror', onLocationError);
+mymap.on('baselayerchange', onOverlayAdd);
+
+mymap.on('popupopen', trackPopup);
+
+function onOverlayAdd(e){
+    dataLayer.push({'event': 'Map layer change', 'value': e.name.replace(/<(?:.|\n)*?> /gm, '')});
+}
+
+function trackPopup(e){
+    if(e.popup._source && e.popup._source.feature) {
+    dataLayer.push({'event': 'Map popup open', 'id': "Feature "+e.popup._source.feature.properties.full_id});
+    } else if (e.popup._source) {
+    dataLayer.push({'event': 'Map popup open', 'id': "QR Code "+e.popup._latlng.toString()});
+    } else if (e.popup._latlng) {
+        dataLayer.push({'event': 'Map popup open', 'id': "Position "+e.popup._latlng.toString()});
+    }
+}
 //L.geoJSON(geoJsonFeatureTourist).addTo(mymap);
 </script>
 @endsection
