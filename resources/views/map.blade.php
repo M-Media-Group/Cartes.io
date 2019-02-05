@@ -10,7 +10,7 @@
 @endsection
 
 @section('above_container')
-<div id="mapid" style="width: 100%; height: 71vh;"></div>
+<div id="mapid" style="width: 100%; height: 69vh;"></div>
 
 @endsection
 @section('content')
@@ -28,7 +28,7 @@
     </div>
 </div>
 <p>The <img src='{{config('blog.logo_url')}}' alt="Logo" class='rounded img-thumbnail' style='height:25px;'> pins on the map represent <a href="https://explorevillefranche.com/posts/qr-codes-in-villefranche">QR codes</a> scattered throughout the city that you can scan to learn more about whatever you're looking at!</p>
-<button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 20});">Find my location on the map</button>
+<button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 20, watch: true});">Find my location on the map</button>
 @endsection
 @section('footer_scripts')
 <script>
@@ -39,7 +39,6 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19,
-
     minZoom: 11,
    //detectRetina:true
 }).addTo(mymap);
@@ -52,7 +51,7 @@
     });
     @foreach(\App\QrCode::selectRaw('id, X(`location`) as x, Y(`location`) as y')->withCount('views')->get()->sortBy('views_count') as $qr)
 
-        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@if(Auth::check() && Auth::user()->isSuperAdmin()) <small>{{$qr->id}}</small>@endif<br/>{{$qr->views_count}} check-ins");
+        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@if(Auth::check() && Auth::user()->isSuperAdmin()) <small>{{$qr->id}}</small><br/>{{$qr->views_count}} check-ins @endif <br/><small><a href='https://explorevillefranche.com/posts/qr-codes-in-villefranche'>What's this?</a></small>");
 
     @endforeach
 
@@ -296,14 +295,24 @@ mymap.on('locationerror', onLocationError);
 mymap.on('baselayerchange', onOverlayAdd);
 
 mymap.on('popupopen', trackPopup);
+mymap.on('zoomend', trackZoomChange);
+mymap.on('moveend', trackMoveChange);
 
 function onOverlayAdd(e){
     dataLayer.push({'event': 'Map layer change', 'value': e.name.replace(/<(?:.|\n)*?> /gm, '')});
 }
 
+function trackZoomChange(e){
+    dataLayer.push({'event': 'Map zoom', 'value': mymap.getZoom()});
+}
+
+function trackMoveChange(e){
+    dataLayer.push({'event': 'Map move', 'value': 'Center '+mymap.getCenter().toString()});
+}
+
 function trackPopup(e){
     if(e.popup._source && e.popup._source.feature) {
-    dataLayer.push({'event': 'Map popup open', 'id': "Feature "+e.popup._source.feature.properties.full_id});
+        dataLayer.push({'event': 'Map popup open', 'id': "Feature "+e.popup._source.feature.properties.full_id});
     } else if (e.popup._source) {
     dataLayer.push({'event': 'Map popup open', 'id': "QR Code "+e.popup._latlng.toString()});
     } else if (e.popup._latlng) {

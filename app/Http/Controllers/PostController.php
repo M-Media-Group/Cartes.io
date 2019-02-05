@@ -24,7 +24,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index', ['posts' => Post::published()->with('categories')->withCount('views')->orderBy('published_at', 'DESC')->simplePaginate(7)]);
+        $posts = Post::published()->with('categories')->orderBy('published_at', 'DESC')->simplePaginate(7);
+        //return $posts;
+
+        return view('posts.index', ['posts' => $posts]);
     }
 
     /**

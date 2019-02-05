@@ -25,6 +25,8 @@ class Post extends Model
         'published_at',
     ];
 
+    protected $appends = ['rank'];
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -38,6 +40,14 @@ class Post extends Model
     public function views()
     {
         return $this->hasMany('App\PostView');
+    }
+
+    public function getRankAttribute()
+    {
+        $views = (int) abs($this->views()->count());
+        //return (log10(strtotime($this->published_at) + 1));
+        // return floor(log($views + 1)) / 500000;
+        return floor(log($views + 1)) / 500000 + log10(strtotime($this->published_at) + 1);
     }
 
     /**
