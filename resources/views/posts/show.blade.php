@@ -83,6 +83,15 @@
 @section('sidebar')
     @can('update', $post)
         <p>
+            {{$post->views_count}} post views
+        </p>
+        @if(Auth::check() && Auth::user()->isSuperAdmin())
+            <small>
+                {{$post->rank}} rank score
+            </small>
+        @endif
+            <hr>
+        <p>
             <a href="/posts/{{$post->slug}}/edit">
                 {{ __('Edit post') }}
             </a>

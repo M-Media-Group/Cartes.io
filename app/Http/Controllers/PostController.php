@@ -86,7 +86,7 @@ class PostController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $post = \App\Post::where('slug', $slug)->with('user', 'categories')->firstOrFail();
+        $post = \App\Post::where('slug', $slug)->with('user', 'categories')->withCount('views')->firstOrFail();
         if (!$request->user()) {
             $user_id = null;
         } else {
