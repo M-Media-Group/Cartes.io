@@ -69,9 +69,11 @@
                         </div>
                     </form>
                 </div>
+                <div class="card-footer text-muted text-center">
+                    <a href="/register">Don't have an account? Sign up!</a>
+                </div>
             </div>
         </div>
-        <a href="/register" class="mt-3 mb-3">Don't have an account? Sign up!</a>
     </div>
 </div>
 @endsection

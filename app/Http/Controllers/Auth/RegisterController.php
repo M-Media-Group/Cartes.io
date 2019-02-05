@@ -56,7 +56,7 @@ class RegisterController extends Controller
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'avatar' => ['required', 'image', 'dimensions:min_width=15,max_width=512', 'max:256'],
+            'avatar' => ['image', 'dimensions:min_width=15,max_width=512', 'max:256'],
         ]);
     }
 
@@ -68,7 +68,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $image_path = request()->file('avatar')->store('avatars');
+        $image_path = null;
+        if (request()->hasFile('avatar')) {
+            $image_path = Storage::url(request()->file('avatar')->store('avatars'));
+        }
 
         $user = User::create([
             'username' => $data['username'],
@@ -76,7 +79,7 @@ class RegisterController extends Controller
             'surname' => $data['surname'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'avatar' => Storage::url($image_path),
+            'avatar' => $image_path,
         ]);
 
         $user->givePermissionTo('apply to write');

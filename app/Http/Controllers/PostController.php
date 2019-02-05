@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::published()->with('categories')->orderBy('published_at', 'DESC')->simplePaginate(7);
+        $posts = Post::search()->published()->with('categories')->orderBy('published_at', 'DESC')->simplePaginate(7);
         //return $posts;
 
         return view('posts.index', ['posts' => $posts]);

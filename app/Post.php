@@ -61,4 +61,9 @@ class Post extends Model
         return $query->where('published_at', '!=', null);
     }
 
+    public function scopeSearch($q)
+    {
+        return empty(request()->search) ? $q : $q->where('title', 'like', '%' . request()->search . '%')->orWhere('excerpt', 'like', '%' . request()->search . '%');
+    }
+
 }

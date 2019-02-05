@@ -17,7 +17,7 @@
 	  @csrf
 	  <div class="form-group">
 		<label for="exampleFormControlInput1">Name</label>
-		<input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Title" required>
+		<input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Title" required autofocus>
 	  </div>
 
 	  <div class="form-group">

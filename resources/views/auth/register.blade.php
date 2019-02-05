@@ -99,17 +99,17 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label for="exampleFormControlFile1" class="col-md-4 col-form-label text-md-right">Avatar</label>
                             <div class="col-md-6">
-                                <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1" required>
+                                <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1">
                                 @if ($errors->has('avatar'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('avatar') }}</strong>
                                     </span>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <p class="col-md-6 offset-md-4">By registering you understand the <a href="/privacy-policy">privacy policy</a> and agree to the <a href="terms-and-conditions">terms and conditions</a>.</p>
                         </div>
@@ -122,9 +122,11 @@
                         </div>
                     </form>
                 </div>
+                <div class="card-footer text-muted text-center">
+                    <a href="/login">Already have an account? Log in!</a>
+                </div>
             </div>
         </div>
-        <a href="/login" class="mt-3 mb-3">Already have an account? Log in!</a>
     </div>
 </div>
 @endsection

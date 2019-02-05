@@ -17,7 +17,7 @@
 	  @csrf
 	<div class="form-group">
 		<label for="exampleFormControlInput2">Name</label>
-		<input type="text" class="form-control" id="exampleFormControlInput2" name="name" placeholder="Name" value="" required>
+		<input type="text" class="form-control" id="exampleFormControlInput2" name="name" placeholder="Name" value="" required autofocus>
 	</div>
 	<div class='form-group'>
         @foreach ($permissions as $permission)
