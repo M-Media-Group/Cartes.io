@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'A locals guide to Villefranche sur Mer')
+@section('title', 'Users')
 
 @section('content')
 	<h1>Posts</h1>

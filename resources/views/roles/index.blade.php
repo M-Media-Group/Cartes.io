@@ -1,6 +1,6 @@
 @extends('layouts.clean')
 
-@section('title', 'A locals guide to Villefranche sur Mer')
+@section('title', 'Roles')
 
 @section('content')
 	<h1 class="mt-3">Roles</h1>

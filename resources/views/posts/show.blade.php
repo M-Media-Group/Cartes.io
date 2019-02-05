@@ -29,7 +29,7 @@
             "copyrightHolder": "",
             "contentLocation": {
                 "@type": "Place",
-                "name": "Villefranche sur Mer, France"
+                "name": "{{config('blog.area_name')}}, France"
             },
             "accountablePerson": {
                 "@type": "Person",

@@ -1,7 +1,7 @@
 @extends('layouts.clean')
 
-@section('title', 'Map of Villefranche sur Mer')
-@section('meta_description', "Check out the interactive map of the South of France city Villefranche sur Mer showing bus stps, train stations, and car parkings.")
+@section('title', 'Map of '.config('blog.area_name'))
+@section('meta_description', "Check out the interactive map of the South of France city ".config('blog.area_name')." showing bus stops, train stations, and car parkings.")
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('header_scripts')
@@ -14,7 +14,7 @@
 
 @endsection
 @section('content')
-<h1>Map of Villefranche sur Mer</h1>
+<h1>Map of {{config('blog.area_name')}}</h1>
 <p>You can control what you see on the map using the layers control (<span class="leaflet-control-layers-toggle d-inline-block" style="height:25px;"></span>) on the top right of the map.</p>
 <div class="d-flex flex-column justify-content-start">
     <div>
@@ -23,8 +23,11 @@
     <div>
         <img src='/images/icons/car.svg' class='rounded img-thumbnail' alt="Car park" style='height:35px;'> = Car park
     </div>
-    <div class="mb-3">
+    <div>
         <img src='/images/icons/train.svg' class='rounded img-thumbnail' alt="Train station" style='height:35px;'> = Train station
+    </div>
+    <div class="mb-3">
+        <img src='/images/icons/heart.svg' class='rounded img-thumbnail' alt="Valentine's Day" style='height:35px;'> = Valentine's Day event
     </div>
 </div>
 <p>The <img src='{{config('blog.logo_url')}}' alt="Logo" class='rounded img-thumbnail' style='height:25px;'> pins on the map represent <a href="https://explorevillefranche.com/posts/qr-codes-in-villefranche">QR codes</a> scattered throughout the city that you can scan to learn more about whatever you're looking at!</p>
@@ -51,7 +54,7 @@
     });
     @foreach(\App\QrCode::selectRaw('id, X(`location`) as x, Y(`location`) as y')->withCount('views')->get()->sortBy('views_count') as $qr)
 
-        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@if(Auth::check() && Auth::user()->isSuperAdmin()) <small>{{$qr->id}}</small><br/>{{$qr->views_count}} check-ins @endif <br/><small><a href='https://explorevillefranche.com/posts/qr-codes-in-villefranche'>What's this?</a></small>");
+        L.marker([{{$qr->x}}, {{$qr->y}}], {icon: myIcon}).addTo(mymap).bindPopup("<b>QR Code</b>@can('manage qr codes') <small>{{$qr->id}}</small><br/>{{$qr->views_count}} check-ins @endcan <br/><small><a href='https://explorevillefranche.com/posts/qr-codes-in-villefranche'>What's this?</a></small>");
 
     @endforeach
 
@@ -243,6 +246,7 @@ var parkingLayer = L.geoJson(geoJsonFeatureParking, {
 });
 
 
+
 geoJsonFeatureTrain = {
     "type": "FeatureCollection",
     "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
@@ -250,12 +254,16 @@ geoJsonFeatureTrain = {
     { "type": "Feature", "properties": { "full_id": "n33016767", "osm_id": "33016767", "osm_type": "node", "uic_ref": "8775636", "name": "Villefranche-sur-Mer", "official_n": "Villefranche-sur-Mer", "note_railw": "Un seul tag railway=station par gare. A mettre sur un node au milieu des voies", "name_it": "Villafranca", "operator": "SNCF", "railway": "station" }, "geometry": { "type": "Point", "coordinates": [ 7.3141702, 43.7069304 ] } }
     ]
 };
+
+
 var myIconTrain = L.icon({
     iconUrl: "/images/icons/train.svg",
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, 0]
 });
+
+
 var trainLayer = L.geoJson(geoJsonFeatureTrain, {
     pointToLayer: function(geoJsonPoint, latlng) {
     return L.marker(latlng, {icon: myIconTrain});
@@ -264,6 +272,26 @@ var trainLayer = L.geoJson(geoJsonFeatureTrain, {
     return "Train station <b>"+layer.feature.properties.name+"</b><br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
 });
 
+var myIconHeart = L.icon({
+    iconUrl: "/images/icons/heart.svg",
+    iconSize: [20, 20],
+    iconAnchor: [10, 15],
+    popupAnchor: [0, 0]
+});
+
+geoJsonFeatureValentine = {
+    "type": "FeatureCollection",
+    "features": [
+    { "type": "Feature", "properties": {"full_id": "Valentines", "name": "L'X Cafe"}, "geometry": { "type": "Point", "coordinates": [7.311755, 43.703586 ] } }
+    ]
+};
+L.geoJson(geoJsonFeatureValentine, {
+    pointToLayer: function(geoJsonPoint, latlng) {
+    return L.marker(latlng, {icon: myIconHeart});
+    }
+}).bindPopup(function (layer) {
+    return "Valentine's Day event at <b>"+layer.feature.properties.name+"</b><br/>14th February, 18:00-24:00<br/><small><a href='https://www.facebook.com/events/2258648580832624/'>Facebook event</a></small>";
+}).addTo(mymap);
 
 var overlayMaps = {
     "<img src='/images/icons/bus.svg' class='rounded img-thumbnail' style='height:35px;'> Bus stop": activeLayer,

@@ -40,7 +40,6 @@
 	    <input type="file" class="form-control-file" name="header_image" id="exampleFormControlFile1" required>
 	  </div>
 	  <button type="submit" class="btn btn-primary">Publish</button>
-	  <hr>
 	</form>
 
 @endsection

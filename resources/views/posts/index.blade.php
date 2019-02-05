@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'A locals guide to Villefranche sur Mer')
-@section('meta_description', "Read about Villefranche sur Mer in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
+@section('title', 'A locals guide to '.config('blog.area_name'))
+@section('meta_description', "Read about ".config('blog.area_name')." in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
 
 @section('content')
 	<h1>Posts</h1>
-	@foreach($posts->sortByDesc('rank') as $post)
+	@forelse($posts->sortByDesc('rank') as $post)
 		<a href="/posts/{{$post->slug}}" title="{{ $post->title }}">
 		    <img src="{{$post->header_image}}" class="rounded img-thumbnail mb-2" alt="{{ $post->title }}" >
 		    <h2>{{ $post->title }}</h2>
@@ -17,6 +17,9 @@
 		    </p>
 		    <hr>
 		</a>
-    @endforeach
+	@empty
+		<h2>We couldn't find any posts matching your search term</h2>
+	    <hr>
+    @endforelse
     {{$posts->links()}}
 @endsection

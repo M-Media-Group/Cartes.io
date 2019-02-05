@@ -5,6 +5,10 @@ return [
     //Analytics
     'google_tag_id' => env('GOOGLE_TAG_ID', null),
 
+    //Area data
+    'area_name' => env('APP_AREA_NAME', 'Villefranche sur Mer'),
+    'area_short_name' => env('APP_AREA_SHORT_NAME', 'Villefranche'),
+
     //App branding
     'logo_url' => env('LOGO_URL', '/images/logo.svg'),
     'favicon_url' => env('FAVICON_URL', '/images/favicon.ico'),
