@@ -58,7 +58,8 @@ class QrCodeController extends Controller
                 "ip" => $request->ip(),
             ]
         );
-        return redirect($qr->redirect_to);
+        $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'qr_code', 'utm_campaign' => 'website_qr_codes', 'utm_content' => $qr->id];
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**

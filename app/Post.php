@@ -46,8 +46,8 @@ class Post extends Model
     {
         $views = (int) abs($this->views()->count());
         //return (log10(strtotime($this->published_at) + 1));
-        //return floor(log($views + 1)) / 400000;
-        return floor(log($views + 1)) / 400000 + log10(strtotime($this->published_at) + 1);
+        //return floor(log($views + 1)) / 40000;
+        return floor(log($views + 1)) / 40000 + log10(strtotime($this->published_at) + 1);
     }
 
     /**
