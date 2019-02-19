@@ -1545,12 +1545,12 @@ var geoJsonFeatureTrain = {
     ]
 };
 
-var geoJsonFeatureValentine = {
-    "type": "FeatureCollection",
-    "features": [
-        { "type": "Feature", "properties": { "full_id": "Valentines", "name": "L'X Cafe" }, "geometry": { "type": "Point", "coordinates": [7.311755, 43.703586] } }
-    ]
-};
+// var geoJsonFeatureValentine = {
+//     "type": "FeatureCollection",
+//     "features": [
+//         { "type": "Feature", "properties": { "full_id": "Valentines", "name": "L'X Cafe" }, "geometry": { "type": "Point", "coordinates": [7.311755, 43.703586] } }
+//     ]
+// };
 
 // Styles
 var myStyle = {
@@ -1644,13 +1644,13 @@ var trainLayer = L.geoJson(geoJsonFeatureTrain, {
 });
 
 // Binding geoJSON to Map
-L.geoJson(geoJsonFeatureValentine, {
-    pointToLayer: function(geoJsonPoint, latlng) {
-        return L.marker(latlng, { icon: myIconHeart });
-    }
-}).bindPopup(function(layer) {
-    return "Valentine's Day event at <b>" + layer.feature.properties.name + "</b><br/>14th February, 18:00-24:00<br/><small><a href='https://www.facebook.com/events/2258648580832624/'>Facebook event</a></small>";
-}).addTo(mymap);
+// L.geoJson(geoJsonFeatureValentine, {
+//     pointToLayer: function(geoJsonPoint, latlng) {
+//         return L.marker(latlng, { icon: myIconHeart });
+//     }
+// }).bindPopup(function(layer) {
+//     return "Valentine's Day event at <b>" + layer.feature.properties.name + "</b><br/>14th February, 18:00-24:00<br/><small><a href='https://www.facebook.com/events/2258648580832624/'>Facebook event</a></small>";
+// }).addTo(mymap);
 
 L.geoJSON(geoJsonFeature, {
     style: myStyle

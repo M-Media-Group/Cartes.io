@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'A locals guide to '.config('blog.area_name'))
-@section('meta_description', "Read about ".config('blog.area_name')." in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
+@section('meta_description', "Read about visiting ".config('blog.area_name')." in the South of France (French Riviera), things to do, sights to see, and places to visit within - all from a locals perspective!")
 
 @section('content')
 	<h1>Posts</h1>

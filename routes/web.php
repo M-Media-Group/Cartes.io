@@ -29,6 +29,10 @@ Route::get('/map', function () {
     return view('map');
 });
 
+Route::get('/about', function () {
+    return view('about');
+});
+
 Route::get('/notifications', function () {
     return view('notifications');
 })->middleware('auth');

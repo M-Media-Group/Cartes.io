@@ -1,0 +1,3 @@
+/usr/local/Cellar/python/3.7.2_2/Frameworks/Python.framework/Versions/3.7/Resources/Python.app/Contents/MacOS/Python: can't open file 'mmedia.bot.boot_checkin': [Errno 2] No such file or directory
+/usr/local/opt/python/bin/python3.7: Error while finding module specification for 'mmedia.bot.boot_checkin.measure_free_space' (ModuleNotFoundError: __path__ attribute not found on 'mmedia.bot.boot_checkin' while trying to find 'mmedia.bot.boot_checkin.measure_free_space')
+/usr/local/opt/python/bin/python3.7: No module named mmedia.bot.boot_checkin:measure_free_space
