@@ -1,7 +1,7 @@
 @extends('layouts.clean')
 
-@section('title', 'Map of incidents')
-@section('meta_description', "Check out the interactive map of dangers to HRD's.")
+@section('title', 'Incident Report')
+@section('meta_description', "Interactive map of incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.")
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('header_scripts')
@@ -62,9 +62,12 @@
 
 var lc = L.control.locate({
     position: 'topright',
-    watch: true,
     strings: {
         title: "Show me where I am, yo!"
+    },
+    locateOptions: {
+        enableHighAccuracy: true,
+        watch: true
     }
 }).addTo(mymap);
 // https://leaflet-extras.github.io/leaflet-providers/preview/
