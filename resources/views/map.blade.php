@@ -53,7 +53,7 @@
 <script>
 
     var mymap = L.map('mapid', {fullscreenControl: true}).setView([43.7040, 7.3111], 3);
-    var markers = L.markerClusterGroup({zoomToBoundsOnClick: true, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 17, chunkedLoading: true});
+    var markers = L.markerClusterGroup({zoomToBoundsOnClick: true, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 17, chunkedLoading: true, maxClusterRadius: 30});
 
 // https://leaflet-extras.github.io/leaflet-providers/preview/
      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {

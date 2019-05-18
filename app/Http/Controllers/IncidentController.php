@@ -36,7 +36,7 @@ class IncidentController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Incident::class);
+        //$this->authorize('create', Incident::class);
         $validatedData = $request->validate([
             'category' => 'required|exists:categories,id',
             'lat' => 'required',
