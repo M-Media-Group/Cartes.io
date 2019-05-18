@@ -7,6 +7,8 @@
 
 require('./bootstrap');
 
+window.timeago = require('timeago.js');
+
 // window.Vue = require('vue');
 
 /**

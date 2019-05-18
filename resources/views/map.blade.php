@@ -24,22 +24,7 @@
 <h1 style="display: none;">{{config('app.name')}}</h1>
 <p>Right click (or long-tap on mobile) on the map to report incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.</p>
 <p>After 59 minutes, your report will automatically dissapear from the map.</p>
-<p class="text-muted">You're currently looking at: <span id='coordinates'>No incidents</span>.</p>
-
-<div class="d-flex flex-column justify-content-start" style="display:none !important;">
-    <div>
-        <img src='/images/icons/police.svg' class='rounded img-thumbnail' alt="Police" style='height:35px;'> = Police
-    </div>
-    <div>
-        <img src='/images/icons/car.svg' class='rounded img-thumbnail' alt="Car park" style='height:35px;'> = Car park
-    </div>
-    <div>
-        <img src='/images/icons/train.svg' class='rounded img-thumbnail' alt="Train station" style='height:35px;'> = Train station
-    </div>
-    <div class="mb-3">
-        <img src='/images/icons/heart.svg' class='rounded img-thumbnail' alt="Valentine's Day" style='height:35px;'> = Valentine's Day event
-    </div>
-</div>
+<p class="text-muted small">You're currently looking at: <span id='coordinates'>No incidents</span>.</p>
 
 {{-- <button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 18, watch: false});">Find my location on the map</button> --}}
 
@@ -96,7 +81,7 @@ var lc = L.control.locate({
                     "type": "FeatureCollection",
                     "features": [
                     @foreach( $category->incidents as $incident )
-                        { "type": "Feature", "properties": { "updated_at": "{{ $incident->updated_at->diffForHumans() }}", "created_at": "{{ $incident->created_at->diffForHumans() }}", "category": "{{ $category->name }}" }, "geometry": { "type": "Point", "coordinates": [{{$incident->y}}, {{$incident->x}}] } },
+                        { "type": "Feature", "properties": { "updated_at": "{{ $incident->updated_at->timestamp }}000", "created_at": "{{ $incident->created_at->timestamp }}000", "category": "{{ $category->name }}" }, "geometry": { "type": "Point", "coordinates": [{{$incident->y}}, {{$incident->x}}] } },
                     @endforeach()
                     ]
                 }, {
@@ -111,7 +96,7 @@ var lc = L.control.locate({
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup(function(layer) {
-                    var string = "<b>{{$category->name}} reported in the area." + "</b><br/>Last report: " + layer.feature.properties.updated_at + ".<br/>";
+                    var string = "<b>{{$category->name}} reported in the area." + "</b><br/>Last report: <span class='timestamp' datetime='" + layer.feature.properties.updated_at + "'>" + layer.feature.properties.updated_at + "</span>.<br/>";
                     // string += "<small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to stay safe on Umbrella</a></small><br/>";
                     @guest
                     //string += "<br/>Log in to confirm or deny this";
@@ -239,17 +224,16 @@ function trackMoveChange(e){
     // with the current map bounds.
     markers.eachLayer(function(marker) {
         if (bounds.contains(marker.getLatLng())) {
-            console.log(marker);
             inBounds.push(marker.feature.properties.category);
         }
     });
 
-    console.log(inBounds);
     // Display a list of markers.
     document.getElementById('coordinates').innerHTML = inBounds.join(', ');
 }
 
 function trackPopup(e){
+    timeago.render(document.querySelectorAll('.timestamp'));
     if(e.popup._source && e.popup._source.feature) {
         dataLayer.push({'event': 'Map popup open', 'id': "Feature "+e.popup._source.feature.properties.full_id});
     } else if (e.popup._source) {

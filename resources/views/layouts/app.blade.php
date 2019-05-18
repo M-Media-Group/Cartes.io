@@ -24,7 +24,7 @@
                     {{ config('app.name') }} on <a href="{{config('blog.instagram_url')}}">Instagram</a>!
                     <hr>
                     @endif
-                    <p>{{ config('app.name') }} was made by English speaking residents of this area on the French Riviera. This site aims to show off the beauty of this region and make it more accessible to people visiting.</p>
+                    <p>{{ config('app.name') }}.</p>
                     @if(!Auth::check())
                     <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info and updates.</p>
                     @endif

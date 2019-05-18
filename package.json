@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.5.22"
     },
     "dependencies": {
-        "leaflet.markercluster": "^1.4.1"
+        "leaflet.markercluster": "^1.4.1",
+        "timeago.js": "^4.0.0-beta.2"
     }
 }
