@@ -1,34 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="182px" height="206px" viewBox="0 0 182 206" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-    <title>LogoBlue</title>
+<svg width="182px" height="191px" viewBox="0 0 182 191" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 8</title>
     <desc>Created with Sketch.</desc>
     <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop" transform="translate(-421.000000, -227.000000)">
-            <g id="LogoBlue" transform="translate(355.000000, 164.000000)">
-                <g id="Group-7" transform="translate(66.000000, 63.000000)">
-                    <polygon id="Fill-1" fill="#0D70B0" points="180.9855 0 0 24.792 0 205.7775 180.9855 180.9855"></polygon>
-                    <text id="Villefranche" font-family="LucidaGrande, Lucida Grande" font-size="27" font-weight="normal" letter-spacing="-0.28199999" fill="#FEFEFE">
-                        <tspan x="12" y="107">V</tspan>
-                        <tspan x="29.370832" y="107" letter-spacing="0.150000002">illef</tspan>
-                        <tspan x="78.5046211" y="107" letter-spacing="0.0149999997">r</tspan>
-                        <tspan x="89.5674727" y="107" letter-spacing="0.150000002">anche</tspan>
+        <g id="Desktop" transform="translate(-102.000000, -261.000000)">
+            <g id="Group-8" transform="translate(102.000000, 261.000000)">
+                <g id="Group-7">
+                    <polygon id="Fill-1" fill="#0D70B0" points="182 0 0 38.9838539 0 191 182 189.350148"></polygon>
+                    <text id="Incident" font-family="LucidaGrande, Lucida Grande" font-size="27" font-weight="normal" letter-spacing="-0.28199999" fill="#FEFEFE">
+                        <tspan x="40" y="105">Incident</tspan>
                     </text>
-                    <text id="Sur-Mer" font-family="LucidaGrande, Lucida Grande" font-size="15" font-weight="normal" letter-spacing="0.150000002" fill="#FEFEFE">
-                        <tspan x="61.5" y="129">Sur </tspan>
-                        <tspan x="90.3714844" y="129" letter-spacing="0.238499992">M</tspan>
-                        <tspan x="103.529906" y="129">er</tspan>
+                    <text id="Report" font-family="LucidaGrande, Lucida Grande" font-size="15" font-weight="normal" letter-spacing="0.150000002" fill="#FEFEFE">
+                        <tspan x="66" y="128">Report</tspan>
                     </text>
-                    <text id="explore" font-family="LucidaGrande, Lucida Grande" font-size="15" font-weight="normal" letter-spacing="0.103499997" fill="#FEFEFE">
-                        <tspan x="61.5" y="72">e</tspan>
-                        <tspan x="69.9604336" y="72" letter-spacing="0.150000002">xplo</tspan>
-                        <tspan x="102.750375" y="72">r</tspan>
-                        <tspan x="108.88807" y="72" letter-spacing="0.150000002">e</tspan>
-                    </text>
-                    <g id="Group-6" transform="translate(0.000000, 13.779000)" stroke="#FEFEFE" stroke-width="3">
-                        <path d="M0.67185,26.0145 L181.65735,1.2225" id="Stroke-2"></path>
-                        <path d="M0.67185,176.0145 L181.65735,151.2225" id="Stroke-4"></path>
-                    </g>
                 </g>
             </g>
         </g>
