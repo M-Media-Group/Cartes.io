@@ -1,7 +1,7 @@
 @extends('layouts.clean')
 
-@section('title', 'Map of '.config('blog.area_name'))
-@section('meta_description', "Check out the interactive map of the South of France city ".config('blog.area_name')." showing bus stops, train stations, and car parkings.")
+@section('title', 'Map of incidents')
+@section('meta_description', "Check out the interactive map of dangers to HRD's.")
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('header_scripts')
@@ -39,7 +39,7 @@
 
 @endsection
 @section('footer_scripts')
-<script src="http://code.jquery.com/jquery-3.3.1.min.js"
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous">
 </script>
@@ -56,7 +56,7 @@
 
 // https://leaflet-extras.github.io/leaflet-providers/preview/
      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19,
     minZoom: 2,
