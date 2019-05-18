@@ -21,9 +21,11 @@
 
 @endsection
 @section('content')
-<h1>{{config('app.name')}}</h1>
+<h1 style="display: none;">{{config('app.name')}}</h1>
 <p>Right click (or long-tap on mobile) on the map to report incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.</p>
 <p>After 59 minutes, your report will automatically dissapear from the map.</p>
+<p class="text-muted">You're currently looking at: <span id='coordinates'>No incidents</span>.</p>
+
 <div class="d-flex flex-column justify-content-start" style="display:none !important;">
     <div>
         <img src='/images/icons/police.svg' class='rounded img-thumbnail' alt="Police" style='height:35px;'> = Police
@@ -94,7 +96,7 @@ var lc = L.control.locate({
                     "type": "FeatureCollection",
                     "features": [
                     @foreach( $category->incidents as $incident )
-                        { "type": "Feature", "properties": { "updated_at": "{{ $incident->updated_at->diffForHumans() }}", "created_at": "{{ $incident->created_at->diffForHumans() }}" }, "geometry": { "type": "Point", "coordinates": [{{$incident->y}}, {{$incident->x}}] } },
+                        { "type": "Feature", "properties": { "updated_at": "{{ $incident->updated_at->diffForHumans() }}", "created_at": "{{ $incident->created_at->diffForHumans() }}", "category": "{{ $category->name }}" }, "geometry": { "type": "Point", "coordinates": [{{$incident->y}}, {{$incident->x}}] } },
                     @endforeach()
                     ]
                 }, {
@@ -228,6 +230,23 @@ function trackZoomChange(e){
 
 function trackMoveChange(e){
     dataLayer.push({'event': 'Map move', 'value': 'Center '+mymap.getCenter().toString()});
+      // Construct an empty list to fill with onscreen markers.
+    var inBounds = [],
+    // Get the map bounds - the top-left and bottom-right locations.
+    bounds = mymap.getBounds();
+
+    // For each marker, consider whether it is currently visible by comparing
+    // with the current map bounds.
+    markers.eachLayer(function(marker) {
+        if (bounds.contains(marker.getLatLng())) {
+            console.log(marker);
+            inBounds.push(marker.feature.properties.category);
+        }
+    });
+
+    console.log(inBounds);
+    // Display a list of markers.
+    document.getElementById('coordinates').innerHTML = inBounds.join(', ');
 }
 
 function trackPopup(e){
