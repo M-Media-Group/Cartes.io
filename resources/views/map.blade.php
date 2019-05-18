@@ -62,6 +62,7 @@
 
 var lc = L.control.locate({
     position: 'topright',
+    watch: true,
     strings: {
         title: "Show me where I am, yo!"
     }
@@ -199,16 +200,16 @@ function submitForm(lng, lat, category) {
     window['geojson'+category].addData({ "type": "Feature", "geometry": { "type": "Point", "coordinates": [lng, lat] } });
 }
 
-function onLocationFound(e) {
-    var radius = e.accuracy / 2;
+// function onLocationFound(e) {
+//     var radius = e.accuracy / 2;
 
-    L.marker(e.latlng).addTo(mymap)
-        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+//     L.marker(e.latlng).addTo(mymap)
+//         .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
-    L.circle(e.latlng, radius).addTo(mymap);
+//     L.circle(e.latlng, radius).addTo(mymap);
 
-    dataLayer.push({'event': 'User location found'});
-}
+//     dataLayer.push({'event': 'User location found'});
+// }
 
 function onLocationError(e) {
     alert(e.message);
