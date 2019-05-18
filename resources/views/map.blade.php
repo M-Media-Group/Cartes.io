@@ -14,7 +14,7 @@
 @endsection
 
 @section('above_container')
-<div id="mapid" style="width: 100%; height: 73vh;"></div>
+<div id="mapid" style="width: 100%; height: 71vh;"></div>
 
 @endsection
 @section('content')
@@ -121,9 +121,9 @@
 
 mymap.on('contextmenu', onMapClick);
 
-mymap.on('locationfound', onLocationFound);
+mymap.once('locationfound', onLocationFound);
 
-mymap.on('locationerror', onLocationError);
+mymap.once('locationerror', onLocationError);
 mymap.on('baselayerchange', onOverlayAdd);
 
 mymap.on('popupopen', trackPopup);
