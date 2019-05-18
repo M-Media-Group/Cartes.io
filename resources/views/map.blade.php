@@ -111,7 +111,7 @@ var lc = L.control.locate({
                     @guest
                     //string += "<br/>Log in to confirm or deny this";
                     @else
-                    string += "<br/>";
+                    //string += "<br/>";
                     //string += "<button value='Upvote' class='btn btn-primary'><img src='/images/icons/eyes.svg' width='20'></button><button value='Downvote' class='btn'><img src='/images/icons/noeyes.svg' width='20'></button>";
                     @endguest
                     return string;
