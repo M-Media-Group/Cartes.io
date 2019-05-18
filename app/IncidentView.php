@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class QrCodeView extends Model
+class IncidentView extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class QrCodeView extends Model
      * @var array
      */
     protected $fillable = [
-        'qr_code_id',
+        'incident_id',
         'user_id',
         'ip',
     ];

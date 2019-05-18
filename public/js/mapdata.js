@@ -1569,28 +1569,28 @@ var myStyleParking = {
 
 // Icons
 var myIconTrain = L.icon({
-    iconUrl: "/images/icons/train.svg",
+    iconUrl: "/images/icons/barricade.svg",
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, 0]
 });
 
 var myIconParking = L.icon({
-    iconUrl: "/images/icons/car.svg",
+    iconUrl: "/images/icons/mobs.svg",
     iconSize: [20, 20],
     iconAnchor: [10, 10],
     popupAnchor: [0, 0]
 });
 
 var myIcon2 = L.icon({
-    iconUrl: "/images/icons/bus.svg",
+    iconUrl: "/images/icons/police.svg",
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, 0]
 });
 
 var myIcon3 = L.icon({
-    iconUrl: "/images/icons/bus.svg",
+    iconUrl: "/images/icons/police.svg",
     iconSize: [20, 20],
     iconAnchor: [10, 10],
     popupAnchor: [0, 0]
@@ -1612,7 +1612,7 @@ var activeLayer = L.geoJson(geoJsonFeatureTourist, {
         return feature.properties.operator != null && feature.properties.operator == "Lignes d'Azur, N° 81 et 100" || feature.properties.operator == "Lignes d'Azur, N°81 et 100";
     }
 }).bindPopup(function(layer) {
-    return "Bus stop <b>" + layer.feature.properties.name + "</b><br/>" + layer.feature.properties.operator + "<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
+    return "<b>Police reported in the area." + "</b><br/>Last report: 13 minutes ago.<br/>" + "<small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to stay safe on Umbrella</a></small><br/><br/><button value='Upvote'>Confirm sighting</button><button value='Downvote'>Didn't see it</button>";
 });
 
 var nonActiveLayer = L.geoJson(geoJsonFeatureTourist, {
@@ -1623,7 +1623,8 @@ var nonActiveLayer = L.geoJson(geoJsonFeatureTourist, {
         return feature.properties.operator != null && feature.properties.operator == "Lignes d'Azur, N°80";
     }
 }).bindPopup(function(layer) {
-    return "Bus stop <b>" + layer.feature.properties.name + "</b><br/>" + layer.feature.properties.operator;
+      // + layer.feature.properties.name + "</b><br/>" + layer.feature.properties.operator
+    return "Police reported in the area ";
 });
 
 var parkingLayer = L.geoJson(geoJsonFeatureParking, {
@@ -1640,7 +1641,7 @@ var trainLayer = L.geoJson(geoJsonFeatureTrain, {
         return L.marker(latlng, { icon: myIconTrain });
     }
 }).bindPopup(function(layer) {
-    return "Train station <b>" + layer.feature.properties.name + "</b><br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to Villefrance</a></small>";
+    return "<b>Blockades reported in the area.</b><br/>Last report: 5 minutes ago.<br/><small><a href='https://explorevillefranche.com/posts/getting-to-villefranche'>Learn how to get to stay safe on Umbrella</a></small><br/><br/><button value='Upvote'>Confirm sighting</button><button value='Downvote'>Didn't see it</button>";
 });
 
 // Binding geoJSON to Map
@@ -1652,16 +1653,17 @@ var trainLayer = L.geoJson(geoJsonFeatureTrain, {
 //     return "Valentine's Day event at <b>" + layer.feature.properties.name + "</b><br/>14th February, 18:00-24:00<br/><small><a href='https://www.facebook.com/events/2258648580832624/'>Facebook event</a></small>";
 // }).addTo(mymap);
 
-L.geoJSON(geoJsonFeature, {
-    style: myStyle
-}).addTo(mymap);
+// L.geoJSON(geoJsonFeature, {
+//     style: myStyle
+// }).addTo(mymap);
 
 // Overlay Map Controls
 var overlayMaps = {
-    "<img src='/images/icons/bus.svg' class='rounded img-thumbnail' style='height:35px;'> Bus stop": activeLayer,
+    "<img src='/images/icons/police.svg' class='rounded img-thumbnail' style='height:35px;'> Police": activeLayer,
     //"Bus line 80": nonActiveLayer,
-    "<img src='/images/icons/car.svg' class='rounded img-thumbnail' style='height:35px;'> Car parking": parkingLayer,
-    "<img src='/images/icons/train.svg' class='rounded img-thumbnail' style='height:35px;'> Train station": trainLayer,
+    "<img src='/images/icons/mobs.svg' class='rounded img-thumbnail' style='height:35px;'> Mobs": parkingLayer,
+    "<img src='/images/icons/barricade.svg' class='rounded img-thumbnail' style='height:35px;'> Blockades": trainLayer,
+    "<img src='/images/icons/phone.svg' class='rounded img-thumbnail' style='height:35px;'> IMSI Catchers": trainLayer,
 };
 
 L.control.layers(overlayMaps, null).addTo(mymap);

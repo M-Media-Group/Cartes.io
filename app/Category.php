@@ -22,9 +22,9 @@ class Category extends Model
         return $this->belongsToMany('App\User');
     }
 
-    public function posts()
+    public function incidents()
     {
-        return $this->belongsToMany('App\Post', 'post_categories');
+        return $this->hasMany('App\Incident');
     }
 
     public function views()

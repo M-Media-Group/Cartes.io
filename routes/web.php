@@ -11,7 +11,11 @@
 |
  */
 
-Route::get('/', 'PostController@index');
+//Route::get('/', 'PostController@index');
+
+Route::get('/', function () {
+    return view('map');
+});
 
 Route::get('/privacy-policy', function () {
     return view('privacy');
@@ -21,7 +25,7 @@ Route::get('/terms-and-conditions', function () {
     return view('toc');
 });
 
-Route::get('/write', function () {
+Route::get('/apply', function () {
     return view('write');
 })->middleware('auth');
 
@@ -41,14 +45,14 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('posts', 'PostController');
+//Route::resource('posts', 'PostController');
 
 Route::resource('categories', 'CategoryController');
 
 Route::resource('users', 'UserController');
 
-Route::post('me/apply/writer', 'UserController@applyForWriter');
+Route::post('me/apply/writer', 'UserController@applyForReporter');
 
 Route::resource('roles', 'RoleController');
 
-Route::resource('qr', 'QrCodeController');
+Route::resource('incidents', 'IncidentController');

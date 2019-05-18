@@ -25,6 +25,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        return response()->json(Category::with('incidents')->withCount('views')->simplePaginate(7));
         return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
     }
 

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\QrCode;
 use Illuminate\Http\Request;
 
-class QrCodeController extends Controller
+class IncidentViewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +13,7 @@ class QrCodeController extends Controller
      */
     public function index()
     {
-        return QrCode::selectRaw('id, X(`location`) as x, Y(`location`) as y')->get();
+        //
     }
 
     /**
@@ -44,22 +43,9 @@ class QrCodeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, QrCode $qr)
+    public function show($id)
     {
-        if (!$request->user()) {
-            $user_id = null;
-        } else {
-            $user_id = $request->user()->id;
-        }
-        \App\QrCodeView::create(
-            [
-                "qr_code_id" => $qr->id,
-                "user_id" => $user_id,
-                "ip" => $request->ip(),
-            ]
-        );
-        $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'qr_code', 'utm_campaign' => 'website_qr_codes', 'utm_content' => $qr->id];
-        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
+        //
     }
 
     /**

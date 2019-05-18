@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostViewsTable extends Migration
+class CreateIncidentViewsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreatePostViewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_views', function (Blueprint $table) {
+        Schema::create('incident_views', function (Blueprint $table) {
+
             $table->increments('id');
-            $table->unsignedInteger('post_id');
+            $table->unsignedInteger('incident_id');
             $table->unsignedInteger('user_id')->nullable();
             $table->ipAddress('ip');
             $table->timestamps();
 
-            $table->foreign('post_id')->references('id')->on('posts');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('incident_id')->references('id')->on('incidents')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
@@ -32,6 +33,6 @@ class CreatePostViewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_views');
+        Schema::dropIfExists('incident_views');
     }
 }

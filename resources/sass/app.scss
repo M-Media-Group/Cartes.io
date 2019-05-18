@@ -9,7 +9,8 @@
 @import '~bootstrap/scss/bootstrap';
 
 .navbar-laravel {
-  background-color: #fff;
+  background-color: #202325;
+  color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
@@ -56,4 +57,18 @@ article h2, article h3, article h4, article h5, article h6 {
 
 a.text-muted, p.text-muted, small.text-muted {
 	color:#565656!important;
+}
+
+body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .dropdown-item {
+	background-color: #202325;
+	color: #fff;
+}
+
+// .leafelt-control a, .leaflet-bar a, .leaflet-bar a:hover, .leaflet-bar-part, .leaflet-control-geocoder-icon, .leaflet-control-fullscreen-button {
+// 	background-color: #202325 !important;
+// 	color: #fff !important;
+// }
+
+.leaflet-control-geocoder-alternatives li, .card {
+	color: #202325;
 }

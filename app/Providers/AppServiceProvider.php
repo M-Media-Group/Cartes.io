@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
 
@@ -14,12 +15,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer(
-            'components.nav',
-            function ($view) {
-                $view->with('categories', \App\Category::withCount('views')->orderBy('views_count', 'DESC')->take(3)->get());
-            }
-        );
+        // view()->composer(
+        //     'components.nav',
+        //     function ($view) {
+        //         $view->with('categories', \App\Category::withCount('views')->orderBy('views_count', 'DESC')->take(3)->get());
+        //     }
+        // );
+        Schema::defaultStringLength(191);
     }
     /**
      * Register any application services.

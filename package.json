@@ -23,5 +23,7 @@
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.5.22"
     },
-    "dependencies": {}
+    "dependencies": {
+        "leaflet.markercluster": "^1.4.1"
+    }
 }

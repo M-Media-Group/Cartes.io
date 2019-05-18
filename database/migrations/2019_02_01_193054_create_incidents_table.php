@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostCategoriesTable extends Migration
+class CreateIncidentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreatePostCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_categories', function (Blueprint $table) {
+        Schema::create('incidents', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('post_id');
+            $table->point('location');
             $table->unsignedInteger('category_id');
+            $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('post_id')->references('id')->on('posts');
             $table->foreign('category_id')->references('id')->on('categories');
-
-            $table->index(['post_id', 'category_id']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->spatialIndex('location');
         });
     }
 
@@ -33,6 +33,6 @@ class CreatePostCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_categories');
+        Schema::dropIfExists('incidents');
     }
 }

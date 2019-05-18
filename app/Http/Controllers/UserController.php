@@ -120,15 +120,15 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function applyForWriter(Request $request)
+    public function applyForReporter(Request $request)
     {
         $user = $request->user();
 
         $this->authorize('update', $user);
 
-        $user->assignRole('writer');
+        $user->assignRole('reporter');
 
-        $user->revokePermissionTo('apply to write');
+        $user->revokePermissionTo('apply to report');
 
         return redirect('/posts/create');
 

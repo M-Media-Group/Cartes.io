@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('left_sidebar')
-@if(Auth::user()->can('apply to write') && Auth::user()->hasVerifiedEmail())
+@if(Auth::user()->can('apply to report') && Auth::user()->hasVerifiedEmail())
                 <div class="card text-center mb-3 mt-3">
                   <div class="card-body">
                     <h5 class="card-title">Write for {{config('app.name')}}</h5>

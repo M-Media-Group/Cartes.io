@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+<nav class="navbar navbar-expand-md navbar-dark navbar-laravel">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
@@ -16,18 +16,7 @@
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
-                @foreach($categories->sortByDesc('views_count') as $category)
-                    <li class="nav-item">
-                        <a href="/categories/{{$category->slug}}" class="nav-link">
-                            <img class="rounded img-thumbnail mr-1" height="17" width="17" src="{{$category->icon}}" alt="{{$category->name}}">{{ $category->name }}
-                        </a>
-                    </li>
-                @endforeach
-                <li class="nav-item">
-                    <a href="/map" class="nav-link">
-                        Map
-                    </a>
-                </li>
+
                 @guest
                     <li class="nav-item">
                         <a class="nav-link" href="/login">{{ __('Login') }}</a>
@@ -39,14 +28,6 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/home">
-                                {{ __('Home') }}
-                            </a>
-                            @can('create', \App\Post::class)
-                                <a class="dropdown-item" href="/posts/create">
-                                    {{ __('Create post') }}
-                                </a>
-                            @endcan
                             @can('create', \App\Category::class)
                                 <a class="dropdown-item" href="/categories/create">
                                     {{ __('Create category') }}
