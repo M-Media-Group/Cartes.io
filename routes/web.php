@@ -51,7 +51,7 @@ Route::resource('categories', 'CategoryController');
 
 Route::resource('users', 'UserController');
 
-Route::post('me/apply/writer', 'UserController@applyForReporter');
+Route::post('me/apply/reporter', 'UserController@applyForReporter');
 
 Route::resource('roles', 'RoleController');
 

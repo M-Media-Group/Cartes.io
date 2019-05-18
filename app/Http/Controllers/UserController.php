@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('verified')->except(['index', 'show']);
+        $this->middleware('verified')->except(['index', 'show', 'applyForReporter']);
     }
     /**
      * Display a listing of the resource.
@@ -122,6 +122,7 @@ class UserController extends Controller
      */
     public function applyForReporter(Request $request)
     {
+
         $user = $request->user();
 
         $this->authorize('update', $user);
@@ -130,7 +131,7 @@ class UserController extends Controller
 
         $user->revokePermissionTo('apply to report');
 
-        return redirect('/posts/create');
+        return redirect('/');
 
     }
 
