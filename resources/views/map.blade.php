@@ -5,11 +5,14 @@
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('header_scripts')
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
 
 @endsection
 
@@ -36,7 +39,7 @@
     </div>
 </div>
 
-<button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 20, watch: true});">Find my location on the map</button>
+{{-- <button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 18, watch: false});">Find my location on the map</button> --}}
 
 @endsection
 @section('footer_scripts')
@@ -50,11 +53,19 @@
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+
 <script>
 
     var mymap = L.map('mapid', {fullscreenControl: true}).setView([43.7040, 7.3111], 3);
     var markers = L.markerClusterGroup({zoomToBoundsOnClick: true, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 17, chunkedLoading: true, maxClusterRadius: 30});
 
+var lc = L.control.locate({
+    position: 'topright',
+    strings: {
+        title: "Show me where I am, yo!"
+    }
+}).addTo(mymap);
 // https://leaflet-extras.github.io/leaflet-providers/preview/
      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -125,14 +136,14 @@ mymap.on('contextmenu', onMapClick);
 
 mymap.once('locationerror', onLocationError);
 
-var markergeo;
-mymap.on('locationfound', function(ev){
-    if (!markergeo) {
-        markergeo = L.marker(ev.latlng).addTo(mymap);
-    } else {
-        markergeo.setLatLng(ev.latlng);
-    }
-})
+// var markergeo;
+// mymap.once('locationfound', function(ev){
+//     if (!markergeo) {
+//         markergeo = L.marker(ev.latlng).addTo(mymap);
+//     } else {
+//         markergeo.setLatLng(ev.latlng);
+//     }
+// })
 
 mymap.on('baselayerchange', onOverlayAdd);
 
