@@ -121,9 +121,19 @@
 
 mymap.on('contextmenu', onMapClick);
 
-mymap.once('locationfound', onLocationFound);
+//mymap.once('locationfound', onLocationFound);
 
 mymap.once('locationerror', onLocationError);
+
+var markergeo;
+mymap.on('locationfound', function(ev){
+    if (!markergeo) {
+        markergeo = L.marker(ev.latlng).addTo(mymap);
+    } else {
+        markergeo.setLatLng(ev.latlng);
+    }
+})
+
 mymap.on('baselayerchange', onOverlayAdd);
 
 mymap.on('popupopen', trackPopup);
