@@ -20,6 +20,7 @@
 @section('content')
 <h1>{{config('app.name')}}</h1>
 <p>Right click (or long-tap on mobile) on the map to report incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.</p>
+<p>After 59 minutes, your report will automatically dissapear from the map.</p>
 <div class="d-flex flex-column justify-content-start" style="display:none !important;">
     <div>
         <img src='/images/icons/police.svg' class='rounded img-thumbnail' alt="Police" style='height:35px;'> = Police
@@ -52,7 +53,7 @@
 <script>
 
     var mymap = L.map('mapid', {fullscreenControl: true}).setView([43.7040, 7.3111], 3);
-    var markers = L.markerClusterGroup({zoomToBoundsOnClick: true, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 18, chunkedLoading: true});
+    var markers = L.markerClusterGroup({zoomToBoundsOnClick: true, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 17, chunkedLoading: true});
 
 // https://leaflet-extras.github.io/leaflet-providers/preview/
      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {

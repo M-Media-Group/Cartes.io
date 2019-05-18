@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="182px" height="191px" viewBox="0 0 182 191" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="150px" height="145px" viewBox="0 0 150 145" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
     <title>Group 8</title>
     <desc>Created with Sketch.</desc>
     <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop" transform="translate(-102.000000, -261.000000)">
-            <g id="Group-8" transform="translate(102.000000, 261.000000)">
+        <g id="Desktop" transform="translate(-123.000000, -298.000000)">
+            <g id="Group-8" transform="translate(123.000000, 298.000000)">
                 <g id="Group-7">
-                    <polygon id="Fill-1" fill="#0D70B0" points="182 0 0 38.9838539 0 191 182 189.350148"></polygon>
+                    <polygon id="Fill-1" fill="#0D70B0" points="75 0 0 42 45 145 150 58.5"></polygon>
                     <text id="Incident" font-family="LucidaGrande, Lucida Grande" font-size="27" font-weight="normal" letter-spacing="-0.28199999" fill="#FEFEFE">
-                        <tspan x="40" y="105">Incident</tspan>
+                        <tspan x="19" y="68">Incident</tspan>
                     </text>
                     <text id="Report" font-family="LucidaGrande, Lucida Grande" font-size="15" font-weight="normal" letter-spacing="0.150000002" fill="#FEFEFE">
-                        <tspan x="66" y="128">Report</tspan>
+                        <tspan x="45" y="91">Report</tspan>
                     </text>
                 </g>
             </g>
