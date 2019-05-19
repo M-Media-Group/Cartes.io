@@ -55,7 +55,7 @@ class RegisterController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'surname' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', new \Valorin\Pwned\Pwned, 'confirmed'],
             'avatar' => ['image', 'dimensions:min_width=15,max_width=512', 'max:256'],
         ]);
     }

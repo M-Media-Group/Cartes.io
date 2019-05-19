@@ -22,8 +22,10 @@
 @endsection
 @section('content')
 <h1 style="display: none;">{{config('app.name')}}</h1>
-<p>Right click (or long-tap on mobile) on the map to report incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.</p>
+<p>Right click (or long-tap on mobile) on the map to report incidents that may be dangerous to activists, journalists, human rights defenders, aid workers, social workers, or NGO staff.</p>
 <p>After 59 minutes, your report will automatically dissapear from the map.</p>
+<p class="text-muted small">This site is in Beta testing.</p>
+<p class="text-muted small">{{App\Incident::withoutGlobalScopes()->count()}} incidents have been reported so far.</p>
 <p class="text-muted small">You're currently looking at: <span id='coordinates'>No incidents</span>.</p>
 
 {{-- <button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 18, watch: false});">Find my location on the map</button> --}}
@@ -58,6 +60,13 @@ var lc = L.control.locate({
     }
 }).addTo(mymap);
 // https://leaflet-extras.github.io/leaflet-providers/preview/
+
+// var Wikimedia = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+//     attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>',
+//     minZoom: 1,
+//     maxZoom: 19
+// }).addTo(mymap);
+
      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
@@ -143,7 +152,7 @@ mymap.on('zoomend', trackZoomChange);
 mymap.on('moveend', trackMoveChange);
 function content(lng, lat) {
     @guest
-    var content = 'Login to report an incident';
+    var content = '<a href="/login">Log in</a> or <a href="/register">sign up</a> to report an incident.';
     @else
     var content = '<form method="POST" id="reportForm" action="/incidents">@csrf<label class="my-1 mr-2">Report incident:</label><select name="category" class="custom-select my-1 mr-sm-2 custom-select-sm">';
     @foreach(App\Category::get() as $category)
@@ -229,7 +238,11 @@ function trackMoveChange(e){
     });
 
     // Display a list of markers.
+    if(inBounds.length > 0) {
     document.getElementById('coordinates').innerHTML = inBounds.join(', ');
+    } else {
+    document.getElementById('coordinates').innerHTML = 'No live incidents in the area have been reported';
+    }
 }
 
 function trackPopup(e){

@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card bg-dark text-white">
-                <div class="card-header">{{ __('Register') }}</div>
+                <div class="card-header">{{ __('Sign up') }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">

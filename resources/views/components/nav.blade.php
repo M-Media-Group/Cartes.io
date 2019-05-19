@@ -2,7 +2,8 @@
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
 {{--                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
- --}}                {{ config('app.name') }}
+ --}}                {{ config('app.name') }} <span class="text-muted small">Beta</span>
+
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
@@ -18,8 +19,11 @@
                 <!-- Authentication Links -->
 
                 @guest
-                    <li class="nav-item">
+                    <li class="nav-item mr-3">
                         <a class="nav-link" href="/login">{{ __('Login') }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">{{ __('Sign up') }}</a>
                     </li>
                 @else
                     <li class="nav-item dropdown">
