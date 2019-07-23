@@ -20,7 +20,7 @@ class CreateIncidentsTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->spatialIndex('location');
         });

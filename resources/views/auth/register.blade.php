@@ -13,9 +13,8 @@
             </ul>
         </div>
     @endif
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
+<div>
+
             <div class="card bg-dark text-white">
                 <div class="card-header">{{ __('Sign up') }}</div>
 
@@ -126,7 +125,6 @@
                     <a href="/login">Already have an account? Log in!</a>
                 </div>
             </div>
-        </div>
-    </div>
+
 </div>
 @endsection

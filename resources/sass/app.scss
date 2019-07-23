@@ -8,6 +8,8 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+@import "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
+
 .navbar-laravel {
   background-color: #202325;
   color: #fff;
@@ -81,4 +83,9 @@ body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .
 }
 span.fa {
 	color: #404040;
+}
+.leaflet-pane{
+    img{
+        position: absolute;
+    }
 }

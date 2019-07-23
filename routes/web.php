@@ -13,10 +13,6 @@
 
 //Route::get('/', 'PostController@index');
 
-Route::get('/', function () {
-    return view('map');
-});
-
 Route::get('/privacy-policy', function () {
     return view('privacy');
 });
@@ -28,10 +24,6 @@ Route::get('/terms-and-conditions', function () {
 Route::get('/apply', function () {
     return view('write');
 })->middleware('auth');
-
-Route::get('/map', function () {
-    return view('map');
-});
 
 Route::get('/about', function () {
     return view('about');
@@ -56,3 +48,17 @@ Route::post('me/apply/reporter', 'UserController@applyForReporter');
 Route::resource('roles', 'RoleController');
 
 Route::resource('incidents', 'IncidentController');
+
+Route::get('{slug?}', function () {
+    //http://feeds.bbci.co.uk/news/world/rss.xml
+    $feed = Feeds::make(array(
+        'https://www.reddit.com/r/breakingnews/.rss', 'https://www.reddit.com/r/news/.rss', 'http://feeds.bbci.co.uk/news/world/rss.xml', 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en',
+    ));
+    $data = array(
+        'title' => $feed->get_title(),
+        'permalink' => $feed->get_permalink(),
+        'items' => $feed->get_items(),
+    );
+
+    return View::make('map', $data);
+});

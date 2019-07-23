@@ -13,9 +13,13 @@ class IncidentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Incident::get();
+        if ($request->is('api*')) {
+            return Incident::with('category')->get();
+        } else {
+            return view('map');
+        }
     }
 
     /**
@@ -54,8 +58,11 @@ class IncidentController extends Controller
         );
         $result->save();
 
-        return back();
-        return $result;
+        if ($request->is('api*')) {
+            return $result;
+        } else {
+            return back();
+        }
     }
 
     /**

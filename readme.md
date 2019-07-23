@@ -1,24 +1,6 @@
-<p align="center"><img src="https://s3.eu-west-3.amazonaws.com/explorevillefranche/logo.svg"></p>
+# About
 
-<p align="center">
-	<a href="https://travis-ci.org/mwargan/ExploreVillefranche"><img src="https://travis-ci.org/mwargan/ExploreVillefranche.svg?branch=master" alt="Build Status"></a>
-</p>
-
-## Live sites
-This template is live on:
-- [Explore Villefranche](https://explorevillefranche.com)
-- [Explore South of France](https://exploresouthoffrance.com)
-- [Explore Saint Jean Cap Ferrat](https://exploresaintjeancapferrat.com)
-- [Explore Beaulieu](https://explorebeaulieu.com)
-- [Explore Eze Village](https://exploreezevillage.com)
-- [Explore Antibes](https://exploreantibes.com)
-- [Explore Menton](https://explorementon.com)
-- [Explore St Tropez](https://exploresttropez.com)
-- [Explore Avignon](https://exploreavignon.com)
-
-## About Explore VIllefranche
-
-This is an open source blog template based on Laravel 5.7. Feel free to fork and use!
+This is an open source project based on Laravel 5.7. Feel free to fork and use!
 
 ## Install
 

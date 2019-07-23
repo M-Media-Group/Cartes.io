@@ -25,6 +25,7 @@
                     <hr>
                     @endif
                     <p>{{ config('app.name') }}.</p>
+                    <p>This is an open source project. Feel free to contribute to the development on <a href="https://github.com/mwargan/IncidentReport">GitHub</a></p>
                     @if(!Auth::check())
                     <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info and updates.</p>
                     @endif

@@ -23,10 +23,13 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Category::with('incidents')->withCount('views')->simplePaginate(7));
-        return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
+        if ($request->is('api*')) {
+            return response()->json(Category::with('incidents')->withCount('views')->simplePaginate(7));
+        } else {
+            return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
+        }
     }
 
     /**
@@ -76,7 +79,7 @@ class CategoryController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $category = Category::where('slug', $slug)->with('posts')->firstOrFail();
+        $category = Category::where('slug', $slug)->with('incidents')->firstOrFail();
         if (!$request->user()) {
             $user_id = null;
         } else {
@@ -89,7 +92,13 @@ class CategoryController extends Controller
                 "ip" => $request->ip(),
             ]
         );
-        return view('categories.show', ['category' => $category]);
+
+        if ($request->is('api*')) {
+            return $category;
+        } else {
+            return view('categories.show', ['category' => $category]);
+        }
+
     }
 
     /**
