@@ -8,6 +8,7 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     //use RefreshDatabase;
+
     /**
      * A basic test example.
      *
@@ -20,6 +21,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -105,11 +107,12 @@ class ExampleTest extends TestCase
     public function testSeeSinglePostTest()
     {
         $post = \App\Post::firstOrFail();
-        $response = $this->get('/posts/' . $post->slug);
+        $response = $this->get('/posts/'.$post->slug);
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -122,6 +125,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -130,11 +134,12 @@ class ExampleTest extends TestCase
     public function testSeeEditPostTest()
     {
         $post = \App\Post::firstOrFail();
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/' . $post->slug . '/edit');
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/'.$post->slug.'/edit');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -147,6 +152,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -155,11 +161,12 @@ class ExampleTest extends TestCase
     public function testSeeSingleCateogryTest()
     {
         $category = \App\Category::firstOrFail();
-        $response = $this->get('/categories/' . $category->slug);
+        $response = $this->get('/categories/'.$category->slug);
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -172,6 +179,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -180,11 +188,12 @@ class ExampleTest extends TestCase
     public function testSeeEditCateogryTest()
     {
         $category = \App\Category::firstOrFail();
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/' . $category->slug . '/edit');
+        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/'.$category->slug.'/edit');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
+
     /**
      * A basic test example.
      *
@@ -193,7 +202,7 @@ class ExampleTest extends TestCase
     public function testSeeSingleUserTest()
     {
         $user = \App\User::firstOrFail();
-        $response = $this->get('/users/' . $user->username);
+        $response = $this->get('/users/'.$user->username);
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));

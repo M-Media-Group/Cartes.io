@@ -14,7 +14,6 @@ class CreateIncidentViewsTable extends Migration
     public function up()
     {
         Schema::create('incident_views', function (Blueprint $table) {
-
             $table->increments('id');
             $table->unsignedInteger('incident_id');
             $table->unsignedInteger('user_id')->nullable();

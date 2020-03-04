@@ -55,8 +55,8 @@ class QuoteParser extends AbstractInlineParser
             $charAfter = "\n";
         }
 
-        list($leftFlanking, $rightFlanking) = $this->determineFlanking($charBefore, $charAfter);
-        $canOpen = $leftFlanking && !$rightFlanking;
+        [$leftFlanking, $rightFlanking] = $this->determineFlanking($charBefore, $charAfter);
+        $canOpen = $leftFlanking && ! $rightFlanking;
         $canClose = $rightFlanking;
 
         $node = new Text($character, ['delim' => true]);
@@ -95,15 +95,15 @@ class QuoteParser extends AbstractInlineParser
         $beforeIsWhitespace = preg_match('/\pZ|\s/u', $charBefore);
         $beforeIsPunctuation = preg_match(RegexHelper::REGEX_PUNCTUATION, $charBefore);
 
-        $leftFlanking = !$afterIsWhitespace &&
-            !($afterIsPunctuation &&
-                !$beforeIsWhitespace &&
-                !$beforeIsPunctuation);
+        $leftFlanking = ! $afterIsWhitespace &&
+            ! ($afterIsPunctuation &&
+                ! $beforeIsWhitespace &&
+                ! $beforeIsPunctuation);
 
-        $rightFlanking = !$beforeIsWhitespace &&
-            !($beforeIsPunctuation &&
-                !$afterIsWhitespace &&
-                !$afterIsPunctuation);
+        $rightFlanking = ! $beforeIsWhitespace &&
+            ! ($beforeIsPunctuation &&
+                ! $afterIsWhitespace &&
+                ! $afterIsPunctuation);
 
         return [$leftFlanking, $rightFlanking];
     }
