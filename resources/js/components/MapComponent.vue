@@ -91,8 +91,8 @@ import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLoca
                 .catch((error) => {
 
                     console.log(error);
+                    alert('You must be logged in and have permssion to post. Please log in or register.');
                     this.submit_data.loading = false
-    
                 });            }
           }
     }

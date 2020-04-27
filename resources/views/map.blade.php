@@ -4,10 +4,7 @@
 @section('meta_description', "Interactive map of incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.")
 @section('meta_image', config('app.url').'/images/map.jpg')
 
-@section('header_scripts')
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@2.6.0/assets/css/leaflet.css">
-@endsection
 
 @section('above_container')
     <map-component></map-component>
@@ -32,8 +29,5 @@
 </div>
 </div>
 {{-- <button class="btn btn-primary mb-3" onclick="mymap.locate({setView: true, maxZoom: 18, watch: false});">Find my location on the map</button> --}}
-
-@endsection
-@section('footer_scripts')
 
 @endsection

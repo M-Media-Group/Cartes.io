@@ -11,14 +11,13 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.sourceMaps().js('resources/js/app.js', 'public/js').extract(['vue', 'axios', 'bootstrap', 'jquery', 'leaflet']);
+mix.sourceMaps().js('resources/js/app.js', 'public/js').extract();
 mix.sass('resources/sass/app.scss', 'public/css').styles([
-    'node_modules/leaflet/dist/leaflet.css'
-], 'public/css/all.css');
 
-mix.browserSync('https://mmedia:7890');
+], 'public/css/all.css').version();
+
 mix.options({
-  extractVueStyles: true, // Extract .vue component styling to file, rather than inline.
+  //extractVueStyles: true, // Extract .vue component styling to file, rather than inline.
 //  processCssUrls: true, // Process/optimize relative stylesheet url()'s. Set to false, if you don't want them touched.
 	purifyCss: {
 	    purifyOptions: {
@@ -27,11 +26,4 @@ mix.options({
 	}
 //  uglify: {}, // Uglify-specific options. https://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
 //  postCss: [] // Post-CSS options: https://github.com/postcss/postcss/blob/master/docs/plugins.md
-});
-mix.webpackConfig({
-    resolve: {
-        alias: {
-            'leaflet': path.resolve(__dirname, 'node_modules/leaflet')
-        }
-    }
 });
