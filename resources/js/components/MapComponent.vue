@@ -26,8 +26,18 @@
     </div>
 </template>
 <script>
+ // URL MAP HASH FUNCTION
+    (function(window){var HAS_HASHCHANGE=(function(){var doc_mode=window.documentMode;return('onhashchange' in window)&&(doc_mode===undefined||doc_mode>7)})();L.Hash=function(map){this.onHashChange=L.Util.bind(this.onHashChange,this);if(map){this.init(map)}};L.Hash.parseHash=function(hash){if(hash.indexOf('#')===0){hash=hash.substr(1)}
+    var args=hash.split("/");if(args.length==3){var zoom=parseInt(args[0],10),lat=parseFloat(args[1]),lon=parseFloat(args[2]);if(isNaN(zoom)||isNaN(lat)||isNaN(lon)){return!1}else{return{center:new L.LatLng(lat,lon),zoom:zoom}}}else{return!1}};L.Hash.formatHash=function(map){var center=map.getCenter(),zoom=map.getZoom(),precision=Math.max(0,Math.ceil(Math.log(zoom)/Math.LN2));return"#"+[zoom,center.lat.toFixed(precision),center.lng.toFixed(precision)].join("/")},L.Hash.prototype={map:null,lastHash:null,parseHash:L.Hash.parseHash,formatHash:L.Hash.formatHash,init:function(map){this.map=map;this.lastHash=null;this.onHashChange();if(!this.isListening){this.startListening()}},removeFrom:function(map){if(this.changeTimeout){clearTimeout(this.changeTimeout)}
+    if(this.isListening){this.stopListening()}
+    this.map=null},onMapMove:function(){if(this.movingMap||!this.map._loaded){return!1}
+    var hash=this.formatHash(this.map);if(this.lastHash!=hash){location.replace(hash);this.lastHash=hash}},movingMap:!1,update:function(){var hash=location.hash;if(hash===this.lastHash){return}
+    var parsed=this.parseHash(hash);if(parsed){this.movingMap=!0;this.map.setView(parsed.center,parsed.zoom);this.movingMap=!1}else{this.onMapMove(this.map)}},changeDefer:100,changeTimeout:null,onHashChange:function(){if(!this.changeTimeout){var that=this;this.changeTimeout=setTimeout(function(){that.update();that.changeTimeout=null},this.changeDefer)}},isListening:!1,hashChangeInterval:null,startListening:function(){this.map.on("moveend",this.onMapMove,this);if(HAS_HASHCHANGE){L.DomEvent.addListener(window,"hashchange",this.onHashChange)}else{clearInterval(this.hashChangeInterval);this.hashChangeInterval=setInterval(this.onHashChange,50)}
+    this.isListening=!0},stopListening:function(){this.map.off("moveend",this.onMapMove,this);if(HAS_HASHCHANGE){L.DomEvent.removeListener(window,"hashchange",this.onHashChange)}else{clearInterval(this.hashChangeInterval)}
+    this.isListening=!1}};L.hash=function(map){return new L.Hash(map)};L.Map.prototype.addHash=function(){this._hash=L.hash(this)};L.Map.prototype.removeHash=function(){this._hash.removeFrom()}})(window);
+
     import { LMap, LTileLayer, LLayerGroup, LMarker, LPopup, LIcon } from 'vue2-leaflet';
-import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol';
+    import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol';
     import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 
     export default {
@@ -52,6 +62,9 @@ import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLoca
             }
           },
           mounted () {
+
+            new L.Hash(this.$refs.map.mapObject);
+
             axios
               .get('/api/incidents')
               .then(response => (this.incidents = response.data))

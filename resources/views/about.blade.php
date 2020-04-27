@@ -10,6 +10,7 @@
 <p>You may report incidents via this website (web interface) or via the API endpoints - available on request. You may develop automated tools that mark incidents at given locations based on real-world data triggers.</p>
 <hr class="bg-dark"/>
 <p>More info coming soon.</p>
+<p>M Media is the founder and lead developer team on this project; if you need to, you can contact us <a href="https://mmediagroup.fr/contact" rel="noopener" target="_BLANK">here</a>.</p>
 
 @markdown
 

@@ -37,7 +37,7 @@ class Incident extends Model
 
         static::addGlobalScope('recent', function (Builder $builder) {
             $builder->where('updated_at', '>',
-                Carbon::now()->subMinutes(59)->toDateTimeString()
+                Carbon::now()->subMinutes(180)->toDateTimeString()
             );
         });
     }
