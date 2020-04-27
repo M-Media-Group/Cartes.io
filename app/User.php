@@ -60,5 +60,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->id == config('blog.super_admin_id');
     }
-
 }

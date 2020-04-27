@@ -14,9 +14,9 @@
 
 namespace App\Extensions\CategoryAutolink;
 
-use League\CommonMark\InlineParserContext;
 use League\CommonMark\Inline\Element\Link;
 use League\CommonMark\Inline\Parser\AbstractInlineParser;
+use League\CommonMark\InlineParserContext;
 
 class CategoryParser extends AbstractInlineParser
 {
@@ -51,9 +51,9 @@ class CategoryParser extends AbstractInlineParser
             return false;
         }
 
-        $profileUrl = '/categories/' . str_slug($handle);
+        $profileUrl = '/categories/'.str_slug($handle);
 
-        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#' . $handle));
+        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#'.$handle));
 
         return true;
     }

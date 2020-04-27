@@ -17,6 +17,7 @@ class UserController extends Controller
     {
         $this->middleware('verified')->except(['index', 'show', 'applyForReporter']);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -57,7 +58,6 @@ class UserController extends Controller
     public function show($username)
     {
         return view('users.show', ['user' => User::where('username', $username)->with('posts')->firstOrFail()]);
-
     }
 
     /**
@@ -71,6 +71,7 @@ class UserController extends Controller
         $user = User::where('username', urldecode($username))->firstOrFail();
         $this->authorize('update', $user);
         $roles = Role::get();
+
         return view('users.edit', compact('user', 'roles'));
     }
 
@@ -85,10 +86,10 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         $validatedData = $request->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id, 'min:3'],
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
         ]);
 
         $user->update(
@@ -109,8 +110,7 @@ class UserController extends Controller
             }
         }
 
-        return redirect('/users/' . urlencode($request->input('username')));
-
+        return redirect('/users/'.urlencode($request->input('username')));
     }
 
     /**
@@ -122,7 +122,6 @@ class UserController extends Controller
      */
     public function applyForReporter(Request $request)
     {
-
         $user = $request->user();
 
         $this->authorize('update', $user);
@@ -132,7 +131,6 @@ class UserController extends Controller
         $user->revokePermissionTo('apply to report');
 
         return redirect('/');
-
     }
 
     /**

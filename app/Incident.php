@@ -50,6 +50,7 @@ class Incident extends Model
     {
         return $this->belongsTo('App\Category');
     }
+
     // public function getLocationAttribute()
     // {
     //     return $this->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y'));

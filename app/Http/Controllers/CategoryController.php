@@ -40,6 +40,7 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create', Category::class);
+
         return view('categories.create');
     }
 
@@ -80,16 +81,16 @@ class CategoryController extends Controller
     public function show(Request $request, $slug)
     {
         $category = Category::where('slug', $slug)->with('incidents')->firstOrFail();
-        if (!$request->user()) {
+        if (! $request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
         }
         \App\CategoryView::create(
             [
-                "category_id" => $category->id,
-                "user_id" => $user_id,
-                "ip" => $request->ip(),
+                'category_id' => $category->id,
+                'user_id' => $user_id,
+                'ip' => $request->ip(),
             ]
         );
 
@@ -98,7 +99,6 @@ class CategoryController extends Controller
         } else {
             return view('categories.show', ['category' => $category]);
         }
-
     }
 
     /**
@@ -111,6 +111,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
         $this->authorize('update', $category);
+
         return view('categories.edit', ['category' => $category]);
     }
 
@@ -135,8 +136,7 @@ class CategoryController extends Controller
             ]
         );
 
-        return redirect('/categories/' . str_slug($request->input('name')));
-
+        return redirect('/categories/'.str_slug($request->input('name')));
     }
 
     /**

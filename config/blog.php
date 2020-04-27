@@ -15,10 +15,10 @@ return [
 
     //App social media
     'instagram_username' => env('APP_INSTAGRAM_USERNAME', null),
-    'instagram_url' => 'https://instagram.com/' . env('APP_INSTAGRAM_USERNAME', null),
+    'instagram_url' => 'https://instagram.com/'.env('APP_INSTAGRAM_USERNAME', null),
     'facebook_page_username' => env('APP_FACEBOOK_PAGE_USERNAME', null),
-    'facebook_page_url' => 'https://fb.me/' . env('APP_FACEBOOK_PAGE_USERNAME', null),
-    'messenger_url' => 'https://m.me/' . env('APP_FACEBOOK_PAGE_USERNAME', null),
+    'facebook_page_url' => 'https://fb.me/'.env('APP_FACEBOOK_PAGE_USERNAME', null),
+    'messenger_url' => 'https://m.me/'.env('APP_FACEBOOK_PAGE_USERNAME', null),
     'fb_app_id' => env('FB_APP_ID', null),
 
     //A role that can not be deleted and always has all rights
