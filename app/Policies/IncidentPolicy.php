@@ -37,8 +37,8 @@ class IncidentPolicy
      */
     public function create(User $user)
     {
-        return true;
-
+        //return true;
+        //$user->hasVerifiedEmail();
         return $user->hasVerifiedEmail() && $user->can('create incidents');
     }
 
