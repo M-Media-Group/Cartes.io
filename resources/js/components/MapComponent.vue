@@ -15,7 +15,7 @@
 </template>
 <script>
     import { LMap, LTileLayer, LMarker, LPopup, LIcon } from 'vue2-leaflet';
-    import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol';
+import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol';
     import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 
     export default {
@@ -29,17 +29,34 @@
                subdomains: 'abcd',
                 maxZoom: 19,
                 minZoom: 2,
-              incidents: []
+              incidents: [],
+              categories: []
             }
           },
           mounted () {
             axios
               .get('/api/incidents')
               .then(response => (this.incidents = response.data))
+
+            axios
+              .get('/api/categories')
+              .then(response => (
+                //console.log(response.data.data)
+                this.categories = response.data.data
+                ))
+
           },
           methods: {
             addMarker(event) {
                 console.log(event.latlng)
+
+    var content = '<form method="POST" id="reportForm" action="/incidents"><label class="my-1 mr-2">Report incident:</label><select name="category" class="custom-select my-1 mr-sm-2 custom-select-sm">';
+      for(const category in this.categories) {
+          content += '<option value="'+this.categories[category].id+'"><img src="'+this.categories[category].icon+'" width="20">'+this.categories[category].name+'</option>';
+     }
+        content += '</select><br/><input type="hidden" name="lat" value="'+event.lat+'"><input type="hidden" name="lng" value="'+event.lng+'">';
+        content+= '<input type="submit" value="Report" class="btn btn-primary btn-sm my-1"></form>';
+                var popup = L.popup().setLatLng(event.latlng).setContent(content).openOn(this.$refs.map.mapObject);
                 this.$refs.map.mapObject.flyTo(event.latlng, 18)
             },
             openPopup(event) {
@@ -48,7 +65,7 @@
           }
     }
 </script>
-<style>
+<style scoped>
     @import "~leaflet.markercluster/dist/MarkerCluster.css";
     @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 </style>
