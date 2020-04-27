@@ -30,28 +30,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token',
     ];
 
-    public function posts()
-    {
-        return $this->hasMany('App\Post');
-    }
-
-    public function seenPosts()
-    {
-        return $this->belongsToMany('App\Post', 'post_views');
-    }
-
-    public function postViews()
-    {
-        //Issue with column names in laravel 5.7 see: https://github.com/laravel/framework/issues/17918
-        return $this->hasManyThrough('App\PostView', 'App\Post', 'user_id', 'post_id', 'id', 'id');
-    }
-
-    public function postViewsExcludingSelf()
-    {
-        //Must use whereRaw prob because issue with column in laravel 5.7 names see: https://github.com/laravel/framework/issues/17918
-        return $this->hasManyThrough('App\PostView', 'App\Post', 'user_id', 'post_id', 'id', 'id')->whereRaw('posts.user_id != post_views.user_id');
-    }
-
     public function seenCategories()
     {
         return $this->belongsToMany('App\Category', 'category_views');
