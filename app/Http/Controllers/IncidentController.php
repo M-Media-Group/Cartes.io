@@ -47,7 +47,7 @@ class IncidentController extends Controller
             'lng' => 'required',
         ]);
 
-        $location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
+        $location = DB::raw("(GeomFromText('POINT(".$request->lat.' '.$request->lng.")'))");
 
         $result = new Incident(
             [
@@ -75,7 +75,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -89,7 +89,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
+        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
     }
 
     /**

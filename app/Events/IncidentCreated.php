@@ -12,6 +12,7 @@ class IncidentCreated implements ShouldBroadcastNow
     use SerializesModels;
 
     public $incident;
+
     /**
      * Create a new event instance.
      *
