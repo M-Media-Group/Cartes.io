@@ -29,6 +29,5 @@ class HomeController extends Controller
         $posts = $request->user()->seenPosts()->groupBy('post_id', 'post_views.user_id')->orderByRaw('MAX(post_views.created_at) DESC')->get();
 
         //return view('home', compact('posts', 'categories'));
-
     }
 }
