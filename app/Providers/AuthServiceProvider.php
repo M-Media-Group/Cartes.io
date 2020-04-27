@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Policy;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,7 +20,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Category' => 'App\Policies\CategoryPolicy',
         'App\User' => 'App\Policies\UserPolicy',
         'Spatie\Permission\Models\Role' => 'App\Policies\RolePolicy',
-
+        'App\Incident' => 'App\Policies\IncidentPolicy',
     ];
 
     /**
@@ -30,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Passport::routes();
 
         // Implicitly grant "Admin" role all permissions
         Gate::before(function ($user, $ability) {

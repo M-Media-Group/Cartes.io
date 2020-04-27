@@ -40,14 +40,14 @@ class IncidentController extends Controller
      */
     public function store(Request $request)
     {
-        //$this->authorize('create', Incident::class);
+        $this->authorize('create', Incident::class);
         $validatedData = $request->validate([
             'category' => 'required|exists:categories,id',
             'lat' => 'required',
             'lng' => 'required',
         ]);
 
-        $location = DB::raw("(GeomFromText('POINT(".$request->lat.' '.$request->lng.")'))");
+        $location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
 
         $result = new Incident(
             [
@@ -58,8 +58,11 @@ class IncidentController extends Controller
         );
         $result->save();
 
+        $result->x = $request->lat;
+        $result->y = $request->lng;
+
         if ($request->is('api*')) {
-            return $result;
+            return $result->load('category');
         } else {
             return back();
         }
@@ -73,7 +76,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -87,7 +90,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**

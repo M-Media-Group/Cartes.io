@@ -21,4 +21,6 @@ Route::get('categories', 'CategoryController@index');
 
 Route::resource('users', 'UserController');
 
-Route::apiResource('incidents', 'IncidentController');
+Route::get('incidents', 'IncidentController@index');
+
+Route::middleware('auth:api')->post('/incidents', 'IncidentController@store');

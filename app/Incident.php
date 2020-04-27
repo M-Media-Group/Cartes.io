@@ -34,11 +34,11 @@ class Incident extends Model
             $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
         });
 
-        // static::addGlobalScope('recent', function (Builder $builder) {
-        //     $builder->where('updated_at', '>',
-        //         Carbon::now()->subMinutes(59)->toDateTimeString()
-        //     );
-        // });
+        static::addGlobalScope('recent', function (Builder $builder) {
+            $builder->where('updated_at', '>',
+                Carbon::now()->subMinutes(59)->toDateTimeString()
+            );
+        });
     }
 
     public function views()
