@@ -17,12 +17,15 @@
         </l-layer-group>
 
         <l-marker-cluster>
-          <l-marker v-for="incident in incidents" :lat-lng="[incident.x, incident.y]" :key="incident.id+'marker'">
+          <l-marker v-for="incident in incidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
             <l-icon :icon-url="incident.category.icon" :icon-size="[20, 20]" :icon-anchor="[10, 10]"/>
             <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/></l-popup>
           </l-marker>
         </l-marker-cluster>
     </l-map>
+    <div class="alert alert-dark map-notification" role="alert" v-if="new_message">
+     {{new_message}}
+    </div>
     </div>
 </template>
 <script>
@@ -44,15 +47,16 @@
         components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup },
         data() {
             return {
-              zoom:13,
+              zoom:4,
               center: L.latLng(43.7040, 7.3111),
               url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
               attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
                subdomains: 'abcd',
                 maxZoom: 19,
-                minZoom: 2,
+                minZoom: 3,
               incidents: [],
               categories: [],
+              new_message: '',
               submit_data: {
                 lat: 0,
                 lng: 0,
@@ -76,15 +80,23 @@
                 this.categories = response.data.data
                 ))
 
+            Echo.channel('incidents').listen('IncidentCreated', (e) => {
+                        this.incidents.push(e.incident);
+                        this.new_message = "A new incident has been reported: "+e.incident.category.name+" reported.";
+                        setTimeout(function() {
+                         this.new_message = ''; 
+                       }.bind(this), 5000);
+              });
+
           },
           methods: {
             addMarker(event) {
-                console.log(event)
+                //console.log(event)
                 this.$refs.hello_popup.mapObject.openPopup(event.latlng);
                 this.submit_data.lat = event.latlng.lat;
                 this.submit_data.lng = event.latlng.lng;
                 this.$refs.map.mapObject.flyTo(event.latlng, 18)
-                console.log(this.submit_data)
+                //console.log(this.submit_data)
             },
             openPopup(event) {
                 timeago.render(document.querySelectorAll('.timestamp'))
@@ -95,17 +107,16 @@
                 .post('/api/incidents', this.submit_data) // change this to post )
                 .then((res) => {
 
-                    console.log(res.data);
-                    this.incidents.push(res.data);
+                    // console.log(res.data);
+                    //this.incidents.push(res.data);
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
 
                 })
                 .catch((error) => {
-
+                    this.submit_data.loading = false
                     console.log(error);
                     alert('You must be logged in and have permssion to post. Please log in or register.');
-                    this.submit_data.loading = false
                 });            }
           }
     }
@@ -113,4 +124,10 @@
 <style scoped>
     @import "~leaflet.markercluster/dist/MarkerCluster.css";
     @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
+    .map-notification {
+      position: fixed;
+bottom: 1rem;
+z-index: 9999;
+left: 1rem;
+    }
 </style>

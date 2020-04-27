@@ -28,9 +28,11 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "laravel-echo": "^1.7.0",
         "leaflet": "^1.6.0",
         "leaflet-geosearch": "^2.7.0",
         "leaflet.markercluster": "^1.4.1",
+        "pusher-js": "^6.0.0",
         "timeago.js": "^4.0.2",
         "vue2-leaflet": "^2.5.2",
         "vue2-leaflet-geosearch": "^1.0.6",

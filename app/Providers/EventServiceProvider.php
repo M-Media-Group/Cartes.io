@@ -47,6 +47,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\PasswordReset' => [
             'App\Listeners\LogPasswordReset',
         ],
+        'App\Events\IncidentCreated' => [
+            //'App\Listeners\SendShipmentNotification',
+        ],
     ];
 
     /**

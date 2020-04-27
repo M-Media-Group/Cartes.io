@@ -3,24 +3,26 @@
 namespace App;
 
 use Carbon\Carbon;
-use DB;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Incident extends Model
 {
+    use SpatialTrait;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'redirect_to',
         'category_id',
         'user_id',
         'location',
     ];
-    // protected $appends = ['location'];
+    protected $spatialFields = [
+        'location',
+    ];
 
     /**
      * The "booting" method of the model.
@@ -31,9 +33,9 @@ class Incident extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('area', function (Builder $builder) {
-            $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
-        });
+        // static::addGlobalScope('area', function (Builder $builder) {
+        //     $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
+        // });
 
         static::addGlobalScope('recent', function (Builder $builder) {
             $builder->where('updated_at', '>',
@@ -52,8 +54,13 @@ class Incident extends Model
         return $this->belongsTo('App\Category');
     }
 
-    // public function getLocationAttribute()
-    // {
-    //     return $this->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y'));
-    // }
+    public function getXAttribute()
+    {
+        return $this->location->getLng();
+    }
+
+    public function getYAttribute()
+    {
+        return $this->location->getLat();
+    }
 }
