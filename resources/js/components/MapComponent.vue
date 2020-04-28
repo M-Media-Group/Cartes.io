@@ -82,12 +82,24 @@
 
             Echo.channel('incidents').listen('IncidentCreated', (e) => {
                         this.incidents.push(e.incident);
-                        this.new_message = "A new incident has been reported: "+e.incident.category.name+" reported.";
+                        this.new_message = "A new incident has been reported: "+e.incident.category.name+"";
                         setTimeout(function() {
                          this.new_message = ''; 
                        }.bind(this), 5000);
               });
 
+          },
+          computed: {
+              incidentsCount() {
+                  return this.incidents.length;
+              }
+          },
+
+          watch: {
+              incidentsCount(newValue) {
+                  $emit('incidents-count-change', newValue);
+                  //alert(`yes, computed property changed: ${newValue}`);
+              }
           },
           methods: {
             addMarker(event) {
