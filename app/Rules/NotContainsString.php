@@ -25,14 +25,14 @@ class NotContainsString implements Rule
      */
     public function passes($attribute, $value)
     {
-        $words = array('police', 'military', 'army');
+        $words = ['police', 'military', 'army'];
         foreach ($words as $word) {
             // Fuzzy matches - case insensitive
             if (stripos($value, $word) !== false) {
                 return false;
             }
-
         }
+
         return true;
     }
 
