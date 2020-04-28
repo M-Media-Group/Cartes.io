@@ -41,30 +41,44 @@ class IncidentController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Incident::class);
-        $validatedData = $request->validate([
-            'category' => 'required|exists:categories,id',
+
+        //return Auth::id();
+
+        $request->merge(['user_id' => $request->user('api')->id ?? null]);
+        if ($request->input('category') < 1) {
+            $request->request->remove('category');
+        }
+        $request->validate([
+            'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required',
             'lng' => 'required',
+            'category_name' => ['required_without:category', new \App\Rules\NotContainsString],
+            'user_id' => 'nullable',
+            'map_id' => ['required_without:user_id'],
         ]);
 
-        $location = DB::raw("(GeomFromText('POINT(".$request->lat.' '.$request->lng.")'))");
+        if (!$request->input('category')) {
+            $category = \App\Category::firstOrCreate(
+                ['slug' => str_slug($request->input('category_name'))],
+                ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
+            );
+            $request->merge(['category' => $category->id]);
+        }
+
+        $location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
 
         $result = new Incident(
             [
                 'location' => $location,
                 'category_id' => $request->input('category'),
-                'user_id' => $request->user()->id,
+                'user_id' => $request->input('user_id'),
             ]
         );
         $result->save();
 
         broadcast(new \App\Events\IncidentCreated($result));
 
-        if ($request->is('api*')) {
-            return $result->load('category');
-        } else {
-            return back();
-        }
+        return $result->load('category');
     }
 
     /**
@@ -75,7 +89,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -89,7 +103,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**

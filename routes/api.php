@@ -23,4 +23,4 @@ Route::resource('users', 'UserController');
 
 Route::get('incidents', 'IncidentController@index');
 
-Route::middleware('auth:api')->post('/incidents', 'IncidentController@store');
+Route::middleware('auth:api')->post('incidents', 'IncidentController@store');

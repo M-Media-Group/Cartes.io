@@ -4,14 +4,16 @@
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-locatecontrol/>
           <l-layer-group ref="hello_popup">
-          <l-popup style="height:100px;">
-            <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()">
+          <l-popup>
+            <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
               <label class="my-1 mr-2">Report incident:</label>
-              <select name="category" class="custom-select my-1 mr-sm-2 custom-select-sm" v-on:change="submit_data.category = $event.target.value">
-                <option v-for="category in categories" :value="category.id"><img :src="category.icon" width="20">{{category.name}}</option>
-              </select>
-              <br/>
-              <input type="submit" value="Report" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading">
+              <multiselect v-model="submit_data.fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
+              @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
+                <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
+                <template slot="option" slot-scope=" props "><img class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
+                </template>
+              </multiselect>
+              <input type="submit" value="Report" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
             </form>
           </l-popup>
         </l-layer-group>
@@ -45,9 +47,10 @@
     import { LMap, LTileLayer, LLayerGroup, LMarker, LPopup, LIcon } from 'vue2-leaflet';
     import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol';
     import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
+    import Multiselect from 'vue-multiselect';
 
     export default {
-        components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup },
+        components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect },
         data() {
             return {
               zoom:4,
@@ -63,7 +66,8 @@
               submit_data: {
                 lat: 0,
                 lng: 0,
-                category: 1,
+                category: 0,
+                category_name: '',
                 loading: false
               }
             }
@@ -100,7 +104,7 @@
 
           watch: {
               incidentsCount(newValue) {
-                  $emit('incidents-count-change', newValue);
+                  //$emit('incidents-count-change', newValue);
                   //alert(`yes, computed property changed: ${newValue}`);
               }
           },
@@ -116,8 +120,25 @@
             openPopup(event) {
                 timeago.render(document.querySelectorAll('.timestamp'))
             },
+            addTag (newTag) {
+              const tag = {
+                category_id: -1,
+                name: newTag,
+                icon: '/images/vendor/leaflet/dist/marker-icon-2x.png'
+                // code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
+              }
+              this.categories.push(tag)
+              this.submit_data.fullCategory = tag
+              this.submit_data.category = tag.category_id
+              this.submit_data.category_name = tag.name
+            },
+            handleSelectInput (val) {
+              this.submit_data.fullCategory = val
+              this.submit_data.category = val.id
+              this.submit_data.category_name = val.name
+            },
             submitForm(event) {
-              this.submit_data.loading = true
+              this.submit_data.loading = true;
               axios
                 .post('/api/incidents', this.submit_data) // change this to post )
                 .then((res) => {
@@ -139,11 +160,15 @@
 <style scoped>
     @import "~leaflet.markercluster/dist/MarkerCluster.css";
     @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
+   @import '~vue-multiselect/dist/vue-multiselect.min.css';
     .map-notification {
       position: fixed;
-bottom: 1rem;
-z-index: 1002;
-left: 1rem;
-right: 1rem;
+      bottom: 1rem;
+      z-index: 1002;
+      left: 1rem;
+      right: 1rem;
+    }
+    .your_custom_class >>> .multiselect__option--highlight, .your_custom_class >>> .multiselect__option::after {
+        background: var(--primary);
     }
 </style>
