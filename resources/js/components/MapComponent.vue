@@ -23,8 +23,11 @@
           </l-marker>
         </l-marker-cluster>
     </l-map>
-    <div class="alert alert-dark map-notification" role="alert" v-if="new_message">
-     {{new_message}}
+    <div class="alert alert-primary map-notification" role="alert" v-if="new_message">
+      <h4 class="alert-heading">A new incident was reported</h4>
+      <p class="mb-0">{{new_message}}</p>
+      <!-- <hr>
+      <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p> -->
     </div>
     </div>
 </template>
@@ -82,7 +85,7 @@
 
             Echo.channel('incidents').listen('IncidentCreated', (e) => {
                         this.incidents.push(e.incident);
-                        this.new_message = "A new incident has been reported: "+e.incident.category.name+"";
+                        this.new_message = ""+e.incident.category.name+"";
                         setTimeout(function() {
                          this.new_message = ''; 
                        }.bind(this), 5000);
@@ -139,7 +142,8 @@
     .map-notification {
       position: fixed;
 bottom: 1rem;
-z-index: 9999;
+z-index: 1002;
 left: 1rem;
+right: 1rem;
     }
 </style>
