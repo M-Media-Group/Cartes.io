@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -32,7 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function seenCategories()
     {
-        return $this->belongsToMany(\App\Category::class, 'category_views');
+        return $this->belongsToMany(\App\Models\Category::class, 'category_views');
     }
 
     public function isSuperAdmin()

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,16 +19,16 @@ class Category extends Model
 
     public function user()
     {
-        return $this->belongsToMany(\App\User::class);
+        return $this->belongsToMany(\App\Models\User::class);
     }
 
     public function incidents()
     {
-        return $this->hasMany(\App\Incident::class);
+        return $this->hasMany(\App\Models\Incident::class);
     }
 
     public function views()
     {
-        return $this->hasMany(\App\CategoryView::class);
+        return $this->hasMany(\App\Models\CategoryView::class);
     }
 }

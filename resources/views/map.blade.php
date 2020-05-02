@@ -18,7 +18,7 @@
 
 	<div class="small">
 		<h3>About the tracker</h3>
-		<p>{{App\Incident::withoutGlobalScopes()->count()}} incidents have been reported so far.</p>
+		<p>{{App\Models\Incident::withoutGlobalScopes()->count()}} incidents have been reported so far.</p>
 		<p>{{config('app.name')}} is an <a href="https://github.com/mwargan/IncidentReport" rel="noopener noreferer" target="_BLANK">open-source</a> project to help activists, journalists, human rights defenders, aid workers, social workers, or NGO staff during times of unrest or protest.
 		</p>
 	</div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
@@ -47,12 +47,12 @@ class Incident extends Model
 
     public function views()
     {
-        return $this->hasMany(\App\IncidentView::class);
+        return $this->hasMany(\App\Models\IncidentView::class);
     }
 
     public function category()
     {
-        return $this->belongsTo(\App\Category::class);
+        return $this->belongsTo(\App\Models\Category::class);
     }
 
     public function getXAttribute()

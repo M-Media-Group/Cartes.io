@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Incident;
+use App\Models\Incident;
 use Illuminate\Contracts\Validation\Rule;
 
 class UniqueInRadius implements Rule
