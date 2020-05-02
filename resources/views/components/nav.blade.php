@@ -30,7 +30,7 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            @can('create', \App\Category::class)
+                            @can('create', \App\Models\Category::class)
                                 <a class="dropdown-item" href="/categories/create">
                                     {{ __('Create category') }}
                                 </a>

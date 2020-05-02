@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryView extends Model
+class IncidentView extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class CategoryView extends Model
      * @var array
      */
     protected $fillable = [
-        'category_id',
+        'incident_id',
         'user_id',
         'ip',
     ];

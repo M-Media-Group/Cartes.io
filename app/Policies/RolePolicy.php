@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Permission\Models\Role;
 
@@ -20,7 +20,7 @@ class RolePolicy
     /**
      * Determine whether the user can view the post.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */
@@ -32,7 +32,7 @@ class RolePolicy
     /**
      * Determine whether the user can create posts.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -43,7 +43,7 @@ class RolePolicy
     /**
      * Determine whether the user can update the post.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */
@@ -55,7 +55,7 @@ class RolePolicy
     /**
      * Determine whether the user can delete the post.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */
@@ -67,7 +67,7 @@ class RolePolicy
     /**
      * Determine whether the user can restore the post.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */
@@ -79,7 +79,7 @@ class RolePolicy
     /**
      * Determine whether the user can permanently delete the post.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @param  \App\Post  $post
      * @return mixed
      */

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Incident;
+use App\Models\Incident;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Validator;
@@ -63,7 +63,7 @@ class IncidentController extends Controller
         $point = new Point($request->lng, $request->lat);
 
         if (! $request->input('category')) {
-            $category = \App\Category::firstOrCreate(
+            $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
             );
@@ -105,7 +105,7 @@ class IncidentController extends Controller
         } else {
             $user_id = $request->user()->id;
         }
-        \App\IncidentView::create(
+        \App\Models\IncidentView::create(
             [
                 'incident_id' => $qr->id,
                 'user_id' => $user_id,

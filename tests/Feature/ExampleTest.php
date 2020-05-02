@@ -93,7 +93,7 @@ class ExampleTest extends TestCase
      */
     public function testSeeHomepageTest()
     {
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/home');
+        $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/home');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
@@ -120,7 +120,7 @@ class ExampleTest extends TestCase
      */
     public function testSeeCreatePostTest()
     {
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/create');
+        $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/posts/create');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
@@ -134,7 +134,7 @@ class ExampleTest extends TestCase
     public function testSeeEditPostTest()
     {
         $post = \App\Post::firstOrFail();
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/posts/'.$post->slug.'/edit');
+        $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/posts/'.$post->slug.'/edit');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
@@ -160,7 +160,7 @@ class ExampleTest extends TestCase
      */
     public function testSeeSingleCateogryTest()
     {
-        $category = \App\Category::firstOrFail();
+        $category = \App\Models\Category::firstOrFail();
         $response = $this->get('/categories/'.$category->slug);
 
         $response->assertStatus(200);
@@ -174,7 +174,7 @@ class ExampleTest extends TestCase
      */
     public function testSeeCreateCateogryTest()
     {
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/create');
+        $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/categories/create');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
@@ -187,8 +187,8 @@ class ExampleTest extends TestCase
      */
     public function testSeeEditCateogryTest()
     {
-        $category = \App\Category::firstOrFail();
-        $response = $this->actingAs(\App\User::firstOrFail())->get('/categories/'.$category->slug.'/edit');
+        $category = \App\Models\Category::firstOrFail();
+        $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/categories/'.$category->slug.'/edit');
 
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
@@ -201,7 +201,7 @@ class ExampleTest extends TestCase
      */
     public function testSeeSingleUserTest()
     {
-        $user = \App\User::firstOrFail();
+        $user = \App\Models\User::firstOrFail();
         $response = $this->get('/users/'.$user->username);
 
         $response->assertStatus(200);
