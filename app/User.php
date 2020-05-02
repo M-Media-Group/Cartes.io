@@ -32,7 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function seenCategories()
     {
-        return $this->belongsToMany('App\Category', 'category_views');
+        return $this->belongsToMany(\App\Category::class, 'category_views');
     }
 
     public function isSuperAdmin()

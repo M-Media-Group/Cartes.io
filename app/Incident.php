@@ -47,12 +47,12 @@ class Incident extends Model
 
     public function views()
     {
-        return $this->hasMany('App\IncidentView');
+        return $this->hasMany(\App\IncidentView::class);
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo(\App\Category::class);
     }
 
     public function getXAttribute()

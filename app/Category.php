@@ -19,16 +19,16 @@ class Category extends Model
 
     public function user()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany(\App\User::class);
     }
 
     public function incidents()
     {
-        return $this->hasMany('App\Incident');
+        return $this->hasMany(\App\Incident::class);
     }
 
     public function views()
     {
-        return $this->hasMany('App\CategoryView');
+        return $this->hasMany(\App\CategoryView::class);
     }
 }

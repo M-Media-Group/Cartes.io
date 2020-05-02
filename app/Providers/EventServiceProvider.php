@@ -16,38 +16,38 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         Registered::class => [
-            'App\Listeners\LogRegisteredUser',
+            \App\Listeners\LogRegisteredUser::class,
             SendEmailVerificationNotification::class,
         ],
 
         'Illuminate\Auth\Events\Attempting' => [
-            'App\Listeners\LogAuthenticationAttempt',
+            \App\Listeners\LogAuthenticationAttempt::class,
         ],
 
         'Illuminate\Auth\Events\Authenticated' => [
-            'App\Listeners\LogAuthenticated',
+            \App\Listeners\LogAuthenticated::class,
         ],
 
         'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\LogSuccessfulLogin',
+            \App\Listeners\LogSuccessfulLogin::class,
         ],
 
         'Illuminate\Auth\Events\Failed' => [
-            'App\Listeners\LogFailedLogin',
+            \App\Listeners\LogFailedLogin::class,
         ],
 
         'Illuminate\Auth\Events\Logout' => [
-            'App\Listeners\LogSuccessfulLogout',
+            \App\Listeners\LogSuccessfulLogout::class,
         ],
 
         'Illuminate\Auth\Events\Lockout' => [
-            'App\Listeners\LogLockout',
+            \App\Listeners\LogLockout::class,
         ],
 
         'Illuminate\Auth\Events\PasswordReset' => [
-            'App\Listeners\LogPasswordReset',
+            \App\Listeners\LogPasswordReset::class,
         ],
-        'App\Events\IncidentCreated' => [
+        \App\Events\IncidentCreated::class => [
             //'App\Listeners\SendShipmentNotification',
         ],
     ];
