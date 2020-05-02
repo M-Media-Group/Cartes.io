@@ -35,7 +35,6 @@ class AddDescriptionAndMapIdToIncidentsTable extends Migration
             $table->dropColumn('description');
             $table->dropColumn('map_id');
             $table->dropColumn('expires_at');
-
         });
     }
 }

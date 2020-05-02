@@ -62,8 +62,8 @@ class MapController extends Controller
                 'slug' => str_slug($uuid),
                 'uuid' => $uuid,
                 'token' => $token,
-                'privacy' => $request->input('privacy', "unlisted"),
-                'users_can_create_incidents' => $request->input('users_can_create_incidents', "only_logged_in"),
+                'privacy' => $request->input('privacy', 'unlisted'),
+                'users_can_create_incidents' => $request->input('users_can_create_incidents', 'only_logged_in'),
                 'user_id' => $request->user() ? $request->user()->id : null,
             ]
         );
@@ -73,7 +73,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/' . $result->slug)->with('token', $result->token);
+            return redirect('/maps/'.$result->slug)->with('token', $result->token);
         }
     }
 
@@ -97,6 +97,7 @@ class MapController extends Controller
         ];
 
         return View::make('map', $data);
+
         return $map;
     }
 
@@ -125,7 +126,7 @@ class MapController extends Controller
             'token' => 'required|exists:maps,token',
 
             'title' => 'nullable|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',
@@ -133,6 +134,7 @@ class MapController extends Controller
         ]);
 
         $map->update($validatedData);
+
         return $map;
     }
 

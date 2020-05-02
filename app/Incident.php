@@ -24,6 +24,7 @@ class Incident extends Model
         'location',
     ];
     //protected $hidden = ['id', 'token', 'user_id'];
+
     /**
      * The "booting" method of the model.
      *

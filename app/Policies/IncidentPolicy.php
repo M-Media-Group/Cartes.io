@@ -35,7 +35,7 @@ class IncidentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create( ? User $user)
+    public function create(?User $user)
     {
         //return true;
         //$user->hasVerifiedEmail();
@@ -45,6 +45,7 @@ class IncidentPolicy
         if ($user) {
             return $user->hasVerifiedEmail() && $user->can('create incidents');
         }
+
         return true;
     }
 
@@ -63,6 +64,7 @@ class IncidentPolicy
         if ($incident->token == request()->input('token')) {
             return true;
         }
+
         return $user->can('edit incidents');
     }
 
@@ -81,6 +83,7 @@ class IncidentPolicy
         if ($incident->token == request()->input('token')) {
             return true;
         }
+
         return $user->can('delete incidents');
     }
 

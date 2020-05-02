@@ -23,8 +23,9 @@ class Map extends Model
     ];
     protected $hidden = ['id', 'token', 'user_id'];
     //
+
     /**
-     *  Setup model event hooks
+     *  Setup model event hooks.
      */
     public static function boot()
     {
@@ -33,6 +34,7 @@ class Map extends Model
         //     $model->uuid = (string) Uuid::generate(4);
         // });
     }
+
     /**
      * Get the route key for the model.
      *

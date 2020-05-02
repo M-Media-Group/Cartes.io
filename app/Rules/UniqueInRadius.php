@@ -7,7 +7,6 @@ use Illuminate\Contracts\Validation\Rule;
 
 class UniqueInRadius implements Rule
 {
-
     public $radius;
     public $map_id;
     public $category_id;
@@ -44,6 +43,7 @@ class UniqueInRadius implements Rule
         if ($incidents) {
             return false;
         }
+
         return true;
     }
 
