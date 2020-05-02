@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Incident;
-use DB;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
+use Validator;
 
 class IncidentController extends Controller
 {
@@ -40,6 +41,7 @@ class IncidentController extends Controller
      */
     public function store(Request $request)
     {
+        //return $request->session()->get('key');
         $this->authorize('create', Incident::class);
 
         //return Auth::id();
@@ -50,14 +52,17 @@ class IncidentController extends Controller
         }
         $request->validate([
             'category' => 'required_without:category_name|exists:categories,id',
-            'lat' => 'required',
-            'lng' => 'required',
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-90,90',
             'category_name' => ['required_without:category', new \App\Rules\NotContainsString],
             'user_id' => 'nullable',
-            'map_id' => ['required_without:user_id'],
+            //'map_id' => ['required_without:user_id', 'numeric', 'exists:maps,uuid'],
         ]);
 
-        if (! $request->input('category')) {
+        //$location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
+        $point = new Point($request->lng, $request->lat);
+
+        if (!$request->input('category')) {
             $category = \App\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
@@ -65,20 +70,26 @@ class IncidentController extends Controller
             $request->merge(['category' => $category->id]);
         }
 
-        $location = DB::raw("(GeomFromText('POINT(".$request->lat.' '.$request->lng.")'))");
+        Validator::make(
+            ['point' => $point],
+            ['point' => ['required', new \App\Rules\UniqueInRadius(15, null, $request->input('category'))]]
+        )->validate();
+
+        //return $point->getLat();
 
         $result = new Incident(
             [
-                'location' => $location,
+                // 'location' => $location,
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
             ]
         );
+        $result->location = $point;
         $result->save();
 
         broadcast(new \App\Events\IncidentCreated($result));
 
-        return $result->load('category');
+        return $result->makeVisible(['token'])->load('category');
     }
 
     /**
@@ -89,7 +100,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -103,7 +114,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**
@@ -135,8 +146,8 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        Incident::find($request->input('id'));
     }
 }

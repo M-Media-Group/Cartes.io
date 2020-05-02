@@ -21,7 +21,9 @@
         <l-marker-cluster>
           <l-marker v-for="incident in incidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
             <l-icon :icon-url="incident.category.icon" :icon-size="[20, 20]" :icon-anchor="[10, 10]"/>
-            <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/></l-popup>
+            <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/>
+            <button class="btn btn-danger btn-sm my-1" v-if="checkForLocalStorageKey(incident.id)">Delete</button>
+            </l-popup>
           </l-marker>
         </l-marker-cluster>
     </l-map>
@@ -50,6 +52,7 @@
     import Multiselect from 'vue-multiselect';
 
     export default {
+      props: ['map_id', 'map_token'],
         components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect },
         data() {
             return {
@@ -76,9 +79,15 @@
 
             new L.Hash(this.$refs.map.mapObject);
 
+            if(this.map_token) {
+              localStorage['map_'+this.map_id] = this.map_token
+            }
+
             axios
               .get('/api/incidents')
-              .then(response => (this.incidents = response.data))
+              .then(response => (
+                this.incidents = response.data
+                ))
 
             axios
               .get('/api/categories')
@@ -91,7 +100,7 @@
                         this.incidents.push(e.incident);
                         this.new_message = ""+e.incident.category.name+"";
                         setTimeout(function() {
-                         this.new_message = ''; 
+                         this.new_message = '';
                        }.bind(this), 5000);
               });
 
@@ -137,16 +146,24 @@
               this.submit_data.category = val.id
               this.submit_data.category_name = val.name
             },
+            checkForLocalStorageKey (id) {
+              if (localStorage['post_'+id]) {
+                return true
+              }
+              return false
+
+            },
             submitForm(event) {
               this.submit_data.loading = true;
               axios
                 .post('/api/incidents', this.submit_data) // change this to post )
                 .then((res) => {
 
-                    // console.log(res.data);
+                    //console.log(res.data);
                     //this.incidents.push(res.data);
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
+                    localStorage['post_'+res.data.id] = res.data.id
 
                 })
                 .catch((error) => {

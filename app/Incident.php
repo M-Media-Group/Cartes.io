@@ -23,7 +23,7 @@ class Incident extends Model
     protected $spatialFields = [
         'location',
     ];
-
+    //protected $hidden = ['id', 'token', 'user_id'];
     /**
      * The "booting" method of the model.
      *

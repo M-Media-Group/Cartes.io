@@ -26,7 +26,7 @@ class IncidentPolicy
      */
     public function view(User $user, Incident $incident)
     {
-        return true;
+        return false;
     }
 
     /**
@@ -35,14 +35,17 @@ class IncidentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(?User $user)
+    public function create( ? User $user)
     {
         //return true;
         //$user->hasVerifiedEmail();
         // if (request()->input('map_id')) {
         //     return true;
         // }
-        return $user->hasVerifiedEmail() && $user->can('create incidents');
+        if ($user) {
+            return $user->hasVerifiedEmail() && $user->can('create incidents');
+        }
+        return true;
     }
 
     /**
@@ -54,6 +57,12 @@ class IncidentPolicy
      */
     public function update(User $user, Incident $incident)
     {
+        if ($incident->user_id == $user->id) {
+            return true;
+        }
+        if ($incident->token == request()->input('token')) {
+            return true;
+        }
         return $user->can('edit incidents');
     }
 
@@ -66,6 +75,12 @@ class IncidentPolicy
      */
     public function delete(User $user, Incident $incident)
     {
+        if ($incident->user_id == $user->id) {
+            return true;
+        }
+        if ($incident->token == request()->input('token')) {
+            return true;
+        }
         return $user->can('delete incidents');
     }
 

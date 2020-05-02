@@ -23,4 +23,12 @@ Route::resource('users', 'UserController');
 
 Route::get('incidents', 'IncidentController@index');
 
-Route::middleware('auth:api')->post('incidents', 'IncidentController@store');
+Route::middleware('throttle:3|10,1')->group(function () {
+    // Route::apiResource('maps', 'MapController');
+    Route::post('maps', 'MapController@store');
+});
+
+Route::middleware('throttle:20|60,1')->group(function () {
+    Route::post('incidents', 'IncidentController@store');
+    Route::put('maps/{map}', 'MapController@update');
+});
