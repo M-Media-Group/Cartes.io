@@ -51,7 +51,7 @@ Route::resource('incidents', 'IncidentController');
 
 Route::post('/maps', 'MapController@store');
 
-Route::get('/maps/{map:slug}', 'MapController@show');
+Route::get('/maps/{map}', 'MapController@show');
 
 // Route::get('{slug?}', function () {
 //     //http://feeds.bbci.co.uk/news/world/rss.xml

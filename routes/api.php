@@ -21,7 +21,9 @@ Route::get('categories', 'CategoryController@index');
 
 Route::resource('users', 'UserController');
 
-Route::get('incidents', 'IncidentController@index');
+Route::get('maps/{map}/incidents', 'IncidentController@index');
+
+Route::get('maps', 'MapController@index');
 
 Route::middleware('throttle:3|10,1')->group(function () {
     // Route::apiResource('maps', 'MapController');
@@ -29,6 +31,6 @@ Route::middleware('throttle:3|10,1')->group(function () {
 });
 
 Route::middleware('throttle:20|60,1')->group(function () {
-    Route::post('incidents', 'IncidentController@store');
+    Route::post('maps/{map}/incidents', 'IncidentController@store');
     Route::put('maps/{map}', 'MapController@update');
 });

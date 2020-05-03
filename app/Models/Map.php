@@ -44,4 +44,9 @@ class Map extends Model
     {
         return 'uuid';
     }
+
+    public function incidents()
+    {
+        return $this->hasMany(\App\Models\Incident::class);
+    }
 }

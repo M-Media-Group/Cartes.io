@@ -7,7 +7,7 @@
           <l-popup>
             <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
               <label class="my-1 mr-2">Report incident:</label>
-              <multiselect v-model="submit_data.fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
+              <multiselect v-model="fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
               @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                 <template slot="option" slot-scope=" props "><img class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
@@ -66,12 +66,14 @@
               incidents: [],
               categories: [],
               new_message: '',
+              fullCategory: {},
               submit_data: {
                 lat: 0,
                 lng: 0,
                 category: 0,
                 category_name: '',
-                loading: false
+                loading: false,
+                map_token: this.map_token
               }
             }
           },
@@ -82,9 +84,10 @@
             if(this.map_token) {
               localStorage['map_'+this.map_id] = this.map_token
             }
+              this.submit_data.map_token = localStorage['map_'+this.map_id]
 
             axios
-              .get('/api/incidents')
+              .get('/api/maps/'+this.map_id+'/incidents')
               .then(response => (
                 this.incidents = response.data
                 ))
@@ -96,7 +99,7 @@
                 this.categories = response.data.data
                 ))
 
-            Echo.channel('incidents').listen('IncidentCreated', (e) => {
+            Echo.channel('maps.'+this.map_id).listen('IncidentCreated', (e) => {
                         this.incidents.push(e.incident);
                         this.new_message = ""+e.incident.category.name+"";
                         setTimeout(function() {
@@ -137,12 +140,12 @@
                 // code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
               }
               this.categories.push(tag)
-              this.submit_data.fullCategory = tag
+              this.fullCategory = tag
               this.submit_data.category = tag.category_id
               this.submit_data.category_name = tag.name
             },
             handleSelectInput (val) {
-              this.submit_data.fullCategory = val
+              this.fullCategory = val
               this.submit_data.category = val.id
               this.submit_data.category_name = val.name
             },
@@ -156,14 +159,14 @@
             submitForm(event) {
               this.submit_data.loading = true;
               axios
-                .post('/api/incidents', this.submit_data) // change this to post )
+                .post('/api/maps/'+this.map_id+'/incidents', this.submit_data) // change this to post )
                 .then((res) => {
 
                     //console.log(res.data);
                     //this.incidents.push(res.data);
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
-                    localStorage['post_'+res.data.id] = res.data.id
+                    localStorage['post_'+res.data.id] = res.data.token
 
                 })
                 .catch((error) => {

@@ -15,7 +15,7 @@ class AddDescriptionAndMapIdToIncidentsTable extends Migration
     {
         Schema::table('incidents', function (Blueprint $table) {
             $table->string('description')->nullable();
-            $table->string('map_id')->nullable();
+            $table->unsignedInteger('map_id')->nullable();
             $table->string('token');
 
             $table->timestamp('expires_at')->nullable();

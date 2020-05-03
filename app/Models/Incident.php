@@ -19,11 +19,13 @@ class Incident extends Model
         'category_id',
         'user_id',
         'location',
+        'token',
+        'map_id',
     ];
     protected $spatialFields = [
         'location',
     ];
-    //protected $hidden = ['id', 'token', 'user_id'];
+    protected $hidden = ['token', 'user_id', 'map_id'];
 
     /**
      * The "booting" method of the model.
@@ -38,9 +40,13 @@ class Incident extends Model
         //     $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
         // });
 
-        static::addGlobalScope('recent', function (Builder $builder) {
-            $builder->where('updated_at', '>',
-                Carbon::now()->subMinutes(180)->toDateTimeString()
+        self::creating(function ($model) {
+            $model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
+        });
+
+        static::addGlobalScope('active', function (Builder $builder) {
+            $builder->where('expires_at', '>',
+                Carbon::now()->toDateTimeString()
             );
         });
     }
@@ -53,6 +59,11 @@ class Incident extends Model
     public function category()
     {
         return $this->belongsTo(\App\Models\Category::class);
+    }
+
+    public function map()
+    {
+        return $this->belongsTo(\App\Models\Map::class);
     }
 
     public function getXAttribute()

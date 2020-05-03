@@ -7,13 +7,13 @@
 
 
 @section('above_container')
-    <map-component map_id="{{$map->uuid}}" map_token="{{$token}}"></map-component>
+    <map-component map_id="{{$map->uuid}}" map_token="{{$map->token}}"></map-component>
 @endsection
 @section('content')
 <h1 style="display: none;">{{config('app.name')}}</h1>
 <div class="row">
 <div class="col-sm-7">
-	    <map-details-component map_id="{{$map->uuid}}" map_token="{{$token}}" v-bind:map="{{$map}}"></map-details-component>
+	    <map-details-component map_id="{{$map->uuid}}" map_token="{{$map->token}}" v-bind:map="{{$map}}"></map-details-component>
 
 
 	<div class="small">
@@ -24,19 +24,19 @@
 	</div>
 </div>
 <div class="col-sm-5 p-sm-0">
-	@if($map->users_can_create_incidents == 'yes' || $token)
-	<div class="small text-muted mb-3">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</div>
+	@if($map->users_can_create_incidents == 'yes' || $token || ($map->users_can_create_incidents == 'only_logged_in') && Auth::check())
+	<div class="small ">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</div>
+	<p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
+	@elseif ($map->users_can_create_incidents == 'only_logged_in')
+	<p class="small mb-3"><a href="/login">Login</a> or <a href="/register">register</a> to create a marker on this map.</p>
 	@endif
-    @if($token)
+    @if($token == "0")
           <div class="card bg-dark text-white">
                 <div class="card-header">{{ __('Map settings') }}</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
 
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
+{{--                         <div class="form-group row d-none">
                             <label for="title" class="col-md-12 col-form-label">{{ __('Slug') }}</label>
 
                             <div class="col-md-12">
@@ -48,10 +48,10 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="form-group row">
-                        	<label for="password-confirm" class="col-md-12 col-form-label">{{ __('Who can see this map') }}</label>
+                      {{--   <div class="form-group row">
+                        	<label for="password-confirm" class="col-md-12 col-form-label">Who can see this map</label>
 		                    <div class="col-md-12">
 		                        <div class="form-check">
 								  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
@@ -72,7 +72,7 @@
 								  </label>
 								</div>
 		                    </div>
-		                </div>
+		                </div> --}}
 
 		                <div class="form-group row">
                         	<label for="password-confirm" class="col-md-12 col-form-label">{{ __('Who can create incidents') }}</label>

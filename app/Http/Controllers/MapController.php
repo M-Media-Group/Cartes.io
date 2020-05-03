@@ -17,8 +17,15 @@ class MapController extends Controller
      */
     public function index(Request $request)
     {
+        //return $request->input('ids');
         if ($request->is('api*')) {
-            return Map::where('privacy', 'public')->get();
+            $query = Map::withCount('incidents');
+            if ($request->input('ids')) {
+                $query->whereIn('uuid', $request->input('ids'));
+            } else {
+                $query->where('privacy', 'public');
+            }
+            return $query->get();
         } else {
             return view('map');
         }
@@ -73,7 +80,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/'.$result->slug)->with('token', $result->token);
+            return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
     }
 
@@ -122,11 +129,10 @@ class MapController extends Controller
     public function update(Request $request, Map $map)
     {
         $validatedData = $request->validate([
-            'map_id' => 'required|exists:maps,uuid',
             'token' => 'required|exists:maps,token',
 
             'title' => 'nullable|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',

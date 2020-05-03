@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Incident;
+use App\Models\Map;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -35,18 +36,23 @@ class IncidentPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user)
+    public function create( ? User $user, Map $map, $token = null)
     {
-        //return true;
-        //$user->hasVerifiedEmail();
-        // if (request()->input('map_id')) {
-        //     return true;
-        // }
-        if ($user) {
+
+        if ($token == $map->token) {
+            return true;
+        } else if ($map->users_can_create_incidents == 'yes') {
+            return true;
+        } else if ($map->users_can_create_incidents == 'only_logged_in') {
+            if (request()->is('api*')) {
+                $user = request()->user('api');
+                if (!$user) {
+                    return false;
+                }
+            }
             return $user->hasVerifiedEmail() && $user->can('create incidents');
         }
-
-        return true;
+        return false;
     }
 
     /**
