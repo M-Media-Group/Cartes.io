@@ -114,6 +114,9 @@
               },
               activeIncidents() {
                   return this.incidents.filter(function (incident) {
+                    if (incident.expires_at == null) {
+                      return true
+                    }
                     return Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
                   })
               }
@@ -131,7 +134,7 @@
                 this.$refs.hello_popup.mapObject.openPopup(event.latlng);
                 this.submit_data.lat = event.latlng.lat;
                 this.submit_data.lng = event.latlng.lng;
-                this.$refs.map.mapObject.flyTo(event.latlng, 18)
+                //this.$refs.map.mapObject.setView(event.latlng, 18)
                 //console.log(this.submit_data)
             },
             openPopup(event) {

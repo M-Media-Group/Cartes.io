@@ -17,6 +17,36 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.navbar-transparent {
+	position: absolute;
+right: 0;
+left: 0;
+top:0.5rem;
+background: transparent;
+z-index: 1005;
+}
+
+.navbar-transparent + div {
+	padding-top:4.7rem;
+}
+
+.blur-background {
+	position: relative;
+}
+
+.blur-background > div {
+	z-index: 1;
+}
+.blur-background::after {
+  -webkit-backdrop-filter: blur(2px); /* Use for Safari 9+, Edge 17+ (not a mistake) and iOS Safari 9.2+ */
+  backdrop-filter: blur(2px); /* Supported in Chrome 76 */
+
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%; height: 100%;
+}
+
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -63,7 +93,8 @@ a.text-muted, p.text-muted, small.text-muted {
 }
 
 body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .dropdown-item {
-	background-color: #202325;
+	//background-color: #202325;
+	background-color: #061720;
 	color: #fff;
 }
 

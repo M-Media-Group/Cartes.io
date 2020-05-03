@@ -14,7 +14,7 @@
         <div class="container">
             <div class="row justify-content-center mt-5">
 
-                <div class="col-md-12" style="max-width: 700px;">
+                <div class="col-md-12" style="max-width: 950px;">
                     @yield('content')
                 </div>
 
@@ -23,6 +23,7 @@
         <hr/>
         <div class="footer d-flex justify-content-center">
             <small class="mb-3">
+                <a href="/login" class="text-muted">Login</a>
                 <a href="/about" class="text-muted">About</a>
                 <a href="/privacy-policy" class="text-muted">Privacy policy</a>
                 <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>

@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Live maps for everyone and everything')
+@section('meta_description', 'Create free anonymous or public maps without even having to sign up.')
+
 @section('above_container')
-<div class="jumbotron jumbotron-fluid d-flex align-items-center" style="min-height: 69vh; background: url('/images/earth.jpg')">
-  <div class="container">
-      <h1 class="display-4">Live maps for everyone</h1>
+<div class="jumbotron jumbotron-fluid d-flex align-items-center" style="min-height: 77vh; background: url('/images/earth.jpg')">
+  <div class="container mt-4 mb-3">
+      <h1 class="display-5">Live maps for everyone and everything</h1>
       <p class="lead">Create free anonymous or public maps without even having to sign up.</p>
 {{--       <p>Your maps are stored in your browser.</p>
  --}}
