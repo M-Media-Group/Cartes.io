@@ -17,7 +17,7 @@
     {{ __('Create a new map') }}
     </button>
     </form>
-    <a class="btn btn-secondary btn-lg mt-3" href="/register">Sign up, if you want</a>
+    <a class="btn btn-dark btn-lg mt-3" href="/register">Sign up, if you want</a>
   </div>
   </div>
 </div>

@@ -12,7 +12,7 @@
 
     </div>
     <div class="col-md-5 p-md-0 mt-5 mt-md-0">
-        <div class="card bg-dark text-white" v-if="canEdit">
+        <div class="card bg-dark text-white mb-3" v-if="canEdit">
           <div class="card-header">Map settings</div>
           <div class="card-body">
             <div class="form-group row">
@@ -63,6 +63,8 @@
             </div>
           </div>
         </div>
+        <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
+        <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
     </div>
   </div>
   </template>
