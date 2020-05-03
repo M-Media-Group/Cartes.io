@@ -24,8 +24,8 @@
 @endsection
 
 @section('left_sidebar')
-{{-- test
- --}}@endsection
+
+@endsection
 
 @section('content')
 <my-maps-component></my-maps-component>
