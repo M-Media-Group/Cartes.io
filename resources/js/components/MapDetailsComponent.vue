@@ -9,7 +9,13 @@
         <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">{{map.description}}</p>
         <p v-else>This map has no description.</p>
     </div>
-    <div class="col-md-5 p-md-0 mt-5 mt-md-0">
+    <div class="col-md-5">
+        <navigator-share
+        v-bind:on-error="onShareError"
+        v-bind:url="map_url"
+        v-bind:title="submit_data.title"
+        v-bind:text="submit_data.description"
+        class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
         <div class="card bg-dark text-white mb-3" v-if="canEdit">
           <div class="card-header">Map settings</div>
           <div class="card-body">
@@ -66,10 +72,16 @@
     </div>
   </div>
   </template>
-</template>
+
 <script>
+  import NavigatorShare from 'vue-navigator-share'
+  import copy from 'copy-to-clipboard';
+
     export default {
       props: ['map_id', 'map_token', 'map'],
+      components: {
+        NavigatorShare
+      },
         data() {
             return {
               token: this.map_token,
@@ -92,6 +104,9 @@
 
           },
           computed: {
+            map_url() {
+              return window.location.href;
+            },
               canEdit() {
                   return this.token.length > 0 ? true : false;
               }
@@ -115,6 +130,12 @@
             //this.foo = _.debounce(function(){}, 1000);
           },
           methods: {
+            onShareError (e) {
+             copy(this.map_url, {
+              message: 'Press #{key} to copy',
+              onCopy: alert('Link copied')
+            });
+           },
             handleSelectInput (val, type) {
               if (type == 'privacy' || type == 'users_can_create_incidents') {
                 this.submit_data[type] = val.target.value
