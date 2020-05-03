@@ -2,7 +2,7 @@
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
 {{--                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
- --}}                {{ config('app.name') }} <span class="text-muted small">Beta</span>
+ --}}                {{ config('app.name') }} <span class="text-muted small d-none">Beta</span>
 
         </a>
 
