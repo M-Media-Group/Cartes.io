@@ -9,8 +9,7 @@
   <div class="card-body">
     <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
     <p class="card-text">{{map.description}}</p>
-    <p class="card-text small">{{map.incidents_count}} reports</p>
-    <p class="card-text small">Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
+    <p class="card-text small">{{map.incidents_count}} reports · Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
     <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
   </div>
 </div>
