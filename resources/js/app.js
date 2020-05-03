@@ -34,6 +34,20 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+
+/** Vue Filters Start */
+Vue.filter('truncate', function (text, length, suffix) {
+	if (!text) {
+		return "No description available";
+	}
+    if (text.length > length) {
+        return text.substring(0, length) + suffix;
+    } else {
+        return text;
+    }
+});
+/** Vue Filters End */
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

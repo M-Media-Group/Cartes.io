@@ -18,7 +18,7 @@ class CreateMapsTable extends Migration
 
             $table->string('slug')->unique();
             $table->string('title')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->unsignedInteger('user_id')->nullable();
 
             $table->enum('privacy', ['public', 'unlisted', 'private'])->default('unlisted');

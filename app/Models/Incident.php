@@ -45,9 +45,11 @@ class Incident extends Model
         });
 
         static::addGlobalScope('active', function (Builder $builder) {
-            $builder->where('expires_at', '>',
-                Carbon::now()->toDateTimeString()
-            );
+            $builder
+                ->where('expires_at', '>',
+                    Carbon::now()->toDateTimeString()
+                )
+                ->orWhere('expires_at', null);
         });
     }
 

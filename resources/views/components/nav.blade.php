@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark navbar-laravel">
+<nav class="navbar navbar-expand-md navbar-dark navbar-laravel navbar-transparent">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
 {{--                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
@@ -17,7 +17,7 @@
                 <!-- Authentication Links -->
 
                 @guest
-                    <li class="nav-item mr-3">
+                    <li class="nav-item mr-3 d-md-block d-none">
                         <a class="nav-link" href="/login">{{ __('Login') }}</a>
                     </li>
 {{--                     <li class="nav-item">

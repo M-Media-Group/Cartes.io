@@ -29,12 +29,7 @@
                     @if(!Auth::check())
                     <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info, make maps private, and get updates as the project grows.</p>
                     @endif
-                    <hr>
-                    <small class="mb-3">
-                        <a href="/about" class="text-muted">About</a>
-                        <a href="/privacy-policy" class="text-muted">Privacy policy</a>
-                        <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
-                    </small>
+
                     @show
                 </div>
                 <div class="col-md-3 order-md-1">
@@ -42,7 +37,13 @@
                 </div>
             </div>
         </div>
-        <div class="footer">
+        <div class="footer d-flex justify-content-center">
+            <small class="mb-3">
+                <a href="/login" class="text-muted">Login</a>
+                <a href="/about" class="text-muted">About</a>
+                <a href="/privacy-policy" class="text-muted">Privacy policy</a>
+                <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
+            </small>
         </div>
     </div>
     @include('components.footer')

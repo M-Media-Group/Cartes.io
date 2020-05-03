@@ -8,7 +8,7 @@
   <map-component :map_id="map.uuid" style="height:250px;"></map-component>
   <div class="card-body">
     <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
-    <p class="card-text">{{map.description}}</p>
+    <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
     <p class="card-text small">{{map.incidents_count}} reports · Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
     <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
   </div>
@@ -23,7 +23,7 @@
   <map-component :map_id="map.uuid" style="height:250px;"></map-component>
   <div class="card-body">
     <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
-    <p class="card-text">{{map.description}}</p>
+    <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
     <p class="card-text small">{{map.incidents_count}} reports</p>
     <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
   </div>
