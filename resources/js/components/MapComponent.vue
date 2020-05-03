@@ -1,13 +1,13 @@
 <template>
     <div>
-      <l-map :zoom="zoom" :center="center" style="width: 100%; height: 71vh;" @contextmenu="addMarker" ref="map">
+      <l-map :zoom="zoom" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-locatecontrol/>
           <l-layer-group ref="hello_popup">
           <l-popup>
             <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
               <label class="my-1 mr-2">Report incident:</label>
-              <multiselect v-model="submit_data.fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
+              <multiselect v-model="fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
               @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                 <template slot="option" slot-scope=" props "><img class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
@@ -19,9 +19,11 @@
         </l-layer-group>
 
         <l-marker-cluster>
-          <l-marker v-for="incident in incidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
-            <l-icon :icon-url="incident.category.icon" :icon-size="[20, 20]" :icon-anchor="[10, 10]"/>
-            <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/></l-popup>
+          <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
+            <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]"/>
+            <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/>
+            <button class="btn btn-danger btn-sm my-1" v-if="checkForLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
+            </l-popup>
           </l-marker>
         </l-marker-cluster>
     </l-map>
@@ -50,6 +52,7 @@
     import Multiselect from 'vue-multiselect';
 
     export default {
+      props: ['map_id', 'map_token'],
         components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect },
         data() {
             return {
@@ -63,12 +66,14 @@
               incidents: [],
               categories: [],
               new_message: '',
+              fullCategory: {},
               submit_data: {
                 lat: 0,
                 lng: 0,
                 category: 0,
                 category_name: '',
-                loading: false
+                loading: false,
+                map_token: this.map_token
               }
             }
           },
@@ -76,9 +81,16 @@
 
             new L.Hash(this.$refs.map.mapObject);
 
+            if(this.map_token) {
+              localStorage['map_'+this.map_id] = this.map_token
+            }
+              this.submit_data.map_token = localStorage['map_'+this.map_id]
+
             axios
-              .get('/api/incidents')
-              .then(response => (this.incidents = response.data))
+              .get('/api/maps/'+this.map_id+'/incidents')
+              .then(response => (
+                this.incidents = response.data
+                ))
 
             axios
               .get('/api/categories')
@@ -87,11 +99,11 @@
                 this.categories = response.data.data
                 ))
 
-            Echo.channel('incidents').listen('IncidentCreated', (e) => {
+            Echo.channel('maps.'+this.map_id).listen('IncidentCreated', (e) => {
                         this.incidents.push(e.incident);
                         this.new_message = ""+e.incident.category.name+"";
                         setTimeout(function() {
-                         this.new_message = ''; 
+                         this.new_message = '';
                        }.bind(this), 5000);
               });
 
@@ -99,6 +111,11 @@
           computed: {
               incidentsCount() {
                   return this.incidents.length;
+              },
+              activeIncidents() {
+                  return this.incidents.filter(function (incident) {
+                    return Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
+                  })
               }
           },
 
@@ -128,31 +145,57 @@
                 // code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
               }
               this.categories.push(tag)
-              this.submit_data.fullCategory = tag
+              this.fullCategory = tag
               this.submit_data.category = tag.category_id
               this.submit_data.category_name = tag.name
             },
             handleSelectInput (val) {
-              this.submit_data.fullCategory = val
+              this.fullCategory = val
               this.submit_data.category = val.id
               this.submit_data.category_name = val.name
+            },
+            checkForLocalStorageKey (id) {
+              if (localStorage['post_'+id]) {
+                return true
+              }
+              return false
+
+            },
+            deleteIncident(id) {
+              this.submit_data.loading = true;
+              axios
+              .delete('/api/maps/'+this.map_id+'/incidents/'+id, {data: {token: localStorage['post_'+id]} } )
+              .then((res) => {
+                this.incidents = this.incidents.filter((e)=>e.id !== id )
+                this.submit_data.loading = false;
+              });
             },
             submitForm(event) {
               this.submit_data.loading = true;
               axios
-                .post('/api/incidents', this.submit_data) // change this to post )
+                .post('/api/maps/'+this.map_id+'/incidents', this.submit_data) // change this to post )
                 .then((res) => {
 
-                    // console.log(res.data);
+                    //console.log(res.data);
                     //this.incidents.push(res.data);
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
+                    localStorage['post_'+res.data.id] = res.data.token
 
                 })
                 .catch((error) => {
                     this.submit_data.loading = false
-                    console.log(error);
-                    alert('You must be logged in and have permssion to post. Please log in or register.');
+                    console.log(error.response);
+                    if(error.response.data.errors) {
+                    var message = Object.entries(error.response.data.errors)
+                        .map(([error_name, error_value], i) => `${error_name}: ${error_value[0]} | `)
+                        .join('\n');
+                      }
+                      else {
+                        var message = error.response.data.message
+                      }
+                    alert(message);
+                    //alert('You must be logged in and have permssion to post. Please log in or register.');
                 });            }
           }
     }

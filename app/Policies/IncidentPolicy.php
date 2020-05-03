@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Incident;
-use App\User;
+use App\Models\Incident;
+use App\Models\Map;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class IncidentPolicy
@@ -20,60 +21,84 @@ class IncidentPolicy
     /**
      * Determine whether the user can view the incident.
      *
-     * @param  \App\User  $user
-     * @param  \App\Incident  $incident
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Incident  $incident
      * @return mixed
      */
     public function view(User $user, Incident $incident)
     {
-        return true;
+        return false;
     }
 
     /**
      * Determine whether the user can create incidents.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user)
+    public function create(?User $user, Map $map, $token = null)
     {
-        //return true;
-        //$user->hasVerifiedEmail();
-        // if (request()->input('map_id')) {
-        //     return true;
-        // }
-        return $user->hasVerifiedEmail() && $user->can('create incidents');
+        if ($token == $map->token) {
+            return true;
+        } elseif ($map->users_can_create_incidents == 'yes') {
+            return true;
+        } elseif ($map->users_can_create_incidents == 'only_logged_in') {
+            if (request()->is('api*')) {
+                $user = request()->user('api');
+                if (! $user) {
+                    return false;
+                }
+            }
+
+            return $user->hasVerifiedEmail() && $user->can('create incidents');
+        }
+
+        return false;
     }
 
     /**
      * Determine whether the user can update the incident.
      *
-     * @param  \App\User  $user
-     * @param  \App\Incident  $incident
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Incident  $incident
      * @return mixed
      */
     public function update(User $user, Incident $incident)
     {
+        if ($incident->user_id == $user->id) {
+            return true;
+        }
+        if ($incident->token == request()->input('token')) {
+            return true;
+        }
+
         return $user->can('edit incidents');
     }
 
     /**
      * Determine whether the user can delete the incident.
      *
-     * @param  \App\User  $user
-     * @param  \App\Incident  $incident
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Incident  $incident
      * @return mixed
      */
     public function delete(User $user, Incident $incident)
     {
+        if ($incident->user_id == $user->id) {
+            return true;
+        }
+        if ($incident->token == request()->input('token')) {
+            return true;
+        }
+
         return $user->can('delete incidents');
     }
 
     /**
      * Determine whether the user can restore the incident.
      *
-     * @param  \App\User  $user
-     * @param  \App\Incident  $incident
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Incident  $incident
      * @return mixed
      */
     public function restore(User $user, Incident $incident)
@@ -84,12 +109,19 @@ class IncidentPolicy
     /**
      * Determine whether the user can permanently delete the incident.
      *
-     * @param  \App\User  $user
-     * @param  \App\Incident  $incident
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Incident  $incident
      * @return mixed
      */
-    public function forceDelete(User $user, Incident $incident)
+    public function forceDelete(?User $user, Incident $incident)
     {
-        return false;
+        if ($user && $incident->user_id == $user->id) {
+            return true;
+        }
+        if ($incident->token == request()->input('token')) {
+            return true;
+        }
+
+        return $user->can('delete incidents');
     }
 }

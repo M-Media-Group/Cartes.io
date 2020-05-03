@@ -21,6 +21,17 @@ Route::get('categories', 'CategoryController@index');
 
 Route::resource('users', 'UserController');
 
-Route::get('incidents', 'IncidentController@index');
+Route::get('maps/{map}/incidents', 'IncidentController@index');
 
-Route::middleware('auth:api')->post('incidents', 'IncidentController@store');
+Route::get('maps', 'MapController@index');
+
+Route::middleware('throttle:3|10,1')->group(function () {
+    // Route::apiResource('maps', 'MapController');
+    Route::post('maps', 'MapController@store');
+});
+
+Route::middleware('throttle:30|120,1')->group(function () {
+    Route::post('maps/{map}/incidents', 'IncidentController@store');
+    Route::put('maps/{map}', 'MapController@update');
+    Route::delete('maps/{map}/incidents/{incident}', 'IncidentController@destroy');
+});

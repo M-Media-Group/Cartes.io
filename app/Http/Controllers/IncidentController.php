@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Incident;
-use DB;
+use App\Models\Incident;
+use App\Models\Map;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
+use Validator;
 
 class IncidentController extends Controller
 {
@@ -13,10 +15,10 @@ class IncidentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Map $map)
     {
         if ($request->is('api*')) {
-            return Incident::with('category')->get();
+            return Incident::with('category')->where('map_id', $map->id)->get();
         } else {
             return view('map');
         }
@@ -38,9 +40,10 @@ class IncidentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Map $map)
     {
-        $this->authorize('create', Incident::class);
+        //return $request->input("map_token");
+        $this->authorize('create', [Incident::class, $map, $request->input('map_token')]);
 
         //return Auth::id();
 
@@ -50,35 +53,48 @@ class IncidentController extends Controller
         }
         $request->validate([
             'category' => 'required_without:category_name|exists:categories,id',
-            'lat' => 'required',
-            'lng' => 'required',
-            'category_name' => ['required_without:category', new \App\Rules\NotContainsString],
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-90,90',
+            'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable',
-            'map_id' => ['required_without:user_id'],
+            //'map_id' => ['required_without:user_id', 'numeric', 'exists:maps,uuid'],
         ]);
 
+        //$location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
+        $point = new Point($request->lng, $request->lat);
+
         if (! $request->input('category')) {
-            $category = \App\Category::firstOrCreate(
+            $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
-                ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
+                ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
             );
             $request->merge(['category' => $category->id]);
         }
 
-        $location = DB::raw("(GeomFromText('POINT(".$request->lat.' '.$request->lng.")'))");
+        Validator::make(
+            ['point' => $point],
+            ['point' => ['required', new \App\Rules\UniqueInRadius(15, null, $request->input('category'))]]
+        )->validate();
+
+        //return $point->getLat();
+
+        $token = str_random(32);
 
         $result = new Incident(
             [
-                'location' => $location,
+                // 'location' => $location,
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
+                'token' => $token,
+                'map_id' => $map->id,
             ]
         );
+        $result->location = $point;
         $result->save();
 
         broadcast(new \App\Events\IncidentCreated($result));
 
-        return $result->load('category');
+        return $result->makeVisible(['token'])->load('category');
     }
 
     /**
@@ -94,7 +110,7 @@ class IncidentController extends Controller
         } else {
             $user_id = $request->user()->id;
         }
-        \App\IncidentView::create(
+        \App\Models\IncidentView::create(
             [
                 'incident_id' => $qr->id,
                 'user_id' => $user_id,
@@ -135,8 +151,10 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Map $map, Incident $incident)
     {
-        //
+        //return $incident->token;
+        $this->authorize('forceDelete', $incident);
+        $incident->delete();
     }
 }

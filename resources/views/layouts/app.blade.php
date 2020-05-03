@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @include('components.head')
+    @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true ])
 </head>
 
 <body>
@@ -27,7 +27,7 @@
                     <p>{{ config('app.name') }}.</p>
                     <p>This is an open source project. Feel free to contribute to the development on <a href="https://github.com/mwargan/IncidentReport">GitHub</a></p>
                     @if(!Auth::check())
-                    <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info and updates.</p>
+                    <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info, make maps private, and get updates as the project grows.</p>
                     @endif
                     <hr>
                     <small class="mb-3">
