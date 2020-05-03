@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -23,11 +23,11 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        return redirect('/');
+        //return redirect('/');
 
-        $categories = $request->user()->seenCategories()->groupBy('category_id', 'category_views.user_id')->orderByRaw('MAX(category_views.created_at) DESC')->get();
-        $posts = $request->user()->seenPosts()->groupBy('post_id', 'post_views.user_id')->orderByRaw('MAX(post_views.created_at) DESC')->get();
+        // $categories = $request->user()->seenCategories()->groupBy('category_id', 'category_views.user_id')->orderByRaw('MAX(category_views.created_at) DESC')->get();
+        // $posts = $request->user()->seenPosts()->groupBy('post_id', 'post_views.user_id')->orderByRaw('MAX(post_views.created_at) DESC')->get();
 
-        //return view('home', compact('posts', 'categories'));
+        return view('home');
     }
 }

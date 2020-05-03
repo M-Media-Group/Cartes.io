@@ -10,8 +10,14 @@
 <meta name="keywords" content="{{ config('app.name') }},@yield('meta_keywords')">
 <meta name="description" content="@yield('meta_description', config('app.name') .' was made by English speaking residents of this beautiful city on the French Riviera. This site aims to show off the beauty of this city and make it more accessible to people that decide to visit.')">
 <meta name="language" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+@if($index_and_googlebots)
 <meta name="robots" content="index,follow">
 <meta name="googlebot" content="index,follow">
+@else
+<meta name="robots" content="noindex,nofollow">
+<meta name="googlebot" content="noindex,nofollow">
+@endif
 
 <meta name="author" content="@yield('meta_author', config('app.name'))">
 <meta name="coverage" content="Worldwide">

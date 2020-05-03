@@ -1,29 +1,23 @@
-@extends('layouts.clean')
+@extends('layouts.clean', ['index_and_googlebots' => $map->privacy == 'public' ? true : false])
 
-@section('title', 'Incident Report')
-@section('meta_description', "Interactive map of incidents that may be dangerous to activists, human rights defenders, aid workers, social workers, NGO staff, or journalists.")
+
+@section('title', $map->title)
+@section('meta_description', $map->description)
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 
 
 @section('above_container')
-    <map-component map_id="{{$map->uuid}}" map_token="{{$map->token}}"></map-component>
+    <map-component map_id="{{$map->uuid}}" map_token="{{$token}}" style="height: 69vh;"></map-component>
 @endsection
 @section('content')
 <h1 style="display: none;">{{config('app.name')}}</h1>
 <div class="row">
 <div class="col-sm-7">
-	    <map-details-component map_id="{{$map->uuid}}" map_token="{{$map->token}}" v-bind:map="{{$map}}"></map-details-component>
+	    <map-details-component map_id="{{$map->uuid}}" map_token="{{$token}}" v-bind:map="{{$map}}"></map-details-component>
 
-
-	<div class="small">
-		<h3>About the tracker</h3>
-		<p>{{App\Models\Incident::withoutGlobalScopes()->count()}} incidents have been reported so far.</p>
-		<p>{{config('app.name')}} is an <a href="https://github.com/mwargan/IncidentReport" rel="noopener noreferer" target="_BLANK">open-source</a> project to help activists, journalists, human rights defenders, aid workers, social workers, or NGO staff during times of unrest or protest.
-		</p>
-	</div>
 </div>
-<div class="col-sm-5 p-sm-0">
+<div class="col-sm-5 p-sm-0 mt-5 mt-sm-0">
 	@if($map->users_can_create_incidents == 'yes' || $token || ($map->users_can_create_incidents == 'only_logged_in') && Auth::check())
 	<div class="small ">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</div>
 	<p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>

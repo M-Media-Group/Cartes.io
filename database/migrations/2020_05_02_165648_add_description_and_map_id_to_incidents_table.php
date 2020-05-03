@@ -32,9 +32,11 @@ class AddDescriptionAndMapIdToIncidentsTable extends Migration
     public function down()
     {
         Schema::table('incidents', function (Blueprint $table) {
+            $table->dropForeign(['map_id']);
             $table->dropColumn('description');
             $table->dropColumn('map_id');
             $table->dropColumn('expires_at');
+            $table->dropColumn('token');
         });
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <l-map :zoom="zoom" :center="center" style="width: 100%; height: 71vh;" @contextmenu="addMarker" ref="map">
+      <l-map :zoom="zoom" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-locatecontrol/>
           <l-layer-group ref="hello_popup">
@@ -19,10 +19,10 @@
         </l-layer-group>
 
         <l-marker-cluster>
-          <l-marker v-for="incident in incidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
-            <l-icon :icon-url="incident.category.icon" :icon-size="[20, 20]" :icon-anchor="[10, 10]"/>
+          <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
+            <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]"/>
             <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/>
-            <button class="btn btn-danger btn-sm my-1" v-if="checkForLocalStorageKey(incident.id)">Delete</button>
+            <button class="btn btn-danger btn-sm my-1" v-if="checkForLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
             </l-popup>
           </l-marker>
         </l-marker-cluster>
@@ -111,6 +111,11 @@
           computed: {
               incidentsCount() {
                   return this.incidents.length;
+              },
+              activeIncidents() {
+                  return this.incidents.filter(function (incident) {
+                    return Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
+                  })
               }
           },
 
@@ -156,6 +161,15 @@
               return false
 
             },
+            deleteIncident(id) {
+              this.submit_data.loading = true;
+              axios
+              .delete('/api/maps/'+this.map_id+'/incidents/'+id, {data: {token: localStorage['post_'+id]} } )
+              .then((res) => {
+                this.incidents = this.incidents.filter((e)=>e.id !== id )
+                this.submit_data.loading = false;
+              });
+            },
             submitForm(event) {
               this.submit_data.loading = true;
               axios
@@ -171,8 +185,17 @@
                 })
                 .catch((error) => {
                     this.submit_data.loading = false
-                    console.log(error);
-                    alert('You must be logged in and have permssion to post. Please log in or register.');
+                    console.log(error.response);
+                    if(error.response.data.errors) {
+                    var message = Object.entries(error.response.data.errors)
+                        .map(([error_name, error_value], i) => `${error_name}: ${error_value[0]} | `)
+                        .join('\n');
+                      }
+                      else {
+                        var message = error.response.data.message
+                      }
+                    alert(message);
+                    //alert('You must be logged in and have permssion to post. Please log in or register.');
                 });            }
           }
     }

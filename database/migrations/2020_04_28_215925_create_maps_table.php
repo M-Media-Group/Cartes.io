@@ -25,6 +25,8 @@ class CreateMapsTable extends Migration
 
             $table->enum('users_can_create_incidents', ['yes', 'only_logged_in', 'no'])->default('only_logged_in');
 
+            $table->jsonb('options')->nullable();
+
             // Maybe replace this with a settings package
             // $table->boolean('users_can_engage_with_incidents')->default(0);
 

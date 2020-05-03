@@ -1,17 +1,45 @@
 <template>
-    <div>
+<div>
 <!--       <map-component v-for="maps" :key="map.id" :map_id="map.id"></map-component>
- -->    </div>
+ -->
+<h2>Your maps</h2>
+<p>These are the maps that you've created on the site.</p>
+<div class="card bg-dark text-white mb-3" v-for='map in private_maps' :key="map.id">
+  <map-component :map_id="map.uuid" style="height:250px;"></map-component>
+  <div class="card-body">
+    <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
+    <p class="card-text">{{map.description}}</p>
+    <p class="card-text small">{{map.incidents_count}} reports</p>
+    <p class="card-text small">Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
+    <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
+  </div>
+</div>
+
+<div v-if="private_maps.length < 1">You have no maps yet</div>
+<hr class="my-4">
+<h2 class="mt-5">Public maps</h2>
+<p>These maps are made by the community, and public.</p>
+
+<div class="card bg-dark text-white mb-3" v-for='map in public_maps' :key="map.id">
+  <map-component :map_id="map.uuid" style="height:250px;"></map-component>
+  <div class="card-body">
+    <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
+    <p class="card-text">{{map.description}}</p>
+    <p class="card-text small">{{map.incidents_count}} reports</p>
+    <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
+  </div>
+</div>
+
+</div>
 </template>
 <script>
     export default {
-      props: ['map_id', 'map_token', 'map'],
         data() {
             return {
               zoom:4,
-              title: this.map.title,
-              description: this.map.description,
-              token: this.map_token,
+
+              public_maps: [],
+              private_maps: [],
               submit_data: {
                 lat: 0,
                 lng: 0,
@@ -25,6 +53,30 @@
 
             if(localStorage['map_'+this.map_id]) {
               this.token = localStorage['map_'+this.map_id]
+            }
+            var ids = []
+            Object.keys(localStorage).forEach(function(key){
+              if(key.includes('map_')) {
+                ids.push(key.replace('map_', ''))
+              }
+            });
+               console.log(ids);
+            axios
+              .get('/api/maps')
+              .then(response => (
+                this.public_maps = response.data
+                ))
+
+            if (ids.length > 0){
+            axios
+              .get('/api/maps', {
+                params: {
+                  ids: ids
+                }
+              })
+              .then(response => (
+                this.private_maps = response.data
+                ))
             }
 
           },
@@ -79,7 +131,8 @@
                 .catch((error) => {
                     this.submit_data.loading = false
                     console.log(error);
-                    alert('You must be logged in and have permssion to post. Please log in or register.');
+                    alert(error.message);
+                    //alert('You must be logged in and have permssion to post. Please log in or register.');
                 });            }
           }
     }

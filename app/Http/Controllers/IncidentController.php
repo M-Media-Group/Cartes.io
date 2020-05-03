@@ -55,7 +55,7 @@ class IncidentController extends Controller
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-90,90',
-            'category_name' => ['required_without:category', new \App\Rules\NotContainsString],
+            'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable',
             //'map_id' => ['required_without:user_id', 'numeric', 'exists:maps,uuid'],
         ]);
@@ -63,10 +63,10 @@ class IncidentController extends Controller
         //$location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
         $point = new Point($request->lng, $request->lat);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
-                ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
+                ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
             );
             $request->merge(['category' => $category->id]);
         }
@@ -105,7 +105,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -119,7 +119,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**
@@ -151,8 +151,10 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Map $map, Incident $incident)
     {
-        Incident::find($request->input('id'));
+        //return $incident->token;
+        $this->authorize('forceDelete', $incident);
+        $incident->delete();
     }
 }

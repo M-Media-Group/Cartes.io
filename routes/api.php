@@ -30,7 +30,8 @@ Route::middleware('throttle:3|10,1')->group(function () {
     Route::post('maps', 'MapController@store');
 });
 
-Route::middleware('throttle:20|60,1')->group(function () {
+Route::middleware('throttle:30|120,1')->group(function () {
     Route::post('maps/{map}/incidents', 'IncidentController@store');
     Route::put('maps/{map}', 'MapController@update');
+    Route::delete('maps/{map}/incidents/{incident}', 'IncidentController@destroy');
 });
