@@ -36,22 +36,23 @@ class IncidentPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create( ? User $user, Map $map, $token = null)
+    public function create(?User $user, Map $map, $token = null)
     {
-
         if ($token == $map->token) {
             return true;
-        } else if ($map->users_can_create_incidents == 'yes') {
+        } elseif ($map->users_can_create_incidents == 'yes') {
             return true;
-        } else if ($map->users_can_create_incidents == 'only_logged_in') {
+        } elseif ($map->users_can_create_incidents == 'only_logged_in') {
             if (request()->is('api*')) {
                 $user = request()->user('api');
-                if (!$user) {
+                if (! $user) {
                     return false;
                 }
             }
+
             return $user->hasVerifiedEmail() && $user->can('create incidents');
         }
+
         return false;
     }
 

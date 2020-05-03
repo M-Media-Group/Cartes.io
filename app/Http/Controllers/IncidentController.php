@@ -43,7 +43,7 @@ class IncidentController extends Controller
     public function store(Request $request, Map $map)
     {
         //return $request->input("map_token");
-        $this->authorize('create', [Incident::class, $map, $request->input("map_token")]);
+        $this->authorize('create', [Incident::class, $map, $request->input('map_token')]);
 
         //return Auth::id();
 
@@ -63,7 +63,7 @@ class IncidentController extends Controller
         //$location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
         $point = new Point($request->lng, $request->lat);
 
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/vendor/leaflet/dist/marker-icon-2x.png']
@@ -105,7 +105,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -119,7 +119,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
+        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
     }
 
     /**
