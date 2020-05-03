@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
+        //$this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
     }
 
     /**
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->is('api*')) {
-            return response()->json(Category::with('incidents')->withCount('views')->simplePaginate(7));
+            return Category::withCount('views')->get();
         } else {
             return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
         }
