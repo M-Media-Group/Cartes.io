@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
+        //$this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
     }
 
     /**
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->is('api*')) {
-            return response()->json(Category::with('incidents')->withCount('views')->simplePaginate(7));
+            return Category::withCount('views')->get();
         } else {
             return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
         }
@@ -81,7 +81,7 @@ class CategoryController extends Controller
     public function show(Request $request, $slug)
     {
         $category = Category::where('slug', $slug)->with('incidents')->firstOrFail();
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -136,7 +136,7 @@ class CategoryController extends Controller
             ]
         );
 
-        return redirect('/categories/'.str_slug($request->input('name')));
+        return redirect('/categories/' . str_slug($request->input('name')));
     }
 
     /**

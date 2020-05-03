@@ -94,10 +94,10 @@
                 ))
 
             axios
-              .get('/api/categories')
+              .get('/api/categories?paginate=false')
               .then(response => (
                 //console.log(response.data.data)
-                this.categories = response.data.data
+                this.categories = response.data
                 ))
 
             Echo.channel('maps.'+this.map_id).listen('IncidentCreated', (e) => {
