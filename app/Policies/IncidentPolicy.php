@@ -36,7 +36,7 @@ class IncidentPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create( ? User $user, Map $map, $token = null)
+    public function create(?User $user, Map $map, $token = null)
     {
         if ($token == $map->token) {
             return true;
@@ -45,7 +45,7 @@ class IncidentPolicy
         } elseif ($map->users_can_create_incidents == 'only_logged_in') {
             if (request()->is('api*')) {
                 $user = request()->user('api');
-                if (!$user) {
+                if (! $user) {
                     return false;
                 }
             }
@@ -113,7 +113,7 @@ class IncidentPolicy
      * @param  \App\Models\Incident  $incident
      * @return mixed
      */
-    public function forceDelete( ? User $user, Incident $incident)
+    public function forceDelete(?User $user, Incident $incident)
     {
         if ($user && $incident->user_id == $user->id) {
             return true;
