@@ -7,13 +7,14 @@
           <l-popup>
             <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
               <label class="my-1 mr-2">Report incident:</label>
-              <multiselect v-model="fullCategory" @input="handleSelectInput" deselect-label="Can't remove this value" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="true" :allow-empty="false" :taggable="true"
+              <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" :optionsLimit="10"
               @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
+              <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
-                <template slot="option" slot-scope=" props "><img class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
+                <template slot="option" slot-scope=" props "><img v-if="props.option.icon" class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
                 </template>
               </multiselect>
-              <input type="submit" value="Report" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
+              <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
             </form>
           </l-popup>
         </l-layer-group>
@@ -21,7 +22,7 @@
         <l-marker-cluster>
           <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
             <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]"/>
-            <l-popup @ready="openPopup"><b>{{incident.category.name}} reported in the area.</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/>
+            <l-popup @ready="openPopup"><b>{{incident.category.name}}</b><br/>Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br/>
             <button class="btn btn-danger btn-sm my-1" v-if="checkForLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
             </l-popup>
           </l-marker>
@@ -66,7 +67,7 @@
               incidents: [],
               categories: [],
               new_message: '',
-              fullCategory: {},
+              fullCategory: {id: null, name: ''},
               submit_data: {
                 lat: 0,
                 lng: 0,

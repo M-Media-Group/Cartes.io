@@ -104,7 +104,7 @@ body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .
 // }
 
 .leaflet-control-geocoder-alternatives li, .card {
-	color: #202325;
+	//color: #202325;
 }
 // .leaflet-popup-tip, .leaflet-popup-content-wrapper {
 // 	background-color: #343a40!important;
@@ -112,6 +112,7 @@ body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .
 // }
 .leaflet-container {
     font-size: 0.8rem !important;
+    background-color: var(--dark);
 }
 span.fa {
 	color: #404040;
