@@ -66,7 +66,8 @@
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
-            <details class="mt-5 mb-5 small">
+            <a class="btn btn-danger mt-3" v-if="canEdit" @click="deleteMap" :disabled="submit_data.loading">Delete map</a>
+            <details class="mt-3 mb-3 small">
                 <summary>
                     <dt class="d-inline text-muted">Developer info</dt>
                 </summary>
@@ -172,7 +173,25 @@ export default {
                     console.log(error);
                     alert(error.message);
                 });
-        }
+        },
+        deleteMap(id) {
+            if(!confirm('You\'ll never see this map again. Are you sure?')) {
+              return;
+            }
+            this.submit_data.loading = true;
+            axios
+                .delete('/api/maps/' + this.map_id, { data: { token: this.submit_data.token } })
+                .then((res) => {
+                   alert('This map has gone with the wind!')
+                   window.location.href = "/";
+                    this.submit_data.loading = false;
+                })
+                .catch((error) => {
+                    this.submit_data.loading = false
+                    //console.log(error);
+                    alert(error.message);
+                });;
+        },
     }
 }
 

@@ -4,12 +4,13 @@ namespace App\Events;
 
 use App\Models\Incident;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
 class IncidentCreated implements ShouldBroadcast
 {
-    use SerializesModels;
+    use SerializesModels, InteractsWithSockets;
 
     public $incident;
 
@@ -41,6 +42,6 @@ class IncidentCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('maps.'.$this->incident->map->uuid);
+        return new Channel('maps.' . $this->incident->map->uuid);
     }
 }

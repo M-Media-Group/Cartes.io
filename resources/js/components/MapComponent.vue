@@ -3,6 +3,7 @@
         <l-map :zoom="4" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
+            <v-geosearch :options="geosearchOptions"></v-geosearch>
             <l-layer-group ref="hello_popup">
                 <l-popup>
                     <form method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
@@ -124,10 +125,12 @@ import { LMap, LTileLayer, LLayerGroup, LMarker, LPopup, LIcon } from 'vue2-leaf
 import Vue2LeafletLocatecontrol from 'vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol';
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import Multiselect from 'vue-multiselect';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import VGeosearch from 'vue2-leaflet-geosearch';
 
 export default {
     props: ['map_id', 'map_token'],
-    components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect },
+    components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch},
     data() {
         return {
             center: L.latLng(43.7040, 7.3111),
@@ -145,6 +148,19 @@ export default {
                 category_name: '',
                 loading: false,
                 map_token: this.map_token
+            },
+            geosearchOptions: {
+                // Important part Here
+                provider: new OpenStreetMapProvider(),
+                style: 'bar',
+                autoClose: true,
+                showPopup: true,
+                showMarker: false,
+                keepResult: true,
+                marker: {
+                    // icon: greenIcon,
+                    draggable: false,
+                },
             }
         }
     },
@@ -250,6 +266,7 @@ export default {
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
+                    this.incidents.push(res.data);
                     localStorage['post_' + res.data.id] = res.data.token
                     dataLayer.push({ event: 'marker-create' });
                 })
@@ -274,6 +291,7 @@ export default {
 @import "~leaflet.markercluster/dist/MarkerCluster.css";
 @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 @import '~vue-multiselect/dist/vue-multiselect.min.css';
+@import 'https://unpkg.com/leaflet-geosearch@2.6.0/assets/css/leaflet.css';
 
 .map-notification {
     position: fixed;
