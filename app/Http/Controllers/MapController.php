@@ -31,6 +31,7 @@ class MapController extends Controller
                     $q->whereIn('category_id', $category_ids);
                 });
             });
+
             return $query->get();
         } else {
             return view('map');
@@ -86,7 +87,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/' . $result->slug)->with('token', $result->token);
+            return redirect('/maps/'.$result->slug)->with('token', $result->token);
         }
     }
 
@@ -98,7 +99,6 @@ class MapController extends Controller
      */
     public function show(Request $request, Map $map)
     {
-
         $data = [
             'token' => $request->is('api*') ? null : $request->session()->get('token'),
             'map' => $map->load('categories'),
@@ -135,7 +135,7 @@ class MapController extends Controller
             'token' => 'required|exists:maps,token',
 
             'title' => 'nullable|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',
