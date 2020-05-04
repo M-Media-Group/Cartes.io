@@ -9,7 +9,7 @@
         <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">{{map.description}}</p>
         <p v-else>This map has no description.</p>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-5 mt-5 mt-md-0">
         <navigator-share
         v-bind:on-error="onShareError"
         v-bind:url="map_url"

@@ -54,7 +54,7 @@ class IncidentController extends Controller
         $request->validate([
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
-            'lng' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable',
             //'map_id' => ['required_without:user_id', 'numeric', 'exists:maps,uuid'],
