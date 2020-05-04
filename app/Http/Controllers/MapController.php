@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Map;
-use Feeds;
 use Illuminate\Http\Request;
 use Uuid;
 use View;
@@ -18,14 +17,20 @@ class MapController extends Controller
     public function index(Request $request)
     {
         //return $request->input('ids');
+        $category_ids = $request->input('category_ids');
         if ($request->is('api*')) {
-            $query = Map::withCount('incidents');
+            $query = Map::with('categories')->withCount('incidents');
             if ($request->input('ids')) {
                 $query->whereIn('uuid', $request->input('ids'));
             } else {
                 $query->where('privacy', 'public');
             }
 
+            $query->when($request->input('category_ids'), function ($query, $category_ids) {
+                return $query->whereHas('categories', function ($q) use ($category_ids) {
+                    $q->whereIn('category_id', $category_ids);
+                });
+            });
             return $query->get();
         } else {
             return view('map');
@@ -81,7 +86,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/'.$result->slug)->with('token', $result->token);
+            return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
     }
 
@@ -93,20 +98,17 @@ class MapController extends Controller
      */
     public function show(Request $request, Map $map)
     {
-        $feed = Feeds::make([
-            'https://www.reddit.com/r/breakingnews/.rss', 'https://www.reddit.com/r/news/.rss', 'http://feeds.bbci.co.uk/news/world/rss.xml', 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en',
-        ]);
+
         $data = [
-            'title' => $feed->get_title(),
-            'permalink' => $feed->get_permalink(),
-            'items' => $feed->get_items(),
-            'token' => $request->session()->get('token'),
-            'map' => $map,
+            'token' => $request->is('api*') ? null : $request->session()->get('token'),
+            'map' => $map->load('categories'),
         ];
 
-        return View::make('map', $data);
+        if ($request->is('api*')) {
+            return $map;
+        }
 
-        return $map;
+        return View::make('map', $data);
     }
 
     /**
@@ -133,7 +135,7 @@ class MapController extends Controller
             'token' => 'required|exists:maps,token',
 
             'title' => 'nullable|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',

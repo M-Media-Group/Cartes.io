@@ -11,6 +11,9 @@
     <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
     <p class="card-text small">{{map.incidents_count}} reports · Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
     <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
+    <div v-if="map.categories" class="d-flex mt-3">
+      <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
+    </div>
   </div>
 </div>
 
@@ -26,6 +29,9 @@
     <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
     <p class="card-text small">{{map.incidents_count}} reports</p>
     <a :href="/maps/+map.uuid" class="btn btn-primary">See map</a>
+    <div v-if="map.categories" class="d-flex mt-3">
+      <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
+    </div>
   </div>
 </div>
 
@@ -59,7 +65,6 @@
                 ids.push(key.replace('map_', ''))
               }
             });
-               console.log(ids);
             axios
               .get('/api/maps')
               .then(response => (

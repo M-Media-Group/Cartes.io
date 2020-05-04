@@ -23,6 +23,8 @@ Route::resource('users', 'UserController');
 
 Route::get('maps/{map}/incidents', 'IncidentController@index');
 
+Route::get('maps/{map}', 'MapController@show');
+
 Route::get('maps', 'MapController@index');
 
 Route::middleware('throttle:3|10,1')->group(function () {
