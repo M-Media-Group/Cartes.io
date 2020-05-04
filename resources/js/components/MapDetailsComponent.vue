@@ -13,7 +13,7 @@
         <navigator-share
         v-bind:on-error="onShareError"
         v-bind:url="map_url"
-        v-bind:title="submit_data.title"
+        v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'"
         v-bind:text="submit_data.description"
         class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
         <div class="card bg-dark text-white mb-3" v-if="canEdit">
@@ -103,7 +103,7 @@
       },
         data() {
             return {
-              token: this.map_token,
+              //token: this.map_token,
               submit_data: {
                 title: this.map.title,
                 description: this.map.description,
@@ -116,9 +116,11 @@
           },
           mounted () {
 
-            if(localStorage['map_'+this.map_id]) {
-              this.token = localStorage['map_'+this.map_id]
+            if(localStorage['map_'+this.map_id] && !this.submit_data.token) {
+              //this.token = localStorage['map_'+this.map_id]
               this.submit_data.token = localStorage['map_'+this.map_id]
+            } else if (this.submit_data.token) {
+              localStorage['map_'+this.map_id] = this.submit_data.token
             }
 
           },
@@ -127,7 +129,7 @@
               return window.location.href;
             },
               canEdit() {
-                  return this.token.length > 0 ? true : false;
+                  return this.submit_data.token ? true : false;
               }
           },
 
