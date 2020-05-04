@@ -66,7 +66,7 @@
               }
             });
             axios
-              .get('/api/maps')
+              .get('/api/maps?orderBy=incidents_count')
               .then(response => (
                 this.public_maps = response.data
                 ))

@@ -83,7 +83,7 @@
             <code>GET /api/maps/{{map.uuid}}</code>
           </div>
           <div class="mb-3">
-            <p class="mb-0">Get all the incidents on this map</p>
+            <p class="mb-0">Get all the markers on this map</p>
             <code>GET /api/maps/{{map.uuid}}/incidents</code>
           </div>
         </div>

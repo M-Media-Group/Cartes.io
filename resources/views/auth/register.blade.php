@@ -110,7 +110,7 @@
                             </div>
                         </div> --}}
                         <div class="row">
-                            <p class="col-md-6 offset-md-4">None of this data is publicly visible. You remain anonymous when reporting incidents.</p>
+                            <p class="col-md-6 offset-md-4">None of this data is publicly visible. Maps and markers you create will be linked to your account.</p>
                             <p class="col-md-6 offset-md-4">By registering you understand the <a href="/privacy-policy">privacy policy</a> and agree to the <a href="terms-and-conditions">terms and conditions</a>.</p>
                         </div>
                         <div class="form-group row mb-0">

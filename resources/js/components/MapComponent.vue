@@ -6,7 +6,7 @@
           <l-layer-group ref="hello_popup">
           <l-popup>
             <form method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
-              <label class="my-1 mr-2">Report incident:</label>
+              <label class="my-1 mr-2">Marker label:</label>
               <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" :optionsLimit="10"
               @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
               <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
@@ -29,7 +29,7 @@
         </l-marker-cluster>
     </l-map>
     <div class="alert alert-primary map-notification" role="alert" v-if="new_message">
-      <h4 class="alert-heading">A new incident was reported</h4>
+      <h4 class="alert-heading">A new marker was created</h4>
       <p class="mb-0">{{new_message}}</p>
       <!-- <hr>
       <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p> -->
@@ -96,7 +96,7 @@
                 ))
 
             axios
-              .get('/api/categories?paginate=false')
+              .get('/api/categories')
               .then(response => (
                 //console.log(response.data.data)
                 this.categories = response.data

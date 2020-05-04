@@ -1,20 +1,20 @@
 @extends('layouts.clean')
 
 @section('content')
-<h1>Before you start reporting incidents, we need you to read our rules</h1>
+<h1>Before you start creating maps, we need you to read our rules</h1>
 <br/>
 <div class="card bg-dark text-white">
   <img class="card-img-top" src="/images/correct-mapping-1.jpg" alt="Card image">
   <div class="card-body">
-    <h5 class="card-title"><b>Be as accurate as possible</b> when reporting locations of incidents</h5>
-    <p class="card-text">Report exactly where the incidents are. If there's intersections blocked off, mark the ends of each street to where the incident extends to. If an incident extends across multiple streets, report where the incident is on each street.</p>
-    <p class="card-text">Avoid reporting incidents that are already marked on the map. Instead, confirm or deny these existing reports.</p>
+    <h5 class="card-title"><b>Be as accurate as possible</b> when creating markers</h5>
+    <p class="card-text">Report exactly where the marker should be. Zoom in all the way for the best accuracy.</p>
+    <p class="card-text">Avoid creating duplicate markers. Instead, confirm or deny these existing markers.</p>
   </div>
 </div>
 <div class="card bg-dark text-white mt-5">
   <img class="card-img-top" src="/images/correct-mapping-2.jpg" alt="Card image">
   <div class="card-body">
-    <h5 class="card-title">Be respectful of the law and <b>don't report locations of incidents if it breaks local laws, reveals classified or sensitive information, and/or causes more harm than good</b></h5>
+    <h5 class="card-title">Be respectful of the law and <b>don't report locations if it breaks local laws, reveals classified or sensitive information, and/or causes more harm than good</b></h5>
     <p class="card-text">Use common sense and be aware of how your actions affect others.</p>
   </div>
 </div>

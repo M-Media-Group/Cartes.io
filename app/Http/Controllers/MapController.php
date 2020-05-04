@@ -32,6 +32,8 @@ class MapController extends Controller
                 });
             });
 
+            $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
+
             return $query->get();
         } else {
             return view('map');
