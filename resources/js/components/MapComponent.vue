@@ -82,14 +82,12 @@
 
             new L.Hash(this.$refs.map.mapObject);
 
-            if(localStorage['map_'+this.map_id] && !this.submit_data.map_token) {
+            if(localStorage.getItem('map_'+this.map_id) && !this.submit_data.map_token) {
               //this.token = localStorage['map_'+this.map_id]
-              this.submit_data.token = localStorage['map_'+this.map_id]
+              this.submit_data.map_token = localStorage.getItem('map_'+this.map_id)
             } else if (this.submit_data.token) {
               localStorage['map_'+this.map_id] = this.submit_data.map_token
             }
-
-              this.submit_data.map_token = localStorage['map_'+this.map_id]
 
             axios
               .get('/api/maps/'+this.map_id+'/incidents')
