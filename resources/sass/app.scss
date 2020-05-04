@@ -125,7 +125,9 @@ span.fa {
         position: absolute;
     }
 }
-
+.leaflet-control-geosearch form {
+  max-width: 250px;
+}
 .leaflet-control-geosearch .results > * {
   color:#333 !important;
 }
