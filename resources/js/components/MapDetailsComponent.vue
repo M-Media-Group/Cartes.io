@@ -5,7 +5,7 @@
         <h1 v-else-if="submit_data.title" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">{{map.title}}</h1>
         <h1 v-else>Untitled map</h1>
 
-        <p v-if="(!map || !map.description) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">Click to edit the map description.</p>
+        <p v-if="(!map || !map.description) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">Right click on the map to add markers. Click here to edit the map description.</p>
         <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">{{map.description}}</p>
         <p v-else>This map has no description.</p>
     </div>
