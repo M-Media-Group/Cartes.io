@@ -6,8 +6,9 @@ use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Incident extends Model
+class Incident extends Pivot
 {
     use SpatialTrait;
     /**
@@ -15,6 +16,7 @@ class Incident extends Model
      *
      * @var array
      */
+    protected $table = 'incidents';
     protected $fillable = [
         'category_id',
         'user_id',

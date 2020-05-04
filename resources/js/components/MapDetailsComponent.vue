@@ -69,6 +69,25 @@
         </div>
         <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
         <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
+        <div v-if="map.categories" class="d-flex mt-3">
+          <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
+        </div>
+        <details class="mt-5 mb-5 small">
+        <summary>
+            <dt class="d-inline text-muted">Developer info</dt>
+        </summary>
+        <div>
+          <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps.</p>
+          <div class="mb-3">
+            <p class="mb-0">Get this map</p>
+            <code>GET /api/maps/{{map.uuid}}</code>
+          </div>
+          <div class="mb-3">
+            <p class="mb-0">Get all the incidents on this map</p>
+            <code>GET /api/maps/{{map.uuid}}/incidents</code>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
   </template>

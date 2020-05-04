@@ -105,6 +105,7 @@ class IncidentController extends Controller
      */
     public function show(Request $request, Incident $qr)
     {
+        return false;
         if (! $request->user()) {
             $user_id = null;
         } else {

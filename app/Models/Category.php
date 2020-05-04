@@ -16,6 +16,7 @@ class Category extends Model
         'slug',
         'icon',
     ];
+    protected $hidden = ['pivot'];
 
     public function user()
     {
@@ -26,6 +27,11 @@ class Category extends Model
     {
         return $this->hasMany(\App\Models\Incident::class);
     }
+
+    // public function maps()
+    // {
+    //     return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Incident::class);
+    // }
 
     public function views()
     {
