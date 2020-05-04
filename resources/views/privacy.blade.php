@@ -8,7 +8,7 @@
 <li>When you create a map and you are logged out, none of your personal information is stored on our servers.</li>
 <li>When you create a marker/incident on the map and you are logged out, none of your personal information is stored on our servers.</li>
 <li>When you are logged in, we associate any actions you take and rescources you make (like creating a map or a marker) with your account.</li>
-<li>When you consent to cookies, we share personally identifying info (such as your IP address) with Google Analytics and Facebook. This data is NOT stored on our servers. Rest assured we're not interested in your individual data, we look for aggregate data and patterns on the website which helps us continously improve everyones experience. You do not need to accept cookies for this website to function.</li>
+<li>When you consent to cookies, we share personally identifying info (such as your IP address) with Google Analytics and Facebook. This data is NOT stored on our servers. Rest assured we're not interested in your individual data, we look for aggregate data and patterns on the website which helps us continuously improve everyones experience. You do not need to accept cookies for this website to function.</li>
 </ol>
 <h2>Original policy text</h2>
 <p>Your privacy is important to us. It is {{ config('app.name') }}'s policy to respect your privacy regarding any information we may collect from you across our website, <a href="{{ config('app.url') }}">{{ config('app.url') }}</a>, and other sites we own and operate.</p>

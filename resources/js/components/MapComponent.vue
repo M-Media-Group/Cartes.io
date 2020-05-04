@@ -82,9 +82,13 @@
 
             new L.Hash(this.$refs.map.mapObject);
 
-            if(this.map_token) {
-              localStorage['map_'+this.map_id] = this.map_token
+            if(localStorage['map_'+this.map_id] && !this.submit_data.map_token) {
+              //this.token = localStorage['map_'+this.map_id]
+              this.submit_data.token = localStorage['map_'+this.map_id]
+            } else if (this.submit_data.token) {
+              localStorage['map_'+this.map_id] = this.submit_data.map_token
             }
+
               this.submit_data.map_token = localStorage['map_'+this.map_id]
 
             axios
