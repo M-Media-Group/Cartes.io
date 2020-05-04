@@ -152,7 +152,7 @@ export default {
             geosearchOptions: {
                 // Important part Here
                 provider: new OpenStreetMapProvider(),
-                style: 'bar',
+                style: 'button',
                 autoClose: true,
                 showPopup: true,
                 showMarker: false,
@@ -305,5 +305,4 @@ export default {
 .your_custom_class>>>.multiselect__option::after {
     background: var(--primary);
 }
-
 </style>
