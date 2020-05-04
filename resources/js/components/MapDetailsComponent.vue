@@ -63,8 +63,8 @@
             </div>
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
             <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
-            <div v-if="map.categories" class="d-flex mt-3">
-                <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
+            <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
+                <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
             <details class="mt-5 mb-5 small">
                 <summary>
