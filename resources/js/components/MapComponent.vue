@@ -5,7 +5,7 @@
           <l-locatecontrol/>
           <l-layer-group ref="hello_popup">
           <l-popup>
-            <form method="POST" id="reportForm" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
+            <form method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
               <label class="my-1 mr-2">Report incident:</label>
               <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" :optionsLimit="10"
               @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
