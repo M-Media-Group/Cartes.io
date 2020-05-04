@@ -1,197 +1,179 @@
 <template>
-  <div class="row">
-    <div class="col-md-7">
-        <h1 v-if="(!map || !map.title) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">Here's your new map!<small v-if="canEdit" class="text-muted"> (Click to edit)</small></h1>
-        <h1 v-else-if="submit_data.title" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">{{map.title}}</h1>
-        <h1 v-else>Untitled map</h1>
-
-        <p v-if="(!map || !map.description) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">Right click on the map to add markers. Click here to edit the map description.</p>
-        <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">{{map.description}}</p>
-        <p v-else>This map has no description.</p>
-    </div>
-    <div class="col-md-5 mt-5 mt-md-0">
-        <navigator-share
-        v-bind:on-error="onShareError"
-        v-bind:url="map_url"
-        v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'"
-        v-bind:text="submit_data.description"
-        class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
-        <div class="card bg-dark text-white mb-3" v-if="canEdit">
-          <div class="card-header">Map settings</div>
-          <div class="card-body">
-            <div class="form-group row">
-              <label for="password-confirm" class="col-md-12 col-form-label">Who can see this map</label>
-              <div class="col-md-12">
-               <div class="form-check">
-                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios1" value="public" :checked="submit_data.privacy == 'public' ? true : false" @input="handleSelectInput($event, 'privacy')">
-                <label class="form-check-label" for="exampleRadios1">
-                  Everyone <small>(make this map public)</small>
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios2" value="unlisted" @input="handleSelectInput($event, 'privacy')" :checked="submit_data.privacy == 'unlisted' ? true : false">
-                <label class="form-check-label" for="exampleRadios2">
-                  Only people with a link
-                </label>
-              </div>
-              <div class="form-check disabled">
-                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios3" value="private" disabled @input="handleSelectInput($event, 'privacy')">
-                <label class="form-check-label" for="exampleRadios3">
-                  No one
-                </label>
-              </div>
-              </div>
+    <div class="row">
+        <div class="col-md-7">
+            <h1 v-if="(!map || !map.title) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">Here's your new map!<small v-if="canEdit" class="text-muted"> (Click to edit)</small></h1>
+            <h1 v-else-if="submit_data.title" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">{{map.title}}</h1>
+            <h1 v-else>Untitled map</h1>
+            <p v-if="(!map || !map.description) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">Right click on the map to add markers. Click here to edit the map description.</p>
+            <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')">{{map.description}}</p>
+            <p v-else>This map has no description.</p>
+        </div>
+        <div class="col-md-5 mt-5 mt-md-0">
+            <navigator-share v-bind:on-error="onShareError" v-bind:url="map_url" v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'" v-bind:text="submit_data.description" class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
+            <div class="card bg-dark text-white mb-3" v-if="canEdit">
+                <div class="card-header">Map settings</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="password-confirm" class="col-md-12 col-form-label">Who can see this map</label>
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios1" value="public" :checked="submit_data.privacy == 'public' ? true : false" @input="handleSelectInput($event, 'privacy')">
+                                <label class="form-check-label" for="exampleRadios1">
+                                    Everyone <small>(make this map public)</small>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios2" value="unlisted" @input="handleSelectInput($event, 'privacy')" :checked="submit_data.privacy == 'unlisted' ? true : false">
+                                <label class="form-check-label" for="exampleRadios2">
+                                    Only people with a link
+                                </label>
+                            </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="privacy" id="exampleRadios3" value="private" disabled @input="handleSelectInput($event, 'privacy')">
+                                <label class="form-check-label" for="exampleRadios3">
+                                    No one
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password-confirm" class="col-md-12 col-form-label">Who can create markers</label>
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios4" value="yes" :checked="submit_data.users_can_create_incidents == 'yes' ? true : false" @input="handleSelectInput($event, 'users_can_create_incidents')">
+                                <label class="form-check-label" for="exampleRadios4">
+                                    Anyone
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios5" value="only_logged_in" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'only_logged_in' ? true : false">
+                                <label class="form-check-label" for="exampleRadios5">
+                                    Only people that are logged in<br /><small>(You can still add markers even if not logged in)</small>
+                                </label>
+                            </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios6" value="no" disabled @input="handleSelectInput($event, 'no')">
+                                <label class="form-check-label" for="exampleRadios6">
+                                    No one
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group row">
-              <label for="password-confirm" class="col-md-12 col-form-label">Who can create markers</label>
-              <div class="col-md-12">
-               <div class="form-check">
-                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios4" value="yes" :checked="submit_data.users_can_create_incidents == 'yes' ? true : false" @input="handleSelectInput($event, 'users_can_create_incidents')">
-                <label class="form-check-label" for="exampleRadios4">
-                  Anyone
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios5" value="only_logged_in" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'only_logged_in' ? true : false">
-                <label class="form-check-label" for="exampleRadios5">
-                  Only people that are logged in<br/><small>(You can still add markers even if not logged in)</small>
-                </label>
-              </div>
-              <div class="form-check disabled">
-                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios6" value="no" disabled @input="handleSelectInput($event, 'no')">
-                <label class="form-check-label" for="exampleRadios6">
-                  No one
-                </label>
-              </div>
-              </div>
+            <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
+            <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
+            <div v-if="map.categories" class="d-flex mt-3">
+                <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
-          </div>
+            <details class="mt-5 mb-5 small">
+                <summary>
+                    <dt class="d-inline text-muted">Developer info</dt>
+                </summary>
+                <div>
+                    <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps.</p>
+                    <div class="mb-3">
+                        <p class="mb-0">Get this map</p>
+                        <code>GET /api/maps/{{map.uuid}}</code>
+                    </div>
+                    <div class="mb-3">
+                        <p class="mb-0">Get all the markers on this map</p>
+                        <code>GET /api/maps/{{map.uuid}}/incidents</code>
+                    </div>
+                </div>
+            </details>
         </div>
-        <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
-        <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
-        <div v-if="map.categories" class="d-flex mt-3">
-          <a href="#" class="badge badge-secondary mr-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
-        </div>
-        <details class="mt-5 mb-5 small">
-        <summary>
-            <dt class="d-inline text-muted">Developer info</dt>
-        </summary>
-        <div>
-          <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps.</p>
-          <div class="mb-3">
-            <p class="mb-0">Get this map</p>
-            <code>GET /api/maps/{{map.uuid}}</code>
-          </div>
-          <div class="mb-3">
-            <p class="mb-0">Get all the markers on this map</p>
-            <code>GET /api/maps/{{map.uuid}}/incidents</code>
-          </div>
-        </div>
-      </details>
     </div>
-  </div>
-  </template>
-
+</template>
 <script>
-  import NavigatorShare from 'vue-navigator-share'
-  import copy from 'copy-to-clipboard';
+import NavigatorShare from 'vue-navigator-share'
+import copy from 'copy-to-clipboard';
 
-    export default {
-      props: ['map_id', 'map_token', 'map'],
-      components: {
+export default {
+    props: ['map_id', 'map_token', 'map'],
+    components: {
         NavigatorShare
-      },
-        data() {
-            return {
-              //token: this.map_token,
-              submit_data: {
+    },
+    data() {
+        return {
+            submit_data: {
                 title: this.map.title,
                 description: this.map.description,
                 token: this.map_token,
                 privacy: this.map.privacy,
                 users_can_create_incidents: this.map.users_can_create_incidents,
                 loading: false
-              }
             }
-          },
-          mounted () {
+        }
+    },
+    mounted() {
+        if (localStorage['map_' + this.map_id] && !this.submit_data.token) {
+            this.submit_data.token = localStorage['map_' + this.map_id]
+        } else if (this.submit_data.token) {
+            localStorage['map_' + this.map_id] = this.submit_data.token
+        }
+    },
+    computed: {
+        map_url() {
+            return window.location.href;
+        },
+        canEdit() {
+            return this.submit_data.token ? true : false;
+        }
+    },
 
-            if(localStorage['map_'+this.map_id] && !this.submit_data.token) {
-              //this.token = localStorage['map_'+this.map_id]
-              this.submit_data.token = localStorage['map_'+this.map_id]
-            } else if (this.submit_data.token) {
-              localStorage['map_'+this.map_id] = this.submit_data.token
-            }
-
-          },
-          computed: {
-            map_url() {
-              return window.location.href;
-            },
-              canEdit() {
-                  return this.submit_data.token ? true : false;
-              }
-          },
-
-          watch: {
-              title: function (newQuestion, oldQuestion) {
-                this.submit_data.title = 'Waiting for you to stop typing...'
-                this.debouncedGetAnswer()
-              }
-          },
-          created: function () {
-            // _.debounce is a function provided by lodash to limit how
-            // often a particularly expensive operation can be run.
-            // In this case, we want to limit how often we access
-            // yesno.wtf/api, waiting until the user has completely
-            // finished typing before making the ajax request. To learn
-            // more about the _.debounce function (and its cousin
-            // _.throttle), visit: https://lodash.com/docs#debounce
-            this.debouncedGetAnswer = _.debounce(this.submitForm, 750)
-            //this.foo = _.debounce(function(){}, 1000);
-          },
-          methods: {
-            onShareError (e) {
-             copy(this.map_url, {
-              message: 'Press #{key} to copy',
-              onCopy: alert('Link copied')
+    watch: {
+        title: function(newQuestion, oldQuestion) {
+            this.submit_data.title = 'Waiting for you to stop typing...'
+            this.debouncedGetAnswer()
+        }
+    },
+    created: function() {
+        // _.debounce is a function provided by lodash to limit how
+        // often a particularly expensive operation can be run.
+        // In this case, we want to limit how often we access
+        // yesno.wtf/api, waiting until the user has completely
+        // finished typing before making the ajax request. To learn
+        // more about the _.debounce function (and its cousin
+        // _.throttle), visit: https://lodash.com/docs#debounce
+        this.debouncedGetAnswer = _.debounce(this.submitForm, 750)
+    },
+    methods: {
+        onShareError(e) {
+            copy(this.map_url, {
+                message: 'Press #{key} to copy',
+                onCopy: alert('Link copied')
             });
-           },
-            handleSelectInput (val, type) {
-              if (type == 'privacy' || type == 'users_can_create_incidents') {
+        },
+        handleSelectInput(val, type) {
+            if (type == 'privacy' || type == 'users_can_create_incidents') {
                 this.submit_data[type] = val.target.value
-              } else {
+            } else {
                 this.submit_data[type] = val.target.innerText
-              }
-              this.debouncedGetAnswer()
-            },
-            checkForLocalStorageKey (id) {
-              if (localStorage['map_'+id]) {
+            }
+            this.debouncedGetAnswer()
+        },
+        checkForLocalStorageKey(id) {
+            if (localStorage['map_' + id]) {
                 return true
-              }
-              return false
+            }
+            return false
 
-            },
-            submitForm(event) {
-              this.submit_data.loading = true;
-              axios
-                .put('/api/maps/'+this.map_id, this.submit_data) // change this to post )
+        },
+        submitForm(event) {
+            this.submit_data.loading = true;
+            axios
+                .put('/api/maps/' + this.map_id, this.submit_data) // change this to post )
                 .then((res) => {
-
-                    //console.log(res.data);
-                    //this.incidents.push(res.data);
                     this.submit_data.loading = false
-                    //alert('saved');
                 })
                 .catch((error) => {
                     this.submit_data.loading = false
                     console.log(error);
                     alert(error.message);
-                    //alert('You must be logged in and have permssion to post. Please log in or register.');
-                });            }
-          }
+                });
+        }
     }
+}
+
 </script>
-<style scoped>
- 
-</style>
