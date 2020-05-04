@@ -1,11 +1,11 @@
 @extends('layouts.clean', ['index_and_googlebots' => $map->privacy == 'public' ? true : false])
 
-@section('title', $map->title)
+@section('title', $map->title ?? "Untitled map")
 @section('meta_description', $map->description)
 @section('meta_image', config('app.url').'/images/map.jpg')
 
 @section('above_container')
-    <map-component map_id="{{$map->uuid}}" map_token="{{$token}}" style="height: 79vh;"></map-component>
+    <map-component map_id="{{$map->uuid}}" map_token="{{$token}}" style="height: 76vh;"></map-component>
 @endsection
 @section('content')
 <h1 style="display: none;">{{config('app.name')}}</h1>

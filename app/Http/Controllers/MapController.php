@@ -155,8 +155,9 @@ class MapController extends Controller
      * @param  \App\Models\Map  $map
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Map $map)
+    public function destroy(Request $request, Map $map)
     {
-        //
+        $validatedData = $request->validate(['token' => 'required|exists:maps,token']);
+        $map->delete();
     }
 }

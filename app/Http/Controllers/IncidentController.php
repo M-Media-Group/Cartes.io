@@ -92,7 +92,7 @@ class IncidentController extends Controller
         $result->location = $point;
         $result->save();
 
-        broadcast(new \App\Events\IncidentCreated($result));
+        broadcast(new \App\Events\IncidentCreated($result))->toOthers();
 
         return $result->makeVisible(['token'])->load('category');
     }

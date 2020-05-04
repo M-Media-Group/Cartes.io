@@ -16,14 +16,17 @@
   color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
-
+.leaflet-top {
+	top:3.5rem;
+}
 .navbar-transparent {
 	position: absolute;
-right: 0;
-left: 0;
-top:0.5rem;
-background: transparent;
-z-index: 1005;
+	right: 0;
+	left: 0;
+	top:0.5rem;
+	background: transparent;
+	z-index: 1005;
+  	box-shadow: none;
 }
 
 .navbar-transparent + div {
@@ -122,6 +125,15 @@ span.fa {
         position: absolute;
     }
 }
+
+.leaflet-control-geosearch .results > * {
+  color:#333 !important;
+}
+
 .card-title {
 	font-weight: 700;
+}
+.card {
+	max-width: 700px;
+	margin: 0 auto;
 }
