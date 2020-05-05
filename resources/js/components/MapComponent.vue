@@ -6,7 +6,7 @@
             <v-geosearch :options="geosearchOptions"></v-geosearch>
             <l-layer-group ref="hello_popup">
                 <l-popup>
-                    <form method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
+                    <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
                         <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" :optionsLimit="10" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
@@ -16,6 +16,8 @@
                         </multiselect>
                         <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
                     </form>
+                    <div v-else-if="canPost == 'only_logged_in'">You must be logged in to Cartes.io to post on this map.</div>
+                    <div v-else>You can't create markers on this map.</div>
                 </l-popup>
             </l-layer-group>
             <l-marker-cluster>
@@ -129,13 +131,13 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import VGeosearch from 'vue2-leaflet-geosearch';
 
 export default {
-    props: ['map_id', 'map_token'],
+    props: ['map_id', 'map_token', 'users_can_create_incidents'],
     components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch},
     data() {
         return {
             center: L.latLng(43.7040, 7.3111),
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             incidents: [],
             categories: [],
@@ -168,6 +170,8 @@ export default {
 
         new L.Hash(this.$refs.map.mapObject);
 
+          console.log(localStorage)
+
         if (localStorage.getItem('map_' + this.map_id) && !this.submit_data.map_token) {
             this.submit_data.map_token = localStorage.getItem('map_' + this.map_id)
         } else if (this.submit_data.token) {
@@ -189,6 +193,12 @@ export default {
     computed: {
         incidentsCount() {
             return this.incidents.length;
+        },
+        canPost() {
+          if (this.submit_data.map_token) {
+            return 'yes'
+          }
+          return this.users_can_create_incidents;
         },
         activeIncidents() {
             return this.incidents.filter(function(incident) {

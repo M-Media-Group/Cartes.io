@@ -9,7 +9,7 @@
             <p v-else>This map has no description.</p>
         </div>
         <div class="col-md-5 mt-5 mt-md-0">
-            <navigator-share v-bind:on-error="onShareError" v-bind:url="map_url" v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'" v-bind:text="submit_data.description" class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
+            <navigator-share v-bind:on-error="onShareError" v-bind:url="map_url" v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'" v-bind:text="submit_data.description ? submit_data.description : 'Here\'s my map'" class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
             <div class="card bg-dark text-white mb-3" v-if="canEdit">
                 <div class="card-header">Map settings</div>
                 <div class="card-body">
@@ -80,6 +80,10 @@
                     <div class="mb-3">
                         <p class="mb-0">Get all the markers on this map</p>
                         <code>GET /api/maps/{{map.uuid}}/incidents</code>
+                    </div>
+                    <div class="mb-3">
+                        <p class="mb-0">Embed this map on your website</p>
+                        <code>&lt;iframe src="https://incident-tracker.org/embeds/maps/{{map.uuid}}?type=map" width="100%" height="400" frameborder="0">&lt;/iframe></code>
                     </div>
                 </div>
             </details>

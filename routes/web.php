@@ -53,6 +53,8 @@ Route::post('/maps', 'MapController@store');
 
 Route::get('/maps/{map}', 'MapController@show');
 
+Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
+
 // Route::get('{slug?}', function () {
 //     //http://feeds.bbci.co.uk/news/world/rss.xml
 //     $feed = Feeds::make([

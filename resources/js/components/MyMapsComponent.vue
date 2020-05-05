@@ -2,61 +2,23 @@
     <div>
         <h2>Your maps</h2>
         <p>These are the maps that you've created on the site.</p>
-        <div class="card bg-dark text-white mb-5" v-for='map in private_maps' :key="map.id">
-            <map-component :map_id="map.uuid" style="height:250px;"></map-component>
-            <div v-if="map.categories" class="pl-1 pr-1 d-flex" style="top: 240px;z-index: 1001;overflow: scroll;width: 100%;position: absolute;">
-                <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
-                <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
-                <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">Open map</a>
-            </div>
-            <div class="card-footer">
-                <p class="card-text small text-secondary">{{map.incidents_count}} reports · Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
-            </div>
-        </div>
+        <map-card-component v-for='map in private_maps' :key="map.uuid" :map="map"></map-card-component>
         <div v-if="private_maps.length < 1" class="alert bg-dark">You have no maps yet. Create your first map or browse the public ones below.</div>
         <hr class="my-4">
         <h2 class="mt-5">Public maps</h2>
         <p>These maps are made by the community, and public.</p>
-        <div class="card bg-dark text-white mb-5" v-for='map in public_maps' :key="map.id">
-            <map-component :map_id="map.uuid" style="height:250px;"></map-component>
-            <div v-if="map.categories" class="pl-1 pr-1 d-flex" style="top: 240px;z-index: 1001;overflow: scroll;width: 100%;position: absolute;">
-                <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{{map.title ? map.title : "Untitled map"}}</h5>
-                <p class="card-text">{{ map.description | truncate(250, '...') }}</p>
-                <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">See map</a>
-            </div>
-            <div class="card-footer">
-                <p class="card-text small text-secondary">{{map.incidents_count}} reports</p>
-            </div>
-        </div>
+        <map-card-component v-for='map in public_maps' :key="'p_map'+map.uuid" :map="map"></map-card-component>
     </div>
 </template>
 <script>
 export default {
     data() {
         return {
-            zoom: 4,
             public_maps: [],
             private_maps: [],
-            submit_data: {
-                lat: 0,
-                lng: 0,
-                category: 0,
-                category_name: '',
-                loading: false
-            }
         }
     },
     mounted() {
-
-        if (localStorage['map_' + this.map_id]) {
-            this.token = localStorage['map_' + this.map_id]
-        }
         var ids = []
         Object.keys(localStorage).forEach(function(key) {
             if (key.includes('map_')) {
@@ -83,46 +45,15 @@ export default {
 
     },
     computed: {
-        canEdit() {
-            return this.token.length > 0 ? true : false;
-        }
+
     },
 
     watch: {
-        title: function(newQuestion, oldQuestion) {
-            this.title = 'Waiting for you to stop typing...'
-        }
+
     },
 
     methods: {
-        handleSelectInput(val) {
-            this.submit_data.fullCategory = val
-            this.submit_data.category = val.id
-            this.submit_data.category_name = val.name
-        },
-        checkForLocalStorageKey(id) {
-            if (localStorage['map_' + id]) {
-                return true
-            }
-            return false
 
-        },
-        submitForm(event) {
-            this.submit_data.loading = true;
-            axios
-                .post('/api/incidents', this.submit_data) // change this to post )
-                .then((res) => {
-                    this.$refs.hello_popup.mapObject.closePopup();
-                    this.submit_data.loading = false
-                    localStorage['post_' + res.data.id] = res.data.id
-
-                })
-                .catch((error) => {
-                    this.submit_data.loading = false
-                    console.log(error);
-                    alert(error.message);
-                });
-        }
     }
 }
 

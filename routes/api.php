@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('categories', 'CategoryController@index');
 
-Route::resource('users', 'UserController');
+// Route::resource('users', 'UserController');
 
 Route::get('maps/{map}/incidents', 'IncidentController@index');
 
@@ -30,11 +30,11 @@ Route::get('maps', 'MapController@index');
 Route::middleware('throttle:4|10,1')->group(function () {
     // Route::apiResource('maps', 'MapController');
     Route::post('maps', 'MapController@store');
-    Route::delete('maps/{map}', 'MapController@destroy');
 });
 
 Route::middleware('throttle:30|120,1')->group(function () {
     Route::post('maps/{map}/incidents', 'IncidentController@store');
     Route::put('maps/{map}', 'MapController@update');
     Route::delete('maps/{map}/incidents/{incident}', 'IncidentController@destroy');
+    Route::delete('maps/{map}', 'MapController@destroy');
 });
