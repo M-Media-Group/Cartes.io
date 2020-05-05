@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //     ->everyMinute();
         $schedule->command('telescope:prune')->everyMinute();
+        $schedule->job(new \App\Jobs\DeleteEmptyMaps())->daily();
     }
 
     /**
@@ -36,7 +37,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

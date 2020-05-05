@@ -43,7 +43,7 @@ class Incident extends Pivot
         // });
 
         self::creating(function ($model) {
-            $model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
+            //$model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
         });
 
         static::addGlobalScope('active', function (Builder $builder) {

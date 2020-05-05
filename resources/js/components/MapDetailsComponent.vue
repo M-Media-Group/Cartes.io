@@ -59,10 +59,35 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label for="password-confirm" class="col-md-12 col-form-label">When should new markers dissapear from the map</label>
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  value="4320" :checked="submit_data.options.default_expiration_time == 4320 ? true : false" @input="handleSelectInput($event, 'options.default_expiration_time')">
+                                <label class="form-check-label" for="exampleRadios4">
+                                    after 3 days
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  value="180" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == 180 ? true : false">
+                                <label class="form-check-label" >
+                                    after 3 hours
+                                </label>
+                            </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  :value="null" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == null ? true : false">
+                                <label class="form-check-label" >
+                                    Never
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
-            <p class="small mb-3">After 3 hours, your report will automatically dissapear from the map.</p>
+            <p class="small mb-3" v-if="submit_data.options.default_expiration_time">{{submit_data.options.default_expiration_time / 60}} hours after creating a marker it will automatically dissapear from the map.</p>
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
@@ -107,7 +132,10 @@ export default {
                 token: this.map_token,
                 privacy: this.map.privacy,
                 users_can_create_incidents: this.map.users_can_create_incidents,
-                loading: false
+                loading: false,
+                options: {
+                  default_expiration_time: this.map.options && this.map.options.default_expiration_time ? this.map.options.default_expiration_time : null,
+                },
             }
         }
     },
@@ -151,8 +179,12 @@ export default {
             });
         },
         handleSelectInput(val, type) {
+
             if (type == 'privacy' || type == 'users_can_create_incidents') {
                 this.submit_data[type] = val.target.value
+            } else if (type == 'options.default_expiration_time')
+            {
+                this.submit_data.options.default_expiration_time = val.target.value
             } else {
                 this.submit_data[type] = val.target.innerText
             }
@@ -186,6 +218,7 @@ export default {
             axios
                 .delete('/api/maps/' + this.map_id, { data: { token: this.submit_data.token } })
                 .then((res) => {
+                  localStorage.removeItem('map_' + this.map_id)
                    alert('This map has gone with the wind!')
                    window.location.href = "/";
                     this.submit_data.loading = false;

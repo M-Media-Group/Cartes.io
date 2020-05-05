@@ -20,9 +20,13 @@ class Map extends Model
         'privacy',
         'users_can_create_incidents',
         'token',
+        'options',
         'uuid',
     ];
     protected $hidden = ['id', 'token', 'user_id'];
+    protected $casts = [
+        'options' => 'array',
+    ];
     //
 
     /**

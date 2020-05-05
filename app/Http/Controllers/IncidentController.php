@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use App\Models\Map;
+use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Validator;
@@ -45,8 +46,6 @@ class IncidentController extends Controller
         //return $request->input("map_token");
         $this->authorize('create', [Incident::class, $map, $request->input('map_token')]);
 
-        //return Auth::id();
-
         $request->merge(['user_id' => $request->user('api')->id ?? null]);
         if ($request->input('category') < 1) {
             $request->request->remove('category');
@@ -57,13 +56,11 @@ class IncidentController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable',
-            //'map_id' => ['required_without:user_id', 'numeric', 'exists:maps,uuid'],
         ]);
 
-        //$location = DB::raw("(GeomFromText('POINT(" . $request->lat . ' ' . $request->lng . ")'))");
         $point = new Point($request->lng, $request->lat);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -76,13 +73,10 @@ class IncidentController extends Controller
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, null, $request->input('category'))]]
         )->validate();
 
-        //return $point->getLat();
-
         $token = str_random(32);
 
         $result = new Incident(
             [
-                // 'location' => $location,
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
                 'token' => $token,
@@ -90,6 +84,11 @@ class IncidentController extends Controller
             ]
         );
         $result->location = $point;
+        if ($map->options && $map->options['default_expiration_time']) {
+            $result->expires_at = Carbon::now()->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
+        } else {
+            $result->expires_at = null;
+        }
         $result->save();
 
         broadcast(new \App\Events\IncidentCreated($result))->toOthers();
@@ -106,7 +105,7 @@ class IncidentController extends Controller
     public function show(Request $request, Incident $qr)
     {
         return false;
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -120,7 +119,7 @@ class IncidentController extends Controller
         );
         $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
+        return redirect($qr->redirect_to . '?' . http_build_query($query_parameters));
     }
 
     /**
