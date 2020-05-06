@@ -17,6 +17,9 @@ class Incident extends Pivot
      * @var array
      */
     protected $table = 'incidents';
+
+    protected $touches = ['map'];
+
     protected $fillable = [
         'category_id',
         'user_id',

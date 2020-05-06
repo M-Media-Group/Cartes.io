@@ -10,7 +10,7 @@
                 <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">Open map</a>
             </div>
             <div class="card-footer" v-if="!is_minimal">
-                <p class="card-text small text-secondary">{{map.incidents_count}} reports · Created <span class='timestamp' :datetime="map.created_at">{{ map.created_at }}</span></p>
+                <p class="card-text small text-secondary">{{map.incidents_count}} reports · Updated <span class='timestamp' :datetime="map.updated_at">{{ map.updated_at }}</span></p>
             </div>
         </div>
 </template>

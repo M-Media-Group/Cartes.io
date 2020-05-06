@@ -99,17 +99,18 @@
                 <div>
                     <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps.</p>
                     <div class="mb-3">
-                        <p class="mb-0">Get this map</p>
-                        <code>GET /api/maps/{{map.uuid}}</code>
+                        <p class="mb-0">API <code>GET</code> map endpoint</p>
+                        <code>/api/maps/{{map.uuid}}</code>
                     </div>
                     <div class="mb-3">
-                        <p class="mb-0">Get all the markers on this map</p>
-                        <code>GET /api/maps/{{map.uuid}}/incidents</code>
+                        <p class="mb-0">API <code>GET</code> markers endpoint</p>
+                        <code>/api/maps/{{map.uuid}}/incidents</code>
                     </div>
                     <div class="mb-3">
                         <p class="mb-0">Embed this map on your website</p>
-                        <code>&lt;iframe src="https://incident-tracker.org/embeds/maps/{{map.uuid}}?type=map" width="100%" height="400" frameborder="0">&lt;/iframe></code>
+                        <code>&lt;iframe src="https://cartes.io/embeds/maps/{{map.uuid}}?type=map" width="100%" height="400" frameborder="0">&lt;/iframe></code>
                     </div>
+                    <p>When using the API or embedding the map, you must attribute this website on your front-end.</p>
                 </div>
             </details>
         </div>
