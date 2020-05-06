@@ -57,6 +57,6 @@ class Map extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(\App\Models\Category::class, 'incidents')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->selectRaw('categories.id, categories.name, categories.icon, count(incidents.id) as incidents_count')->groupBy('name', 'map_id');
+        return $this->belongsToMany(\App\Models\Category::class, 'incidents')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->orWherePivot('expires_at', null)->selectRaw('categories.id, categories.name, categories.icon, count(incidents.id) as incidents_count')->groupBy('name', 'map_id');
     }
 }

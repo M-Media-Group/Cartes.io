@@ -9,7 +9,7 @@
 @if( request()->get('type') == 'card' )
     <map-card-component :map="{{$map}}" :is_minimal="true" style="height:100%;max-width: 100%;"></map-card-component>
 @else
-    <map-component map_id="{{$map->uuid}}" style="height: 100vh;" users_can_create_incidents="{{$map->users_can_create_incidents}}"></map-component>
+    <map-component map_id="{{$map->uuid}}" style="height: 100vh;" users_can_create_incidents="{{$map->users_can_create_incidents}}" :map_categories="{{$map->categories}}"></map-component>
 @endif
 
 @endsection

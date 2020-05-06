@@ -132,7 +132,7 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import VGeosearch from 'vue2-leaflet-geosearch';
 
 export default {
-    props: ['map_id', 'map_token', 'users_can_create_incidents'],
+    props: ['map_id', 'map_token', 'users_can_create_incidents', 'map_categories'],
     components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch },
     data() {
         return {
@@ -141,7 +141,7 @@ export default {
             attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             incidents: [],
-            categories: [],
+            categories: this.map_categories ? this.map_categories : [],
             new_message: '',
             fullCategory: { id: null, name: '' },
             query: '',

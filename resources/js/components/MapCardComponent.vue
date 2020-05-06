@@ -1,6 +1,6 @@
 <template>
         <div class="card bg-dark text-white mb-5" style="min-height:250px;">
-            <map-component :map_id="map.uuid" style="height: 50vh"></map-component>
+            <map-component :map_id="map.uuid" style="height: 50vh" :map_categories="map.categories" :users_can_create_incidents="map.users_can_create_incidents"></map-component>
             <div v-if="map.categories" class="pl-1 pr-1 d-flex" style="top: 49vh;z-index: 1001;overflow: scroll;width: 100%;position: absolute; ">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
@@ -19,26 +19,15 @@ export default {
     props: ['map', 'is_minimal'],
     data() {
         return {
-            zoom: 4,
             public_maps: [],
             private_maps: [],
-            submit_data: {
-                lat: 0,
-                lng: 0,
-                category: 0,
-                category_name: '',
-                loading: false
-            }
         }
     },
     mounted() {
 
-
     },
     computed: {
-        canEdit() {
-            return this.token.length > 0 ? true : false;
-        }
+
     },
 
     watch: {
