@@ -64,20 +64,20 @@
                         <label for="password-confirm" class="col-md-12 col-form-label">When should new markers dissapear from the map</label>
                         <div class="col-md-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  value="4320" :checked="submit_data.options.default_expiration_time == 4320 ? true : false" @input="handleSelectInput($event, 'options.default_expiration_time')">
-                                <label class="form-check-label" for="exampleRadios4">
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time" id="cdet1" value="4320" :checked="submit_data.options.default_expiration_time == 4320 ? true : false" @input="handleSelectInput($event, 'options.default_expiration_time')">
+                                <label class="form-check-label" for="cdet1">
                                     after 3 days
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  value="180" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == 180 ? true : false">
-                                <label class="form-check-label" >
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time" id="cdet2" value="180" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == 180 ? true : false">
+                                <label class="form-check-label" for="cdet2">
                                     after 3 hours
                                 </label>
                             </div>
                             <div class="form-check disabled">
-                                <input class="form-check-input" type="radio" name="options.default_expiration_time"  :value="null" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == null ? true : false">
-                                <label class="form-check-label" >
+                                <input class="form-check-input" type="radio" name="options.default_expiration_time" id="cdet3" :value="null" @input="handleSelectInput($event, 'options.default_expiration_time')" :checked="submit_data.options.default_expiration_time == null ? true : false">
+                                <label class="form-check-label" for="cdet3" >
                                     Never
                                 </label>
                             </div>

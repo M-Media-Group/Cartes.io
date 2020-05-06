@@ -1,6 +1,6 @@
 <template>
     <div>
-        <l-map :zoom="4" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
+        <l-map :zoom="2" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
             <v-geosearch :options="geosearchOptions"></v-geosearch>
@@ -266,6 +266,7 @@ export default {
                 .delete('/api/maps/' + this.map_id + '/incidents/' + id, { data: { token: localStorage['post_' + id] } })
                 .then((res) => {
                     this.incidents = this.incidents.filter((e) => e.id !== id)
+                    localStorage.removeItem('post_' + id)
                     this.submit_data.loading = false;
                 });
         },

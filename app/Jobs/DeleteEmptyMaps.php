@@ -31,6 +31,9 @@ class DeleteEmptyMaps implements ShouldQueue
      */
     public function handle()
     {
-        \App\Models\Map::where('created_at', '<', \Carbon\Carbon::now()->subMinutes(60)->toDateTimeString())->whereDoesntHave('incidents')->delete();
+        \App\Models\Map::where('created_at', '<', \Carbon\Carbon::now()->subMinutes(60)->toDateTimeString())
+            ->whereDoesntHave('incidents', function ($q) {
+                $q->withoutGlobalScopes();
+            })->delete();
     }
 }

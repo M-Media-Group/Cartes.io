@@ -50,6 +50,7 @@ class IncidentController extends Controller
         if ($request->input('category') < 1) {
             $request->request->remove('category');
         }
+
         $request->validate([
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
@@ -60,7 +61,7 @@ class IncidentController extends Controller
 
         $point = new Point($request->lng, $request->lat);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -70,7 +71,7 @@ class IncidentController extends Controller
 
         Validator::make(
             ['point' => $point],
-            ['point' => ['required', new \App\Rules\UniqueInRadius(15, null, $request->input('category'))]]
+            ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
         )->validate();
 
         $token = str_random(32);
@@ -84,11 +85,13 @@ class IncidentController extends Controller
             ]
         );
         $result->location = $point;
+
         if ($map->options && $map->options['default_expiration_time']) {
             $result->expires_at = Carbon::now()->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
         } else {
             $result->expires_at = null;
         }
+
         $result->save();
 
         broadcast(new \App\Events\IncidentCreated($result))->toOthers();
@@ -105,21 +108,7 @@ class IncidentController extends Controller
     public function show(Request $request, Incident $qr)
     {
         return false;
-        if (! $request->user()) {
-            $user_id = null;
-        } else {
-            $user_id = $request->user()->id;
-        }
-        \App\Models\IncidentView::create(
-            [
-                'incident_id' => $qr->id,
-                'user_id' => $user_id,
-                'ip' => $request->ip(),
-            ]
-        );
-        $query_parameters = ['utm_source' => 'real_world', 'utm_medium' => 'incident', 'utm_campaign' => 'website_incidents', 'utm_content' => $qr->id];
 
-        return redirect($qr->redirect_to.'?'.http_build_query($query_parameters));
     }
 
     /**
@@ -153,7 +142,6 @@ class IncidentController extends Controller
      */
     public function destroy(Request $request, Map $map, Incident $incident)
     {
-        //return $incident->token;
         $this->authorize('forceDelete', $incident);
         $incident->delete();
     }

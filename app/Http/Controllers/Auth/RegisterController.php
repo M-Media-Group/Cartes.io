@@ -87,8 +87,4 @@ class RegisterController extends Controller
         return $user;
     }
 
-    protected function guard()
-    {
-        return Auth::guard('web');
-    }
 }

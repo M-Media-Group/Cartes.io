@@ -20,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\User::class => \App\Policies\UserPolicy::class,
         'Spatie\Permission\Models\Role' => \App\Policies\RolePolicy::class,
         \App\Models\Incident::class => \App\Policies\IncidentPolicy::class,
+        \App\Models\Map::class => \App\Policies\MapPolicy::class,
     ];
 
     /**
