@@ -25,8 +25,14 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+        $search_query = $request->input('query');
         if ($request->is('api*')) {
-            return Category::withCount('views')->orderBy($request->input('orderBy', 'created_at'), 'desc')->get();
+            return Category::withCount('views')
+                ->when($search_query, function ($query, $search_query) {
+                    return $query->where('name', 'like', "%{$search_query}%");
+                })
+                ->orderBy($request->input('orderBy', 'created_at'), 'desc')
+                ->get();
         } else {
             return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
         }
@@ -82,7 +88,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->with('incidents')->firstOrFail();
         $this->authorize('view', $category);
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -137,7 +143,7 @@ class CategoryController extends Controller
             ]
         );
 
-        return redirect('/categories/'.str_slug($request->input('name')));
+        return redirect('/categories/' . str_slug($request->input('name')));
     }
 
     /**

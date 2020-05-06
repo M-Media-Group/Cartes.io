@@ -8,8 +8,9 @@
                 <l-popup>
                     <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
-                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" :optionsLimit="10" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" required>
+                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
+                            <template slot="noOptions">Search or add a new label</template>
                             <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                             <template slot="option" slot-scope=" props "><img v-if="props.option.icon" class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
                             </template>
@@ -132,7 +133,7 @@ import VGeosearch from 'vue2-leaflet-geosearch';
 
 export default {
     props: ['map_id', 'map_token', 'users_can_create_incidents'],
-    components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch},
+    components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch },
     data() {
         return {
             center: L.latLng(43.7040, 7.3111),
@@ -143,6 +144,7 @@ export default {
             categories: [],
             new_message: '',
             fullCategory: { id: null, name: '' },
+            query: '',
             submit_data: {
                 lat: 0,
                 lng: 0,
@@ -171,8 +173,10 @@ export default {
         new L.Hash(this.$refs.map.mapObject);
 
         //Bounds set slightly higher than actual world max to create a "padding" on the map
-        this.$refs.map.mapObject.setMaxBounds([[-90, -Infinity],[90, Infinity]]);
-        console.log(localStorage)
+        this.$refs.map.mapObject.setMaxBounds([
+            [-90, -Infinity],
+            [90, Infinity]
+        ]);
 
         if (localStorage.getItem('map_' + this.map_id) && !this.submit_data.map_token) {
             this.submit_data.map_token = localStorage.getItem('map_' + this.map_id)
@@ -181,7 +185,7 @@ export default {
         }
 
         this.getIncidents()
-        this.getCategories()
+        //this.getCategories()
 
         Echo.channel('maps.' + this.map_id).listen('IncidentCreated', (e) => {
             this.incidents.push(e.incident);
@@ -197,10 +201,10 @@ export default {
             return this.incidents.length;
         },
         canPost() {
-          if (this.submit_data.map_token) {
-            return 'yes'
-          }
-          return this.users_can_create_incidents;
+            if (this.submit_data.map_token) {
+                return 'yes'
+            }
+            return this.users_can_create_incidents;
         },
         activeIncidents() {
             return this.incidents.filter(function(incident) {
@@ -216,6 +220,16 @@ export default {
         incidentsCount(newValue) {
             //$emit('incidents-count-change', newValue);
         }
+    },
+    created: function() {
+        // _.debounce is a function provided by lodash to limit how
+        // often a particularly expensive operation can be run.
+        // In this case, we want to limit how often we access
+        // yesno.wtf/api, waiting until the user has completely
+        // finished typing before making the ajax request. To learn
+        // more about the _.debounce function (and its cousin
+        // _.throttle), visit: https://lodash.com/docs#debounce
+        this.debouncedGetCategories = _.debounce(this.getCategories, 250)
     },
     methods: {
         addMarker(event) {
@@ -238,7 +252,7 @@ export default {
             this.submit_data.category_name = tag.name
         },
         handleSelectInput(val) {
-            this.fullCategory = val
+            //this.fullCategory = val
             this.submit_data.category = val.id
             this.submit_data.category_name = val.name
         },
@@ -248,6 +262,13 @@ export default {
             }
             return false
         },
+        asyncFind(query) {
+            if (!query) { return false }
+            this.submit_data.loading = true
+            this.query = query
+            this.debouncedGetCategories()
+
+        },
         getIncidents() {
             axios
                 .get('/api/maps/' + this.map_id + '/incidents')
@@ -255,12 +276,14 @@ export default {
                     this.incidents = response.data
                 ))
         },
-        getCategories() {
+        getCategories(query) {
             axios
-                .get('/api/categories')
-                .then(response => (
+                .get('/api/categories?query=' + this.query)
+                .then(response => {
+                    console.log(response)
                     this.categories = response.data
-                ))
+                    this.submit_data.loading = false
+                })
         },
         deleteIncident(id) {
             this.submit_data.loading = true;
@@ -300,7 +323,7 @@ export default {
 }
 
 </script>
-<style scoped>
+<style>
 @import "~leaflet.markercluster/dist/MarkerCluster.css";
 @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 @import '~vue-multiselect/dist/vue-multiselect.min.css';
@@ -314,8 +337,9 @@ export default {
     right: 1rem;
 }
 
-.your_custom_class>>>.multiselect__option--highlight,
-.your_custom_class>>>.multiselect__option::after {
+.your_custom_class .multiselect__option--highlight,
+.your_custom_class .multiselect__option::after {
     background: var(--primary);
 }
+
 </style>
