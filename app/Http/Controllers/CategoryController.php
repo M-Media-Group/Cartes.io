@@ -88,7 +88,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->with('incidents')->firstOrFail();
         $this->authorize('view', $category);
-        if (!$request->user()) {
+        if (! $request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -143,7 +143,7 @@ class CategoryController extends Controller
             ]
         );
 
-        return redirect('/categories/' . str_slug($request->input('name')));
+        return redirect('/categories/'.str_slug($request->input('name')));
     }
 
     /**
