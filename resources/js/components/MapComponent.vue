@@ -1,6 +1,6 @@
 <template>
     <div>
-        <l-map :zoom="2" :center="center" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
+        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
             <v-geosearch :options="geosearchOptions"></v-geosearch>
@@ -170,7 +170,9 @@ export default {
 
         new L.Hash(this.$refs.map.mapObject);
 
-          console.log(localStorage)
+        //Bounds set slightly higher than actual world max to create a "padding" on the map
+        this.$refs.map.mapObject.setMaxBounds([[-90, -Infinity],[90, Infinity]]);
+        console.log(localStorage)
 
         if (localStorage.getItem('map_' + this.map_id) && !this.submit_data.map_token) {
             this.submit_data.map_token = localStorage.getItem('map_' + this.map_id)
