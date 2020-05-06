@@ -24,7 +24,7 @@ class CategoryPolicy
      * @param  \App\Models\Category  $category
      * @return mixed
      */
-    public function view( ? User $user, Category $category)
+    public function view(?User $user, Category $category)
     {
         return true;
     }

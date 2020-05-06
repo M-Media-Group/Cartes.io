@@ -61,7 +61,7 @@ class IncidentController extends Controller
 
         $point = new Point($request->lng, $request->lat);
 
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -108,7 +108,6 @@ class IncidentController extends Controller
     public function show(Request $request, Incident $qr)
     {
         return false;
-
     }
 
     /**
