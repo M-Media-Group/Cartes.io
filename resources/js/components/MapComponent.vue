@@ -22,13 +22,13 @@
                 </l-popup>
             </l-layer-group>
             <l-marker-cluster>
-                <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'" @click="handleOpenedPopup">
+                <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'" @click="handleOpenedPopup($event, incident.id)">
                     <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]" />
                     <l-popup @ready="openPopup">
-                        <p class="mb-1"><b>{{incident.category.name}}</b></p>
-                        <p class="mt-0 mb-1" style="min-width: 200px;">{{ markerResults.label }}</p>
+                        <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
+                        <p class="mt-0 mb-1" v-if="incident.marker">{{ incident.marker.label }}</p>
                         <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
-                        <button class="btn btn-link btn-sm text-danger" v-if="inLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
+                        <a class="btn btn-link btn-sm text-danger" v-if="inLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -150,7 +150,9 @@ export default {
             new_message: '',
             fullCategory: { id: null, name: '' },
             query: '',
-            markerResults: {},
+            open_incident: null,
+            markerResults: {
+            },
             submit_data: {
                 lat: 0,
                 lng: 0,
@@ -244,10 +246,15 @@ export default {
             this.submit_data.lat = event.latlng.lat;
             this.submit_data.lng = event.latlng.lng;
         },
-        async handleOpenedPopup(event){
-            this.markerResults.label = "Fetching address..."
-            const results = await provider.search({ query: event.latlng.lat+" "+event.latlng.lng })
-            this.markerResults = results[0]
+        async handleOpenedPopup(event, id){
+            this.open_incident = this.incidents.findIndex((e) => e.id === id)
+            if (this.incidents[this.open_incident] && this.incidents[this.open_incident].marker) {
+                // console.log(this.incidents[this.open_incident].marker);
+            } else {
+                Vue.set(this.incidents[this.open_incident], 'marker', {label: "One sec, we're fetching the address..."})
+                const results = await provider.search({ query: event.latlng.lat+" "+event.latlng.lng })
+                Vue.set(this.incidents[this.open_incident], 'marker', results[0])
+            }
         },
         openPopup(event) {
             this.debouncedRenderTimeago();
