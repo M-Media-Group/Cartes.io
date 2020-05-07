@@ -1,6 +1,6 @@
 <template>
     <div>
-        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
+        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map" >
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
             <v-geosearch :options="geosearchOptions"></v-geosearch>
@@ -285,7 +285,7 @@ export default {
             return false
         },
         asyncFind(query) {
-            if (!query) { return false }
+            if (query.length < 3) { return false }
             this.submit_data.loading = true
             this.query = query
             this.debouncedGetCategories()
@@ -302,7 +302,6 @@ export default {
             axios
                 .get('/api/categories?query=' + this.query)
                 .then(response => {
-                    console.log(response)
                     this.categories = response.data
                     this.submit_data.loading = false
                 })
