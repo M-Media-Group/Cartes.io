@@ -14,7 +14,7 @@ const mix = require('laravel-mix');
 mix.sourceMaps().js('resources/js/app.js', 'public/js').extract();
 mix.sass('resources/sass/app.scss', 'public/css').styles([
 
-], 'public/css/all.css').version();
+], 'public/css/all.css').sourceMaps().version();
 
 mix.options({
   extractVueStyles: false, // Extract .vue component styling to file, rather than inline.
