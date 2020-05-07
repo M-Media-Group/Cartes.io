@@ -22,10 +22,13 @@
                 </l-popup>
             </l-layer-group>
             <l-marker-cluster>
-                <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'">
+                <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'" @click="handleOpenedPopup">
                     <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]" />
-                    <l-popup @ready="openPopup"><b>{{incident.category.name}}</b><br />Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.<br />
-                        <button class="btn btn-danger btn-sm my-1" v-if="inLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
+                    <l-popup @ready="openPopup">
+                        <p class="mb-1"><b>{{incident.category.name}}</b></p>
+                        <p class="mt-0 mb-1" style="min-width: 200px;">{{ markerResults.label }}</p>
+                        <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
+                        <button class="btn btn-link btn-sm text-danger" v-if="inLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</button>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -131,6 +134,8 @@ import Multiselect from 'vue-multiselect';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import VGeosearch from 'vue2-leaflet-geosearch';
 
+const provider = new OpenStreetMapProvider();
+
 export default {
     props: ['map_id', 'map_token', 'users_can_create_incidents', 'map_categories'],
     components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch },
@@ -145,6 +150,7 @@ export default {
             new_message: '',
             fullCategory: { id: null, name: '' },
             query: '',
+            markerResults: {},
             submit_data: {
                 lat: 0,
                 lng: 0,
@@ -155,7 +161,7 @@ export default {
             },
             geosearchOptions: {
                 // Important part Here
-                provider: new OpenStreetMapProvider(),
+                provider: provider,
                 style: 'button',
                 autoClose: true,
                 showPopup: true,
@@ -230,6 +236,7 @@ export default {
         // more about the _.debounce function (and its cousin
         // _.throttle), visit: https://lodash.com/docs#debounce
         this.debouncedGetCategories = _.debounce(this.getCategories, 250)
+        this.debouncedRenderTimeago = _.debounce(this.renderTimeago, 50)
     },
     methods: {
         addMarker(event) {
@@ -237,14 +244,22 @@ export default {
             this.submit_data.lat = event.latlng.lat;
             this.submit_data.lng = event.latlng.lng;
         },
+        async handleOpenedPopup(event){
+            this.markerResults.label = "Fetching address..."
+            const results = await provider.search({ query: event.latlng.lat+" "+event.latlng.lng })
+            this.markerResults = results[0]
+        },
         openPopup(event) {
+            this.debouncedRenderTimeago();
+        },
+        renderTimeago() {
             timeago.render(document.querySelectorAll('.timestamp'))
         },
         addTag(newTag) {
             const tag = {
                 category_id: -1,
                 name: newTag,
-                icon: '/images/vendor/leaflet/dist/marker-icon-2x.png'
+                icon: '/images/marker-01.svg'
             }
             this.categories.push(tag)
             this.fullCategory = tag
