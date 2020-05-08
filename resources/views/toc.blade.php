@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Terms and conditions')
+
 @section('content')
 <h1>{{ config('app.name') }} Terms of Service</h1>
 <h2>1. Terms</h2>

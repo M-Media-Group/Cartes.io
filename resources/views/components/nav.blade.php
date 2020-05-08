@@ -61,7 +61,7 @@
                 <form method="POST" action="/maps">
                 @csrf
                 <button type="submit" class="btn btn-primary">
-                {{ __('Create map') }}
+                {{ __('New map') }}
                 </button>
                 </form>
             </ul>
