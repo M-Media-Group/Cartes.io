@@ -97,7 +97,7 @@ a.text-muted, p.text-muted, small.text-muted {
 
 body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .dropdown-item {
 	//background-color: #202325;
-	background-color: #061720;
+	background-color: $body-bg;
 	color: #fff;
 }
 
@@ -138,4 +138,7 @@ span.fa {
 .card {
 	max-width: 700px;
 	margin: 0 auto;
+}
+.cookie-consent__message {
+	display: block;
 }

@@ -2,7 +2,7 @@
 
 @section('title', $map->title ?? "Untitled map")
 @section('meta_description', $map->description)
-@section('meta_image', config('app.url').'/images/map.jpg')
+@section('meta_image', config('app.url').'/images/map.png')
 
 @section('above_container')
 
