@@ -16,7 +16,7 @@ class Category extends Model
         'slug',
         'icon',
     ];
-    protected $hidden = ['pivot'];
+    protected $hidden = ['pivot', 'created_at', 'updated_at'];
 
     public function user()
     {

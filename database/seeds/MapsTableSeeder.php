@@ -13,8 +13,8 @@ class MapsTableSeeder extends Seeder
     {
         //factory(App\Models\Map::class, 100)->create();
 
-        factory(App\Models\Map::class, 100)->create()->each(function ($u) {
-            $u->incidents()->saveMany(factory(App\Models\Incident::class, 10)->make());
+        factory(App\Models\Map::class, 1)->create()->each(function ($u) {
+            $u->incidents()->saveMany(factory(App\Models\Incident::class, 1000)->make());
         }
         );
         // DB::table('maps')->insert([

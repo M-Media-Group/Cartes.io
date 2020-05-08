@@ -25,8 +25,15 @@ class IncidentPolicy
      * @param  \App\Models\Incident  $incident
      * @return mixed
      */
-    public function view(User $user, Incident $incident)
+    public function index( ? User $user, Map $map, $token = null)
     {
+        if ($map->privacy !== 'private') {
+            return true;
+        } elseif ($token == $map->token) {
+            return true;
+        } elseif ($user && $map->user_id == $user->id) {
+            return true;
+        }
         return false;
     }
 
@@ -36,7 +43,7 @@ class IncidentPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user, Map $map, $token = null)
+    public function create( ? User $user, Map $map, $token = null)
     {
         if ($token == $map->token) {
             return true;
@@ -45,14 +52,12 @@ class IncidentPolicy
         } elseif ($map->users_can_create_incidents == 'only_logged_in') {
             if (request()->is('api*')) {
                 $user = request()->user('api');
-                if (! $user) {
+                if (!$user) {
                     return false;
                 }
             }
-
             return $user->hasVerifiedEmail() && $user->can('create incidents');
         }
-
         return false;
     }
 
@@ -71,7 +76,6 @@ class IncidentPolicy
         if ($incident->token == request()->input('token')) {
             return true;
         }
-
         return $user->can('edit incidents');
     }
 
@@ -113,7 +117,7 @@ class IncidentPolicy
      * @param  \App\Models\Incident  $incident
      * @return mixed
      */
-    public function forceDelete(?User $user, Incident $incident)
+    public function forceDelete( ? User $user, Incident $incident)
     {
         if ($user && $incident->user_id == $user->id) {
             return true;
