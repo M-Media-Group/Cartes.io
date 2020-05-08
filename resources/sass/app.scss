@@ -11,10 +11,26 @@
 
 @import "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 
-.navbar-laravel {
-  background-color: #202325;
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+:root {
+
+	//Inverse these with the commented ones to actually enable dark/light mode
+		--white: #{$black};
+		--black: #{$white};
+
+		// --white: #{$white};
+		// --black: #{$black};
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--white: #{$black};
+		--black: #{$white};
+	};
+}
+.navbar-laravel, .navbar-laravel a {
+  color: var(--black) !important;
+}
+.card {
+	border:none;
 }
 .leaflet-top {
 	//top:3.5rem;
@@ -97,8 +113,8 @@ a.text-muted, p.text-muted, small.text-muted {
 
 body, , .navbar-nav > li > .dropdown-menu, .navbar-nav > li > .dropdown-menu > .dropdown-item {
 	//background-color: #202325;
-	background-color: $body-bg;
-	color: #fff;
+	background-color: var(--white);
+	color: var(--black);
 }
 
 // .leafelt-control a, .leaflet-bar a, .leaflet-bar a:hover, .leaflet-bar-part, .leaflet-control-geocoder-icon, .leaflet-control-fullscreen-button {
@@ -141,4 +157,7 @@ span.fa {
 }
 .cookie-consent__message {
 	display: block;
+}
+.btn-primary, .btn-danger, .bg-dark {
+	color: $white !important;
 }

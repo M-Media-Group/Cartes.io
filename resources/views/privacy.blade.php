@@ -19,7 +19,8 @@
 <p>You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services.</p>
 <p>Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
 <p>This policy is effective as of 23 January 2019.</p>
+<revoke-consent-component></revoke-consent-component>
 {{--  DOESN'T WORK FOR SOME REASON
-<input type="button" class="btn btn-danger" value="Revoke analytics cookie consent" onclick='document.cookie = "laravel_cookie_consent=; expires=Thu, 01 Jan 2000 00:00:00 GMT; path=/;";'/>
+
  --}}
  @endsection

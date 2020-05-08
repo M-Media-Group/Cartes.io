@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark navbar-laravel navbar-transparent">
+<nav class="navbar navbar-expand-md navbar-laravel navbar-transparent">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
 {{--                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
