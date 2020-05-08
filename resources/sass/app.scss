@@ -14,17 +14,31 @@
 :root {
 
 	//Inverse these with the commented ones to actually enable dark/light mode
-		--white: #{$black};
-		--black: #{$white};
+		// --white: #{$black};
+		// --black: #{$white};
 
-		// --white: #{$white};
-		// --black: #{$black};
+		--white: #{$white};
+		--black: #{$black};
+		--dark: #e6e8ea;
+		--secondary: #6b7580;
 }
 @media (prefers-color-scheme: dark) {
 	:root {
 		--white: #{$black};
 		--black: #{$white};
-	};
+		--dark: #{$dark};
+	}
+
+}
+.bg-dark {
+	background: var(--dark) !important;
+	color: var(--black) !important;
+}
+.text-white {
+//	color: var(--white) !important;
+}
+.text-secondary {
+	color: var(--secondary) !important;
 }
 .navbar-laravel, .navbar-laravel a {
   color: var(--black) !important;
@@ -158,6 +172,6 @@ span.fa {
 .cookie-consent__message {
 	display: block;
 }
-.btn-primary, .btn-danger, .bg-dark {
+.btn-primary, .btn-danger {
 	color: $white !important;
 }

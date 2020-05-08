@@ -9,7 +9,7 @@
         </div>
         <hr class="my-4">
         <h2 class="mt-5">Public maps</h2>
-        <p>These maps are made by the community, and public.</p>
+        <p>These maps are made by the community and shared with everyone.</p>
         <map-card-component v-for='(map, i) in public_maps' :key="'p_map'+map.uuid" :map="map" :disable_map="i > 2 ? true : false"></map-card-component>
         <div class="row justify-content-center mb-5" v-if="public_maps_total > 15">
             <div class="small">{{public_maps.length}} / {{public_maps_total}} public maps, and a lot more private ones</div>
