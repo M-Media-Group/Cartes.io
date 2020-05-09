@@ -1,4 +1,4 @@
-<div class="js-cookie-consent cookie-consent alert bg-dark alert-dismissible" role="alert" style="position: fixed;bottom: 0;z-index: 99999;">
+<div class="js-cookie-consent cookie-consent alert bg-dark alert-dismissible" role="alert" style="position: fixed;bottom: 0;z-index: 1001;">
 
     <span class="cookie-consent__message">
         {!! trans('cookieConsent::texts.message') !!}

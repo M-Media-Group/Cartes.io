@@ -21,7 +21,7 @@ mix.options({
 //  processCssUrls: true, // Process/optimize relative stylesheet url()'s. Set to false, if you don't want them touched.
 	purifyCss: {
 	    purifyOptions: {
-	        whitelist: ['*leaflet*', 'badge', 'code']
+	        whitelist: ['*leaflet*', 'badge', 'code', 'modal']
 	    },
 	}
 //  uglify: {}, // Uglify-specific options. https://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin

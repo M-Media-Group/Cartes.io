@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="password-confirm" class="col-md-12 col-form-label">Who can create markers</label>
+                        <label for="users_can_create_incidents" class="col-md-12 col-form-label">Who can create markers</label>
                         <div class="col-md-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios4" value="yes" :checked="submit_data.users_can_create_incidents == 'yes' ? true : false" @input="handleSelectInput($event, 'users_can_create_incidents')">
@@ -48,15 +48,16 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios5" value="only_logged_in" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'only_logged_in' ? true : false">
                                 <label class="form-check-label" for="exampleRadios5">
-                                    Only people that are logged in<br /><small>(You can still add markers even if not logged in)</small>
+                                    Only people that are logged in
                                 </label>
                             </div>
-                            <div class="form-check disabled">
-                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios6" value="no" disabled @input="handleSelectInput($event, 'no')">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios6" value="no" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'no' ? true : false">
                                 <label class="form-check-label" for="exampleRadios6">
                                     No one
                                 </label>
                             </div>
+                            <small v-if="canEdit">You can add markers to your own map regardless of this setting</small>
                         </div>
                     </div>
 

@@ -8,7 +8,7 @@
 <div class="jumbotron jumbotron-fluid d-flex align-items-center" style="min-height: 33rem;height: 71vh; max-height:600px; background: linear-gradient(rgba(28,119,195, 0.2), var(--white)), url('/images/earth.jpg') no-repeat; background-size: cover;color:#fff;">
   <div class="container mt-4 mb-3">
       <h1>Live maps for everyone and everything</h1>
-      <p class="lead">Create free anonymous or public maps without even having to sign up.</p>
+      <p class="lead">Create maps, add markers, and embed your map without even having to sign up.</p>
 {{--       <p>Your maps are stored in your browser.</p>
  --}}
  <div>

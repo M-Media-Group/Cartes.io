@@ -24,16 +24,6 @@ class IncidentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -54,12 +44,10 @@ class IncidentController extends Controller
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
-            'user_id' => 'nullable',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $point = new Point($request->lng, $request->lat);
-
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -67,22 +55,22 @@ class IncidentController extends Controller
             $request->merge(['category' => $category->id]);
         }
 
+        $point = new Point($request->lng, $request->lat);
+
         Validator::make(
             ['point' => $point],
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
         )->validate();
 
-        $token = str_random(32);
-
         $result = new Incident(
             [
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
-                'token' => $token,
+                'token' => str_random(32),
                 'map_id' => $map->id,
+                'location' => $point,
             ]
         );
-        $result->location = $point;
 
         if ($map->options && $map->options['default_expiration_time']) {
             $result->expires_at = Carbon::now()->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
@@ -109,17 +97,6 @@ class IncidentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -128,7 +105,7 @@ class IncidentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return false;
     }
 
     /**

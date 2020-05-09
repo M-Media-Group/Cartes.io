@@ -64,7 +64,7 @@ class MapController extends Controller
     {
         $this->authorize('create', Map::class);
         $validatedData = $request->validate([
-            'title' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:191',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
@@ -72,15 +72,14 @@ class MapController extends Controller
         ]);
 
         $uuid = (string) Uuid::generate(4);
-        $token = str_random(32);
 
         $result = new Map(
             [
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
-                'slug' => str_slug($uuid),
+                'slug' => $request->input('slug', str_slug($uuid)),
                 'uuid' => $uuid,
-                'token' => $token,
+                'token' => str_random(32),
                 'privacy' => $request->input('privacy', 'unlisted'),
                 'users_can_create_incidents' => $request->input('users_can_create_incidents', 'only_logged_in'),
                 'user_id' => $request->user() ? $request->user()->id : null,
@@ -92,7 +91,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/'.$result->slug)->with('token', $result->token);
+            return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
     }
 
@@ -111,7 +110,7 @@ class MapController extends Controller
         }
 
         $data = [
-            'token' => $request->is('api*') ? null : $request->session()->get('token'),
+            'token' => $request->session()->get('token'),
             'map' => $map,
         ];
 
@@ -158,12 +157,12 @@ class MapController extends Controller
         $this->authorize('update', $map);
 
         $validatedData = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
+            'title' => 'nullable|string|max:191',
+            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',
-            'options.default_expiration_time' => 'nullable|max:525600',
+            'options.default_expiration_time' => 'nullable|numeric|between:1,525600',
 
         ]);
 
