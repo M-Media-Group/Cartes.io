@@ -58,7 +58,7 @@
                         </div>
                     </li>
                 @endguest
-                <form method="POST" action="/maps">
+                <form method="POST" action="/maps" class="mb-0">
                 @csrf
                 <button type="submit" class="btn btn-primary">
                 {{ __('New map') }}

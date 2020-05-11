@@ -8,7 +8,7 @@
 <div class="jumbotron jumbotron-fluid d-flex align-items-center" style="min-height: 33rem;height: 71vh; max-height:600px; background: linear-gradient(rgba(28,119,195, 0.2), var(--white)), url('/images/earth.jpg') no-repeat; background-size: cover;color:#fff;">
   <div class="container mt-4 mb-3">
       <h1>Live maps for everyone and everything</h1>
-      <p class="lead">Create maps, add markers, and embed your map without even having to sign up.</p>
+      <p class="lead">Create maps, add markers, and share anywhere without even having to sign up.</p>
 {{--       <p>Your maps are stored in your browser.</p>
  --}}
  <div>
@@ -25,7 +25,17 @@
 @endsection
 
 @section('left_sidebar')
-
+{{-- <h3>Create a map from a template</h3>
+<div class="card bg-primary text-white text-center mb-3">
+    <blockquote class="blockquote mb-0">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat.</p>
+      <footer class="blockquote-footer">
+        <small>
+          Someone famous in <cite title="Source Title">Source Title</cite>
+        </small>
+      </footer>
+    </blockquote>
+  </div> --}}
 @endsection
 
 @section('content')

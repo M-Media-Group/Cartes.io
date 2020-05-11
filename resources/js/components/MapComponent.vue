@@ -8,9 +8,9 @@
                 <l-popup>
                     <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
-                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Select one or add a new label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
+                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Your marker label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
-                            <template slot="noOptions">Search or add a new label</template>
+                            <template slot="noOptions">Search for or add a new label</template>
                             <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                             <template slot="option" slot-scope=" props "><img v-if="props.option.icon" class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
                             </template>
@@ -243,6 +243,9 @@ export default {
     methods: {
         addMarker(event) {
             this.$refs.hello_popup.mapObject.openPopup(event.latlng);
+            if(!this.submit_data.category) {
+                $('.multiselect').focus();
+            }
             this.submit_data.lat = event.latlng.lat;
             this.submit_data.lng = event.latlng.lng;
         },
@@ -255,6 +258,7 @@ export default {
                 const results = await provider.search({ query: event.latlng.lat+" "+event.latlng.lng })
                 Vue.set(this.incidents[this.open_incident], 'marker', results[0])
             }
+            //this.$refs.hello_popup.mapObject.closePopup();
         },
         openPopup(event) {
             this.debouncedRenderTimeago();
@@ -272,11 +276,13 @@ export default {
             this.fullCategory = tag
             this.submit_data.category = tag.category_id
             this.submit_data.category_name = tag.name
+            this.submitForm()
         },
         handleSelectInput(val) {
             //this.fullCategory = val
             this.submit_data.category = val.id
             this.submit_data.category_name = val.name
+            this.submitForm()
         },
         inLocalStorageKey(id) {
             if (localStorage['post_' + id]) {
@@ -316,7 +322,7 @@ export default {
                     this.submit_data.loading = false;
                 });
         },
-        submitForm(event) {
+        submitForm() {
             this.submit_data.loading = true;
             axios
                 .post('/api/maps/' + this.map_id + '/incidents', this.submit_data) // change this to post )
