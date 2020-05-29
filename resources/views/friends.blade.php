@@ -11,15 +11,15 @@
       <p class="lead">Whether its marking places to visit for out-of-town friends or marking possible spots for your next party</p>
 {{--       <p>Your maps are stored in your browser.</p>
  --}}
- <div>
-    <form method="POST" action="/maps" style="display: inline;">
-      @csrf
-      <button type="submit" class="btn btn-primary btn-lg mt-3">
-      {{ __('Create a new map for friends') }}
-      </button>
-    </form>
-    <a class="btn btn-dark btn-lg mt-3" href="/register">Sign up, if you want</a>
-  </div>
+    <div>
+      <form method="POST" action="/maps" style="display: inline;">
+        @csrf
+        <button type="submit" class="btn btn-primary btn-lg mt-3">
+        {{ __('Create a new map for friends') }}
+        </button>
+      </form>
+      <a class="btn btn-dark btn-lg mt-3" href="/register">Sign up, if you want</a>
+    </div>
   </div>
 </div>
 

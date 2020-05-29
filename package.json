@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "axios": "^0.18.1",
-        "bootstrap": "^4.4.1",
+        "bootstrap": "^4.5.0",
         "browser-sync": "^2.26.7",
         "browser-sync-webpack-plugin": "^2.2.2",
         "cross-env": "^5.2.1",
@@ -28,13 +28,15 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "chart.js": "^2.9.3",
         "copy-to-clipboard": "^3.3.1",
         "laravel-echo": "^1.7.0",
         "leaflet": "^1.6.0",
         "leaflet-geosearch": "^2.7.0",
         "leaflet.markercluster": "^1.4.1",
-        "pusher-js": "^6.0.2",
+        "pusher-js": "^6.0.3",
         "timeago.js": "^4.0.2",
+        "vue-chartjs": "^3.5.0",
         "vue-multiselect": "^2.1.6",
         "vue-navigator-share": "^1.0.3",
         "vue2-leaflet": "^2.5.2",

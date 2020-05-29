@@ -34,6 +34,8 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+Vue.component('chart-line-component', require('./components/ChartLineComponent.js').default);
+Vue.component('chart-pie-component', require('./components/ChartPieComponent.js').default);
 
 /** Vue Filters Start */
 Vue.filter('truncate', function (text, length, suffix) {

@@ -23,7 +23,7 @@
             </l-layer-group>
             <l-marker-cluster>
                 <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'" @click="handleOpenedPopup($event, incident.id)">
-                    <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 15]" />
+                    <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 25]" />
                     <l-popup @ready="openPopup">
                         <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
                         <p class="mt-0 mb-1" v-if="incident.marker">{{ incident.marker.label }}</p>

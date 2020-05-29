@@ -38,15 +38,3 @@
 		</script>
 	@endsection
 @endif
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "Place",
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "40.75",
-    "longitude": "73.98"
-  },
-  "name": "Empire State Building"
-}
-</script>

@@ -89,6 +89,8 @@
             </div>
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
             <p class="small mb-3" v-if="submit_data.options.default_expiration_time">{{submit_data.options.default_expiration_time / 60}} hours after creating a marker it will automatically dissapear from the map.</p>
+            <h2 class="mt-5">Map stats</h2>
+            <map-markers-chart-component :map_id="map.uuid"></map-markers-chart-component>
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
