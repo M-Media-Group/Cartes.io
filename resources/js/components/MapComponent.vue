@@ -28,7 +28,8 @@
                         <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
                         <p class="mt-0 mb-1" v-if="incident.marker">{{ incident.marker.label }}</p>
                         <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
-                        <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
+                        <small v-if="isMarkerExpired(incident.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="incident.expires_at">{{ incident.expires_at }}</span>.</small>
+                        <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(incident)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -243,11 +244,24 @@ export default {
     },
 
     methods: {
-        canDeletePost(id) {
-            if (this.submit_data.map_token) {
-                return true
+        canDeletePost(marker) {
+            if (this.isMarkerExpired(marker.expires_at)) {
+                return false;
             }
-            return this.inLocalStorageKey(id);
+            if (this.submit_data.map_token) {
+                return true;
+            }
+            return this.inLocalStorageKey(marker.id);
+        },
+        isMarkerExpired(expiration_date) {
+            if (!expiration_date) {
+                return false
+            }
+            var now = new Date();
+            var marker_date = new Date(Date.parse(expiration_date.replace(/-/g, '/')));
+            if (now > marker_date) {
+                return true;
+            }
         },
         addMarker(event) {
             this.$refs.hello_popup.mapObject.openPopup(event.latlng);
@@ -331,6 +345,7 @@ export default {
         handleDeletedIncident(id) {
             this.incidents = this.incidents.filter((e) => e.id !== id)
             localStorage.removeItem('post_' + id)
+            this.$emit('marker-delete', id);
         },
         submitForm() {
             this.submit_data.loading = true;
@@ -342,10 +357,11 @@ export default {
                     this.incidents.push(res.data);
                     localStorage['post_' + res.data.id] = res.data.token
                     dataLayer.push({ event: 'marker-create' });
+                    this.$emit('marker-create', res.data);
                 })
                 .catch((error) => {
                     this.submit_data.loading = false
-                    console.log(error.response);
+                    console.log(error);
                     if (error.response.data.errors) {
                         var message = Object.entries(error.response.data.errors)
                             .map(([error_name, error_value], i) => `${error_name}: ${error_value[0]} | `)
