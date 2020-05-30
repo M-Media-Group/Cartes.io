@@ -127,13 +127,13 @@ export default {
         },
 
         listenForNewMarkers() {
-            Echo.channel('maps.' + this.map.id).listen('IncidentCreated', (e) => {
+            Echo.channel('maps.' + this.map.uuid).listen('IncidentCreated', (e) => {
                 this.handleMarkerCreate(e.incident);
             });
         },
 
         listenForDeletedMarkers() {
-            Echo.channel('maps.' + this.map.id).listen('IncidentDeleted', (e) => {
+            Echo.channel('maps.' + this.map.uuid).listen('IncidentDeleted', (e) => {
                 this.handleMarkerDelete(e.incident.id);
             });
         },
