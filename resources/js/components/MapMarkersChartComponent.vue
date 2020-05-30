@@ -1,9 +1,12 @@
 <template>
-    <div>
-        <h3>Marker type distribution</h3>
-        <chart-pie-component :chart-data="datacollection" :height="225" style="width: 100%;" class="mt-5 mb-5"></chart-pie-component>
-        <h3>New markers by date</h3>
-        <chart-line-component :chart-data="timedatacollection" :options="{
+    <div v-if="markers && markers.length > 1" class="row">
+        <div class="col-md-6">
+            <h3>Marker type distribution</h3>
+            <chart-pie-component :chart-data="datacollection" :height="225" style="width: 100%;" class="mt-5 mb-5"></chart-pie-component>
+        </div>
+        <div class="col-md-6">
+            <h3>New markers by date</h3>
+            <chart-line-component :chart-data="timedatacollection" :options="{
     scales: {
       xAxes: [{
         type: 'time',
@@ -14,25 +17,37 @@
       }]
     }
   }" :height="225" style="width: 100%;" class="mt-5 mb-5"></chart-line-component>
+        </div>
+    </div>
+    <div v-else>
+        <p class="small">There's not enough markers on this map yet. Stats will be available after a few more markers are added.</p>
     </div>
 </template>
 <script>
 export default {
-    props: ['map_id'],
+    props: ['map_id', 'markers'],
     data() {
         return {
             datacollection: {},
             timedatacollection: {},
-            markers: []
+            show_all: true
         }
     },
     mounted() {
-        this.getMarkers();
+        if (this.markers) {
+            this.fillChartData()
+            this.fillPieData()
+        }
     },
-    computed: {},
+    computed: {
+
+    },
 
     watch: {
-
+        markers(newValue) {
+            this.fillChartData()
+            this.fillPieData()
+        }
     },
 
     methods: {
@@ -49,46 +64,30 @@ export default {
             });
             return map;
         },
-        fillData() {
-            var data = this.markers
-            const grouped = this.groupBy(data, object => object.created_at.slice(0, -6));
-
-            const newArray = Array.from(grouped).map(object => object[1].length);
-            const labelsArray = Array.from(grouped).map(object => object[0] + ':00');
-
+        fillChartData() {
+            const grouped = this.groupBy(this.markers, object => object.created_at.slice(0, -6));
             this.timedatacollection = {
-                labels: labelsArray,
+                labels: Array.from(grouped).map(object => object[0] + ':00'),
                 datasets: [{
                     label: 'Markers',
                     borderColor: '#1C77C3',
-                    data: newArray
+                    data: Array.from(grouped).map(object => object[1].length)
                 }]
             }
-
-
-            const groupedByCategory = this.groupBy(data, object => object.category.name);
-
-            const newCategoryArray = Array.from(groupedByCategory).map(object => object[1].length);
-            const categoryLabelsArray = Array.from(groupedByCategory).map(object => object[0]);
+        },
+        fillPieData() {
+            const groupedByCategory = this.groupBy(this.markers, object => object.category.name);
 
             this.datacollection = {
-                labels: categoryLabelsArray,
+                labels: Array.from(groupedByCategory).map(object => object[0]),
                 datasets: [{
                     label: 'New markers',
                     borderColor: '#1C77C3',
                     // backgroundColor: '#1C77C3',
-                    data: newCategoryArray
+                    data: Array.from(groupedByCategory).map(object => object[1].length)
                 }]
             }
-        },
-        getMarkers() {
-            axios
-                .get('/api/maps/' + this.map_id + '/incidents?show_expired=true')
-                .then(response => {
-                    this.markers = response.data
-                    this.fillData();
-                })
-        },
+        }
     }
 }
 

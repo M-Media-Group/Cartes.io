@@ -1,6 +1,6 @@
 <template>
     <div>
-        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map" >
+        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
             <v-geosearch :options="geosearchOptions"></v-geosearch>
@@ -28,7 +28,7 @@
                         <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
                         <p class="mt-0 mb-1" v-if="incident.marker">{{ incident.marker.label }}</p>
                         <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
-                        <a class="btn btn-link btn-sm text-danger" v-if="inLocalStorageKey(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
+                        <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(incident.id)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -137,22 +137,23 @@ import VGeosearch from 'vue2-leaflet-geosearch';
 const provider = new OpenStreetMapProvider();
 
 export default {
-    props: ['map_id', 'map_token', 'users_can_create_incidents', 'map_categories'],
+    props: ['map_id', 'map_token', 'users_can_create_incidents', 'map_categories', 'initial_incidents'],
+
     components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch },
+
     data() {
         return {
             center: L.latLng(43.7040, 7.3111),
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
-            incidents: [],
+            incidents: this.initial_incidents,
             categories: this.map_categories ? this.map_categories : [],
             new_message: '',
             fullCategory: { id: null, name: '' },
             query: '',
             open_incident: null,
-            markerResults: {
-            },
+            markerResults: {},
             submit_data: {
                 lat: 0,
                 lng: 0,
@@ -176,6 +177,19 @@ export default {
             }
         }
     },
+
+    created: function() {
+        // _.debounce is a function provided by lodash to limit how
+        // often a particularly expensive operation can be run.
+        // In this case, we want to limit how often we access
+        // yesno.wtf/api, waiting until the user has completely
+        // finished typing before making the ajax request. To learn
+        // more about the _.debounce function (and its cousin
+        // _.throttle), visit: https://lodash.com/docs#debounce
+        this.debouncedGetCategories = _.debounce(this.getCategories, 250)
+        this.debouncedRenderTimeago = _.debounce(this.renderTimeago, 50)
+    },
+
     mounted() {
 
         new L.Hash(this.$refs.map.mapObject);
@@ -192,22 +206,13 @@ export default {
             localStorage['map_' + this.map_id] = this.submit_data.map_token
         }
 
-        this.getIncidents()
+        if(!this.incidents) {
+            this.getIncidents()
+        }
         //this.getCategories()
-
-        Echo.channel('maps.' + this.map_id).listen('IncidentCreated', (e) => {
-            this.incidents.push(e.incident);
-            this.new_message = "" + e.incident.category.name + "";
-            setTimeout(function() {
-                this.new_message = '';
-            }.bind(this), 5000);
-        });
-
     },
+
     computed: {
-        incidentsCount() {
-            return this.incidents.length;
-        },
         canPost() {
             if (this.submit_data.map_token) {
                 return 'yes'
@@ -215,47 +220,50 @@ export default {
             return this.users_can_create_incidents;
         },
         activeIncidents() {
+            if(this.initial_incidents){
+                return this.incidents;
+            }
+            if(!this.incidents){
+                return [];
+            }
             return this.incidents.filter(function(incident) {
                 if (incident.expires_at == null) {
                     return true
                 }
-                return Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
+                return new Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
             })
         }
     },
 
     watch: {
-        incidentsCount(newValue) {
+        initial_incidents(newValue) {
+            this.incidents = newValue;
             //$emit('incidents-count-change', newValue);
         }
     },
-    created: function() {
-        // _.debounce is a function provided by lodash to limit how
-        // often a particularly expensive operation can be run.
-        // In this case, we want to limit how often we access
-        // yesno.wtf/api, waiting until the user has completely
-        // finished typing before making the ajax request. To learn
-        // more about the _.debounce function (and its cousin
-        // _.throttle), visit: https://lodash.com/docs#debounce
-        this.debouncedGetCategories = _.debounce(this.getCategories, 250)
-        this.debouncedRenderTimeago = _.debounce(this.renderTimeago, 50)
-    },
+
     methods: {
+        canDeletePost(id) {
+            if (this.submit_data.map_token) {
+                return true
+            }
+            return this.inLocalStorageKey(id);
+        },
         addMarker(event) {
             this.$refs.hello_popup.mapObject.openPopup(event.latlng);
-            if(!this.submit_data.category) {
+            if (!this.submit_data.category) {
                 $('.multiselect').focus();
             }
             this.submit_data.lat = event.latlng.lat;
             this.submit_data.lng = event.latlng.lng;
         },
-        async handleOpenedPopup(event, id){
+        async handleOpenedPopup(event, id) {
             this.open_incident = this.incidents.findIndex((e) => e.id === id)
             if (this.incidents[this.open_incident] && this.incidents[this.open_incident].marker) {
                 // console.log(this.incidents[this.open_incident].marker);
             } else {
-                Vue.set(this.incidents[this.open_incident], 'marker', {label: "One sec, we're fetching the address..."})
-                const results = await provider.search({ query: event.latlng.lat+" "+event.latlng.lng })
+                Vue.set(this.incidents[this.open_incident], 'marker', { label: "One sec, we're fetching the address..." })
+                const results = await provider.search({ query: event.latlng.lat + " " + event.latlng.lng })
                 Vue.set(this.incidents[this.open_incident], 'marker', results[0])
             }
             //this.$refs.hello_popup.mapObject.closePopup();
@@ -295,7 +303,6 @@ export default {
             this.submit_data.loading = true
             this.query = query
             this.debouncedGetCategories()
-
         },
         getIncidents() {
             axios
@@ -315,12 +322,15 @@ export default {
         deleteIncident(id) {
             this.submit_data.loading = true;
             axios
-                .delete('/api/maps/' + this.map_id + '/incidents/' + id, { data: { token: localStorage['post_' + id] } })
+                .delete('/api/maps/' + this.map_id + '/incidents/' + id, { data: { token: localStorage['post_' + id], map_token: this.submit_data.map_token } })
                 .then((res) => {
-                    this.incidents = this.incidents.filter((e) => e.id !== id)
-                    localStorage.removeItem('post_' + id)
+                    this.handleDeletedIncident(id);
                     this.submit_data.loading = false;
                 });
+        },
+        handleDeletedIncident(id) {
+            this.incidents = this.incidents.filter((e) => e.id !== id)
+            localStorage.removeItem('post_' + id)
         },
         submitForm() {
             this.submit_data.loading = true;

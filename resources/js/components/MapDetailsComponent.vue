@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-5 mt-5 mt-md-0">
             <navigator-share v-bind:on-error="onShareError" v-bind:url="map_url" v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'" v-bind:text="submit_data.description ? submit_data.description : 'Here\'s my map'" class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
-            <div class="card bg-dark text-white mb-3" v-if="canEdit">
+            <div class="card bg-dark text-white mb-3" v-if="canEdit" key="map-settings">
                 <div class="card-header">Map settings</div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -84,13 +84,13 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+            <slot></slot>
+
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
             <p class="small mb-3" v-if="submit_data.options.default_expiration_time">{{submit_data.options.default_expiration_time / 60}} hours after creating a marker it will automatically dissapear from the map.</p>
-            <h2 class="mt-5">Map stats</h2>
-            <map-markers-chart-component :map_id="map.uuid"></map-markers-chart-component>
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
