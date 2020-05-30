@@ -41,6 +41,6 @@ class IncidentDeleted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('maps.' . $this->incident->map->uuid);
+        return new Channel('maps.'.$this->incident->map->uuid);
     }
 }
