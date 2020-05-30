@@ -8,12 +8,11 @@
             </div>
         </div>
         <div class="container">
+
             <div class="row justify-content-center mt-5">
                 <div class="col-md-12" style="max-width: 950px;">
-                    <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map">
-
-                        <map-markers-feed-component :markers="activeMarkers"></map-markers-feed-component>
-
+                    <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
+                        <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
                         <div class="card bg-dark text-white mb-3" v-if="expiredMarkers.length > 0">
                             <div class="card-header">Map display options</div>
                             <div class="card-body">
@@ -112,7 +111,13 @@ export default {
                 }
                 return new Date() > new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
             })
-        }
+        },
+        hasLiveData() {
+            if (this.map.users_can_create_incidents === 'no' ) {
+                return false
+            }
+            return true
+        },
     },
 
     watch: {
@@ -147,6 +152,10 @@ export default {
 
         handleMarkerDelete(id) {
             this.markers = this.markers.filter((e) => e.id !== id)
+        },
+
+        handleMapUpdate(map) {
+            this.map = map
         }
 
     }

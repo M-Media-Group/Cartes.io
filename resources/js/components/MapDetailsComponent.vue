@@ -207,6 +207,7 @@ export default {
                 .put('/api/maps/' + this.map_id, this.submit_data) // change this to post )
                 .then((res) => {
                     this.submit_data.loading = false
+                    this.$emit('map-update', res.data);
                 })
                 .catch((error) => {
                     this.submit_data.loading = false

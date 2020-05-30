@@ -1,13 +1,14 @@
 <template>
     <div>
-        <ul id="marker_feed" class="list-unstyled px-0 pb-3 mb-3 bg-dark card" v-if="is_connected_live && markers">
-            <li class="media p-3">
+        <ul id="marker_feed" class="list-unstyled px-0 pb-3 mb-3 bg-dark card">
+            <li class="media p-3 card-header">
                 <div class="media-body">
-                    <h5 class="mt-0 mb-1"><i class="fa fa-circle text-danger blink"></i> Live feed</h5>
+                    <h5 class="mt-0 mb-1" v-if="is_connected_live"><i class="fa fa-circle text-danger blink"></i> Live feed</h5>
+                    <h5 class="mt-0 mb-1" v-else>Feed</h5>
                 </div>
             </li>
-            <div id="marker_feed_markers" style="max-height:70vh; overflow-y: scroll;">
-                <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary card" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
+            <div id="marker_feed_markers" style="max-height:57vh; overflow-y: scroll;">
+                <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary text-white card" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
                     <div class="media-body">
                         <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
                         Reported <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
@@ -28,6 +29,7 @@ export default {
     mounted() {
         this.listenForSocketConnect()
         this.listenForSocketDisconnect()
+        timeago.render(document.querySelectorAll('.timestamp'))
     },
     computed: {
         limitedMarkers() {
@@ -38,7 +40,7 @@ export default {
               return a.created_at < b.created_at;
             });
             return sorted_markers;
-            //return sorted_markers.slice(0,3);
+            return sorted_markers.slice(0,50);
         }
     },
 
