@@ -11,7 +11,7 @@
             <div class="row justify-content-center mt-5">
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map">
-                        <div class="card bg-dark text-white mb-3">
+                        <div class="card bg-dark text-white mb-3" v-if="expiredMarkers.length > 0">
                             <div class="card-header">Map display options</div>
                             <div class="card-body">
                                 <div class="form-group row">
@@ -80,6 +80,8 @@ export default {
         if (!this.markers) {
             this.getAllMarkers()
         }
+        this.listenForNewMarkers()
+        this.listenForDeletedMarkers()
     },
 
     computed: {
@@ -127,6 +129,12 @@ export default {
         listenForNewMarkers() {
             Echo.channel('maps.' + this.map.id).listen('IncidentCreated', (e) => {
                 this.handleMarkerCreate(e.incident);
+            });
+        },
+
+        listenForDeletedMarkers() {
+            Echo.channel('maps.' + this.map.id).listen('IncidentDeleted', (e) => {
+                this.handleMarkerDelete(e.incident.id);
             });
         },
 

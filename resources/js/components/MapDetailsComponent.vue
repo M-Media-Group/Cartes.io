@@ -211,7 +211,14 @@ export default {
                 .catch((error) => {
                     this.submit_data.loading = false
                     console.log(error);
-                    alert(error.message);
+                    if (error.response.data.errors) {
+                        var message = Object.entries(error.response.data.errors)
+                            .map(([error_name, error_value], i) => `${error_name}: ${error_value[0]} | `)
+                            .join('\n');
+                    } else {
+                        var message = error.response.data.message
+                    }
+                    alert(message);
                 });
         },
         deleteMap(id) {

@@ -20,7 +20,7 @@
         </div>
     </div>
     <div v-else>
-        <p class="small">There's not enough markers on this map yet. Stats will be available after a few more markers are added.</p>
+        <p class="small">There's not enough markers on this map yet. More stats will be available after a few more markers are added.</p>
     </div>
 </template>
 <script>

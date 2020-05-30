@@ -48,7 +48,8 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\LogPasswordReset::class,
         ],
         \App\Events\IncidentCreated::class => [
-            //'App\Listeners\SendShipmentNotification',
+        ],
+        \App\Events\IncidentDeleted::class => [
         ],
     ];
 
