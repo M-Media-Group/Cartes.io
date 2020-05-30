@@ -1,17 +1,19 @@
 <template>
     <div>
-        <ul class="list-unstyled px-0 pb-3 mb-3 bg-dark card" v-if="is_connected_live && markers">
-            <li class="media mb-3 p-3 bg-primary">
+        <ul id="marker_feed" class="list-unstyled px-0 pb-3 mb-3 bg-dark card" v-if="is_connected_live && markers">
+            <li class="media p-3">
                 <div class="media-body">
                     <h5 class="mt-0 mb-1"><i class="fa fa-circle text-danger blink"></i> Live feed</h5>
                 </div>
             </li>
-            <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary card" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
-                <div class="media-body">
-                    <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
-                    Reported <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
-                </div>
-            </li>
+            <div id="marker_feed_markers" style="max-height:70vh; overflow-y: scroll;">
+                <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary card" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
+                    <div class="media-body">
+                        <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
+                        Reported <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
+                    </div>
+                </li>
+            </div>
         </ul>
     </div>
 </template>
@@ -35,19 +37,25 @@ export default {
             var sorted_markers = this.markers.sort(function (a, b) {
               return a.created_at < b.created_at;
             });
-            return sorted_markers.slice(0,3);
+            return sorted_markers;
+            //return sorted_markers.slice(0,3);
         }
     },
 
     watch: {
         markers(newValue) {
-
+            this.handleNewMarker()
         }
     },
 
     methods: {
         handleClick(marker){
-            window.scrollTo(0, 0);
+            //$(window).animate({ scrollTop: $("#app").offset().top }, "fast");
+            $('html').animate({
+                scrollTop: $('#app').offset().top
+            }, 200);
+            //$(window).scrollTop( $("#app").offset().top );
+
             this.$root.$emit('flyTo', marker.location.coordinates);
         },
         listenForSocketConnect() {
@@ -60,6 +68,11 @@ export default {
               this.is_connected_live = false
             });
         },
+        handleNewMarker() {
+            $('#marker_feed_markers').animate({
+                scrollTop: $('#app').offset().top
+            }, 200);
+        }
     }
 }
 

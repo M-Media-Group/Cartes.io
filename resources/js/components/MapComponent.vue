@@ -180,7 +180,7 @@ export default {
     },
 
     created: function() {
-        this.$root.$on('flyTo', (f) => this.$refs.map.mapObject.flyTo(f));
+        this.$root.$on('flyTo', (f) => this.$refs.map.mapObject.flyTo(f, 16));
 
         // _.debounce is a function provided by lodash to limit how
         // often a particularly expensive operation can be run.
