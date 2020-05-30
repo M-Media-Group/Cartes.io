@@ -53,7 +53,7 @@ class IncidentController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
