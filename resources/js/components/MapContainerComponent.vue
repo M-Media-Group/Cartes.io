@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     </div>
-                    <map-markers-chart-component :map_id="map.uuid" :markers="activeMarkers"></map-markers-chart-component>
+                    <map-markers-chart-component :map_id="map.uuid" :markers="markers"></map-markers-chart-component>
                 </div>
             </div>
         </div>
