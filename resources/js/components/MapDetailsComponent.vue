@@ -10,9 +10,10 @@
         </div>
         <div class="col-md-5 mt-5 mt-md-0">
             <navigator-share v-bind:on-error="onShareError" v-bind:url="map_url" v-bind:title="submit_data.title ? submit_data.title : 'Untitled map'" v-bind:text="submit_data.description ? submit_data.description : 'Here\'s my map'" class="mb-3"><a slot="clickable" class="btn btn-primary btn-lg btn-block">Share this map</a></navigator-share>
+            <slot></slot>
             <div class="card bg-dark text-white mb-3" v-if="canEdit" key="map-settings">
-                <div class="card-header">Map settings</div>
-                <div class="card-body">
+                <div class="card-header" data-toggle="collapse" data-target="#settingsCollapse" aria-expanded="false" aria-controls="settingsCollapse" style="cursor: pointer;"><i class="fa fa-cog"></i> Map settings</div>
+                <div class="card-body collapse" id="settingsCollapse">
                     <div class="form-group row">
                         <label for="password-confirm" class="col-md-12 col-form-label">Who can see this map</label>
                         <div class="col-md-12">
@@ -86,9 +87,6 @@
                     </div>
                 </div>
             </div>
-
-            <slot></slot>
-
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
             <p class="small mb-3" v-if="submit_data.options.default_expiration_time">{{submit_data.options.default_expiration_time / 60}} hours after creating a marker it will automatically dissapear from the map.</p>
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">

@@ -14,10 +14,10 @@
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
                         <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
                         <div class="card bg-dark text-white mb-3" v-if="expiredMarkers.length > 0">
-                            <div class="card-header">Map display options</div>
-                            <div class="card-body">
+                            <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
+                            <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row">
-                                    <label class="col-md-12 col-form-label">What markers are visible</label>
+                                    <label class="col-md-12 col-form-label">Visible markers</label>
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             <input type="checkbox" id="show_all_checkbox" v-model="map_settings.show_all">

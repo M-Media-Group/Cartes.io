@@ -19,11 +19,12 @@
 		  <div class="modal-dialog modal-dialog-centered modal-dark" role="document">
 		    <div class="modal-content bg-dark">
 		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel">Here's your new map</h5>
+		        <h5 class="modal-title" id="exampleModalLabel">Yipee! You've made a new map</h5>
 
 		      </div>
 		      <div class="modal-body">
-		        On your map, right click (long-tap on mobile) to create your first marker.
+		        <p>On your map, right click (long-tap on mobile) to create your first marker.</p>
+		        <p>Scroll down a bit and click on "Map settings" to edit privacy and marker expiration times. Don't forget to edit the title and description too!</p>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-primary" data-dismiss="modal">Lets go!</button>
