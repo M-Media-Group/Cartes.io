@@ -85,6 +85,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <a class="btn btn-danger btn-sm mt-3" v-if="canEdit" @click="deleteMap" :disabled="submit_data.loading">Delete map</a>
                 </div>
             </div>
             <p class="small">Right click (or long-tap on mobile) on the map to create a marker. You can choose one of the existing labels or create your own.</p>
@@ -92,7 +94,6 @@
             <div v-if="map.categories" class="d-flex mt-3" style="flex-wrap: wrap;">
                 <a href="#" class="badge badge-secondary mr-1 mb-1" v-for="category in map.categories" :key="category.id">{{category.name}}</a>
             </div>
-            <a class="btn btn-danger mt-3" v-if="canEdit" @click="deleteMap" :disabled="submit_data.loading">Delete map</a>
             <details class="mt-3 mb-3 small">
                 <summary>
                     <dt class="d-inline text-muted">Developer info</dt>

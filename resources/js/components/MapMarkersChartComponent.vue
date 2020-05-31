@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-    props: ['map_id', 'markers'],
+    props: ['markers'],
     data() {
         return {
             datacollection: {},

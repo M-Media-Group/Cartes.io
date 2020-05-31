@@ -8,7 +8,6 @@
             </div>
         </div>
         <div class="container">
-
             <div class="row justify-content-center mt-5">
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
@@ -17,12 +16,21 @@
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row">
+                                    <label class="col-md-12 col-form-label" for="formControlRange">Time slider 
+                                        <small v-if="map_settings.mapSelectedAge > 0">(showing data as of {{map_settings.mapSelectedAge}} minutes ago)</small>
+                                        <small v-else>(showing live data)</small>
+                                    </label>
+                                    <div class="col-md-12">
+                                        <input type="range" class="form-control-range w-100" id="formControlRange"  :max="mapAgeInMinutes" min="0" v-model="map_settings.mapSelectedAge">
+                                    </div>
+                                  </div>
+                                <div class="form-group row">
                                     <label class="col-md-12 col-form-label">Visible markers</label>
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             <input type="checkbox" id="show_all_checkbox" v-model="map_settings.show_all">
                                             <label class="form-check-label" for="show_all_checkbox">
-                                                Include {{expiredMarkers.length}} markers that have expired
+                                                Include {{expiredMarkers.length}} expired markers
                                             </label>
                                         </div>
                                     </div>
@@ -30,8 +38,8 @@
                             </div>
                         </div>
                     </map-details-component>
-                    <h2 class="mt-5">Map stats</h2>
-                    <div class="row" v-if="markers">
+                    <h2 class="mt-5" v-if="markers && markers.length > 0">Map stats</h2>
+                    <div class="row" v-if="markers && markers.length > 0">
                         <div class="col-md-6">
                             <h3>Total markers</h3>
                             <div class="jumbotron jumbotron-fluid bg-dark rounded">
@@ -51,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <map-markers-chart-component :map_id="map.uuid" :markers="markers"></map-markers-chart-component>
+                    <map-markers-chart-component v-if="markers && markers.length > 0" :markers="markers"></map-markers-chart-component>
                 </div>
             </div>
         </div>
@@ -69,8 +77,9 @@ export default {
             map_token: this.initial_map_token,
             markers: this.initial_incidents,
             map_settings: {
-                show_all: false
-            }
+                show_all: false,
+                mapSelectedAge: 0,
+            },
         }
     },
 
@@ -87,6 +96,14 @@ export default {
     },
 
     computed: {
+        mapAgeInMinutes() {
+            if(!this.map) {
+                return false;
+            }
+            var diff = Math.abs(new Date() - new Date(Date.parse(this.map.created_at.replace(/-/g, '/'))));
+            var minutes = Math.floor((diff/1000)/60);
+            return minutes
+        },
         activeMarkers() {
             if (!this.markers) {
                 return []
@@ -94,11 +111,16 @@ export default {
             if (this.map_settings.show_all) {
                 return this.markers
             }
+            const startdate = new Date();
+            const diff_date_time = new Date(startdate.getTime() - this.map_settings.mapSelectedAge * 60000);
             return this.markers.filter(function(marker) {
+                if (new Date(Date.parse(marker.created_at.replace(/-/g, '/'))) > diff_date_time) {
+                    return false
+                }
                 if (marker.expires_at == null) {
                     return true
                 }
-                return new Date() <= new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
+                return diff_date_time <= new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
             })
         },
         expiredMarkers() {
@@ -114,6 +136,9 @@ export default {
         },
         hasLiveData() {
             if (this.map.users_can_create_incidents === 'no' ) {
+                return false
+            }
+            if(this.markers < 1) {
                 return false
             }
             return true
@@ -163,4 +188,7 @@ export default {
 
 </script>
 <style>
+#formControlRange {
+  direction: rtl
+}
 </style>
