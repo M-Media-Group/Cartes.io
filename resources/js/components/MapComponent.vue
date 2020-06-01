@@ -242,6 +242,10 @@ export default {
         initial_incidents(newValue) {
             this.incidents = newValue;
             //$emit('incidents-count-change', newValue);
+        },
+        map_categories(newValue) {
+            this.categories = newValue;
+            //$emit('incidents-count-change', newValue);
         }
     },
 
