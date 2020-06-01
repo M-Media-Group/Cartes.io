@@ -8,12 +8,17 @@
                 </div>
             </li>
             <div id="marker_feed_markers" class="collapse show" style="max-height:57vh; overflow-y: scroll;">
-                <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary text-white card feed-element" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
-                    <div class="media-body">
-                        <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
-                        Reported <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
-                    </div>
-                </li>
+                <template v-if="limitedMarkers.length > 0">
+                    <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary text-white card feed-element" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
+                            <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
+                        </div>
+                    </li>
+                </template>
+                <template v-else>
+                    <div class="text-center text-muted p-3">There's no active markers at this time.</div>
+                </template>
             </div>
         </ul>
     </div>

@@ -17,7 +17,7 @@
                         </multiselect>
                         <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
                     </form>
-                    <div v-else-if="canPost == 'only_logged_in'">You must be logged in to Cartes.io to post on this map.</div>
+                    <div v-else-if="canPost == 'only_logged_in'"><a href="/login">Log in</a> to Cartes.io to post on this map.</div>
                     <div v-else>You can't create markers on this map.</div>
                 </l-popup>
             </l-layer-group>
@@ -146,7 +146,7 @@ export default {
         return {
             center: L.latLng(43.7040, 7.3111),
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
-            attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> &copy; <a href="https://icons8.com/attributions">Icons8</a>',
             subdomains: 'abcd',
             incidents: this.initial_incidents,
             categories: this.map_categories ? this.map_categories : [],

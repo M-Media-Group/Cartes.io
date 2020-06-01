@@ -1,10 +1,10 @@
 <template>
     <div>
-        <map-component v-if="map && markers" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="map.categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
+        <map-component v-if="map && markers" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
         <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
             <div class="col text-center">
                 <div>Cartes.io</div>
-                <p class="text-muted mb-0">Loading map...</p>
+                <p class="text-muted mb-0">Contacting planet Earth...</p>
             </div>
         </div>
         <div class="container">
@@ -15,22 +15,22 @@
                         <div class="card bg-dark text-white mb-3" v-if="expiredMarkers.length > 0">
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="!map_settings.show_all">
                                     <label class="col-md-12 col-form-label" for="formControlRange">Time slider 
-                                        <small v-if="map_settings.mapSelectedAge > 0">(showing data as of {{map_settings.mapSelectedAge}} minutes ago)</small>
-                                        <small v-else>(showing live data)</small>
+                                        <small v-if="map_settings.mapSelectedAge > 0">(showing map as of {{map_settings.mapSelectedAge}} minutes ago)</small>
+                                        <small v-else>(showing live map)</small>
                                     </label>
                                     <div class="col-md-12">
-                                        <input type="range" class="form-control-range w-100" id="formControlRange"  :max="mapAgeInMinutes" min="0" v-model="map_settings.mapSelectedAge">
+                                        <input type="range" class="form-control-range w-100" id="formControlRange"  :max="mapAgeInMinutes" step="5" min="0" v-model="map_settings.mapSelectedAge">
                                     </div>
-                                  </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-12 col-form-label">Visible markers</label>
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             <input type="checkbox" id="show_all_checkbox" v-model="map_settings.show_all">
                                             <label class="form-check-label" for="show_all_checkbox">
-                                                Include {{expiredMarkers.length}} expired markers
+                                                Show all markers
                                             </label>
                                         </div>
                                     </div>
@@ -135,6 +135,9 @@ export default {
             })
         },
         hasLiveData() {
+            if (!this.map) {
+                return false
+            }
             if (this.map.users_can_create_incidents === 'no' ) {
                 return false
             }
@@ -143,6 +146,18 @@ export default {
             }
             return true
         },
+        categories() {
+            if (!this.markers) {
+                return []
+            }
+            var map1 = this.markers.map(x => x.category);
+            return map1.map(e => e.id)
+                  // store the indexes of the unique objects
+                  .map((e, i, final) => final.indexOf(e) === i && i)
+                  // eliminate the false indexes & return unique objects
+                 .filter((e) => map1[e]).map(e => map1[e]);
+
+        }
     },
 
     watch: {
@@ -150,6 +165,19 @@ export default {
     },
 
     methods: {
+        groupBy(list, keyGetter) {
+            const map = new Map();
+            list.forEach((item) => {
+                const key = keyGetter(item);
+                const collection = map.get(key);
+                if (!collection) {
+                    map.set(key, [item]);
+                } else {
+                    collection.push(item);
+                }
+            });
+            return map;
+        },
 
         getAllMarkers() {
             axios
