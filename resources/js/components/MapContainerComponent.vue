@@ -1,6 +1,6 @@
 <template>
     <div>
-        <map-component v-if="map && markers" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
+        <map-component v-if="map" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
         <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
             <div class="col text-center">
                 <div>Cartes.io</div>
