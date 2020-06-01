@@ -23,6 +23,7 @@ class RoleController extends Controller
     {
         $this->authorize('create', Role::class);
         $roles = Role::simplePaginate(7); //Get all roles
+
         return view('roles.index')->with('roles', $roles);
     }
 
