@@ -83,16 +83,16 @@ export default {
         }
     },
 
-    created: function() {
-
-    },
-
-    mounted() {
+    created() {
         if (!this.markers) {
             this.getAllMarkers()
         }
         this.listenForNewMarkers()
         this.listenForDeletedMarkers()
+    },
+
+    mounted() {
+
     },
 
     computed: {

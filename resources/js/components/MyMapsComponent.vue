@@ -26,7 +26,7 @@ export default {
             private_maps_total: 0,
         }
     },
-    mounted() {
+    created() {
         var ids = []
         Object.keys(localStorage).forEach(function(key) {
             if (key.includes('map_')) {

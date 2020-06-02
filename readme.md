@@ -1,6 +1,6 @@
 # About
 
-This is an open source project based on Laravel 5.7. Feel free to fork and use!
+This is an open source project based on Laravel 5.7. Feel free to fork and use! This repo is the code behind [Cartes.io](https://cartes.io).
 
 ## Install
 
