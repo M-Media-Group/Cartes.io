@@ -243,7 +243,8 @@ export default {
                 if (incident.expires_at == null) {
                     return true
                 }
-                return new Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
+                return Vue.moment(incident.expires_at).isBefore(Vue.moment())
+                //return new Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
             })
         }
     },
@@ -273,11 +274,12 @@ export default {
             if (!expiration_date) {
                 return false
             }
-            var now = new Date();
-            var marker_date = new Date(Date.parse(expiration_date.replace(/-/g, '/')));
-            if (now > marker_date) {
-                return true;
-            }
+            // var now = new Date();
+            // var marker_date = new Date(Date.parse(expiration_date.replace(/-/g, '/')));
+            // if (now > marker_date) {
+            //     return true;
+            // }
+            return Vue.moment(expiration_date).isBefore(Vue.moment())
         },
         addMarker(event) {
             this.$refs.hello_popup.mapObject.openPopup(event.latlng);

@@ -6,17 +6,7 @@
         </div>
         <div class="col-md-6">
             <h3>New markers by date</h3>
-            <chart-line-component :chart-data="timedatacollection" :options="{
-    scales: {
-      xAxes: [{
-        type: 'time',
-        distribution: 'linear',
-                // time: {
-                //     unit: 'hour'
-                // }
-      }]
-    }
-  }" :height="225" style="width: 100%;" class="mt-5 mb-5"></chart-line-component>
+            <chart-line-component :chart-data="timedatacollection" :options="chartLineOptions" :height="225" style="width: 100%;" class="mt-5 mb-5"></chart-line-component>
         </div>
     </div>
     <div v-else>
@@ -30,7 +20,19 @@ export default {
         return {
             datacollection: {},
             timedatacollection: {},
-            show_all: true
+            show_all: true,
+            chartLineOptions: {
+                onClick: this.handleClick,
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        distribution: 'linear',
+                        // time: {
+                        //     unit: 'hour'
+                        // }
+                    }]
+                }
+            }
         }
     },
     mounted() {
@@ -65,9 +67,12 @@ export default {
             return map;
         },
         fillChartData() {
-            const grouped = this.groupBy(this.markers, object => object.created_at.slice(0, -6));
+            const grouped = this.groupBy(this.markers, object => {
+                // console.log(object.created_at);
+                return Vue.moment(object.created_at).startOf('hour').toString()
+            });
             this.timedatacollection = {
-                labels: Array.from(grouped).map(object => object[0] + ':00'),
+                labels: Array.from(grouped).map(object => object[0]),
                 datasets: [{
                     label: 'Markers',
                     borderColor: '#1C77C3',
@@ -87,6 +92,17 @@ export default {
                     data: Array.from(groupedByCategory).map(object => object[1].length)
                 }]
             }
+        },
+        handleClick(point, event) {
+            const item = event[0]
+            let index = item["_index"];
+            let date = item["_chart"].data.labels[index];
+            let value = item["_chart"].data.datasets[0].data[index];
+            this.$emit('clicked-date', {
+                index: item._index,
+                backgroundColor: item._view.backgroundColor,
+                value: date
+            })
         }
     }
 }

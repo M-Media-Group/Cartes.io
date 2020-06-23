@@ -44,7 +44,7 @@ export default {
             var sorted_markers = this.markers.sort(function (a, b) {
               return a.created_at < b.created_at;
             });
-            return sorted_markers;
+            //return sorted_markers;
             return sorted_markers.slice(0,50);
         }
     },

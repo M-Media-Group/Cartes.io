@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
@@ -21,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
         //         $view->with('categories', \App\Category::withCount('views')->orderBy('views_count', 'DESC')->take(3)->get());
         //     }
         // );
+        Carbon::serializeUsing(function ($carbon) {
+            return $carbon->format('c');
+        });
         Schema::defaultStringLength(191);
     }
 

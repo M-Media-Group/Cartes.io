@@ -26,7 +26,11 @@ class Map extends Model
     protected $hidden = ['id', 'token', 'user_id'];
     protected $casts = [
         'options' => 'array',
+        'created_at' => 'datetime:c',
+        'updated_at' => 'datetime:c',
     ];
+    // protected $dateFormat = 'c';
+
     //
 
     /**

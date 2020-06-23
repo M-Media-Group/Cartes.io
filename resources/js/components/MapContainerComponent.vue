@@ -12,7 +12,7 @@
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
                         <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
-                        <div class="card bg-dark text-white mb-3" v-if="expiredMarkers.length > 0">
+                        <div class="card bg-dark text-white mb-3" >
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row" v-if="!map_settings.show_all">
@@ -37,6 +37,7 @@
                                 </div>
                             </div>
                         </div>
+                        <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
                     </map-details-component>
                     <h2 class="mt-5" v-if="markers && markers.length > 0">Map stats</h2>
                     <div class="row" v-if="markers && markers.length > 0">
@@ -100,9 +101,7 @@ export default {
             if(!this.map) {
                 return false;
             }
-            var diff = Math.abs(new Date() - new Date(Date.parse(this.map.created_at.replace(/-/g, '/'))));
-            var minutes = Math.floor((diff/1000)/60);
-            return minutes
+            return Math.abs(Vue.moment().diff(this.map.created_at, 'minutes'))
         },
         activeMarkers() {
             if (!this.markers) {
@@ -111,16 +110,12 @@ export default {
             if (this.map_settings.show_all) {
                 return this.markers
             }
-            const startdate = new Date();
-            const diff_date_time = new Date(startdate.getTime() - this.map_settings.mapSelectedAge * 60000);
+            const diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
             return this.markers.filter(function(marker) {
-                if (new Date(Date.parse(marker.created_at.replace(/-/g, '/'))) > diff_date_time) {
-                    return false
-                }
-                if (marker.expires_at == null) {
+                if ( Vue.moment(marker.created_at).isBefore(diff_date_time) && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
                 }
-                return diff_date_time <= new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
+                return false
             })
         },
         expiredMarkers() {
@@ -131,7 +126,8 @@ export default {
                 if (!marker.expires_at) {
                     return false
                 }
-                return new Date() > new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
+                return Vue.moment().isAfter(Vue.moment(marker.expires_at))
+                //return new Date() > new Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
             })
         },
         hasLiveData() {
@@ -156,7 +152,6 @@ export default {
                   .map((e, i, final) => final.indexOf(e) === i && i)
                   // eliminate the false indexes & return unique objects
                  .filter((e) => map1[e]).map(e => map1[e]);
-
         }
     },
 
@@ -209,6 +204,10 @@ export default {
 
         handleMapUpdate(map) {
             this.map = map
+        },
+
+        handleApiMarkers(markers) {
+            this.markers = markers
         }
 
     }

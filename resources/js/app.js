@@ -50,6 +50,8 @@ Vue.filter('truncate', function (text, length, suffix) {
 });
 /** Vue Filters End */
 
+Vue.use(require('vue-moment'));
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -12,8 +12,10 @@
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^10.2",
         "grimzy/laravel-mysql-spatial": "^2.0",
-        "laravel/framework": "5.7.*",
+        "laravel/framework": "^5.8.0",
+        "laravel/nexmo-notification-channel": "^2.3",
         "laravel/passport": "7.5.1",
+        "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^1.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "pusher/pusher-php-server": "~4.0",
@@ -28,9 +30,9 @@
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
-        "laravel/telescope": "^1.0",
+        "laravel/telescope": "2.1.7",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^2.0",
+        "mpociot/laravel-apidoc-generator": "^4.8",
         "phpunit/phpunit": "^7.0"
     },
     "config": {

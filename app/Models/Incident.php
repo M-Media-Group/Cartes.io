@@ -16,6 +16,8 @@ class Incident extends Pivot
      *
      * @var array
      */
+    public $incrementing = true;
+
     protected $table = 'incidents';
 
     protected $touches = ['map'];
@@ -31,6 +33,16 @@ class Incident extends Pivot
         'location',
     ];
     protected $hidden = ['token', 'user_id', 'map_id'];
+
+    protected $dates = [
+        'expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime:c',
+        'created_at' => 'datetime:c',
+        'updated_at' => 'datetime:c',
+    ];
 
     /**
      * The "booting" method of the model.
