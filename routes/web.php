@@ -1,5 +1,7 @@
 <?php
 
+use Spatie\Honeypot\ProtectAgainstSpam;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,7 +35,9 @@ Route::get('/notifications', function () {
     return view('notifications');
 })->middleware('auth');
 
-Auth::routes(['verify' => true]);
+Route::middleware(ProtectAgainstSpam::class)->group(function () {
+    Auth::routes(['verify' => true]);
+});
 
 Route::get('/', 'HomeController@index')->name('home');
 

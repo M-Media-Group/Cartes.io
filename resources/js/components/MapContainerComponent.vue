@@ -37,8 +37,8 @@
                                 </div>
                             </div>
                         </div>
-                        <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
-                    </map-details-component>
+<!--                         <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
+ -->                    </map-details-component>
                     <h2 class="mt-5" v-if="markers && markers.length > 0">Map stats</h2>
                     <div class="row" v-if="markers && markers.length > 0">
                         <div class="col-md-6">
