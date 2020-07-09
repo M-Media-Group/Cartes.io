@@ -1,6 +1,6 @@
 <template>
     <div>
-        <map-component v-if="map" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="markers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
+        <map-component v-if="map" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
         <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
             <div class="col text-center">
                 <div>Cartes.io</div>
@@ -11,8 +11,8 @@
             <div class="row justify-content-center mt-5">
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
-                        <map-markers-feed-component v-if="hasLiveData" :markers="markers"></map-markers-feed-component>
-                        <div class="card bg-dark text-white mb-3 d-none" >
+                        <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
+                        <div class="card bg-dark text-white mb-3" >
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row" v-if="!map_settings.show_all">
@@ -104,7 +104,8 @@ export default {
             return Math.abs(Vue.moment().diff(this.map.created_at, 'minutes'))
         },
         activeMarkers() {
-            if (!this.markers) {
+            var markers = this.markers;
+            if (!markers) {
                 return []
             }
             if (this.map_settings.show_all) {
