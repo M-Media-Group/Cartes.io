@@ -104,14 +104,13 @@ export default {
             return Math.abs(Vue.moment().diff(this.map.created_at, 'minutes'))
         },
         activeMarkers() {
-            var markers = this.markers;
-            if (!markers) {
+            if (!this.markers) {
                 return []
             }
             if (this.map_settings.show_all) {
                 return this.markers
             }
-            const diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
+            let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
             return this.markers.filter(function(marker) {
                 if ( Vue.moment(marker.created_at).isBefore(diff_date_time) && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
