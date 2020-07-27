@@ -12,7 +12,7 @@
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
                         <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
-                        <div class="card bg-dark text-white mb-3 d-none" >
+                        <div class="card bg-dark text-white mb-3" >
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row" v-if="!map_settings.show_all">
@@ -78,7 +78,7 @@ export default {
             map_token: this.initial_map_token,
             markers: this.initial_incidents,
             map_settings: {
-                show_all: true,
+                show_all: false,
                 mapSelectedAge: 0,
             },
         }
@@ -106,11 +106,10 @@ export default {
         activeMarkers() {
             if (!this.markers) {
                 return []
-            }
-            if (this.map_settings.show_all) {
+            } else if (this.map_settings.show_all) {
                 return this.markers
             }
-            let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
+            let diff_date_time = Vue.moment().clone().subtract(this.map_settings.mapSelectedAge, 'minutes');
             return this.markers.filter(function(marker) {
                 if ( Vue.moment(marker.created_at).isBefore(diff_date_time) && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
@@ -176,8 +175,7 @@ export default {
 
         getAllMarkers() {
             axios
-            //Disabling showing historical markers because of a bug in VueJS frontend
-                .get('/api/maps/' + this.map.uuid + '/incidents?show_expired=false')
+                .get('/api/maps/' + this.map.uuid + '/incidents?show_expired=true')
                 .then(response => (
                     this.markers = response.data
                 ))
