@@ -12,7 +12,7 @@
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
                         <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
-                        <div class="card bg-dark text-white mb-3" >
+                        <div class="card bg-dark text-white mb-3 d-none" >
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row" v-if="!map_settings.show_all">
@@ -78,7 +78,7 @@ export default {
             map_token: this.initial_map_token,
             markers: this.initial_incidents,
             map_settings: {
-                show_all: false,
+                show_all: true,
                 mapSelectedAge: 0,
             },
         }
@@ -176,7 +176,8 @@ export default {
 
         getAllMarkers() {
             axios
-                .get('/api/maps/' + this.map.uuid + '/incidents?show_expired=true')
+            //Disabling showing historical markers because of a bug in VueJS frontend
+                .get('/api/maps/' + this.map.uuid + '/incidents?show_expired=false')
                 .then(response => (
                     this.markers = response.data
                 ))

@@ -8,7 +8,7 @@
                 <l-popup>
                     <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
-                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Your marker label" tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
+                        <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Start typing..." tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
                             <template slot="noOptions">Search for or add a new label</template>
                             <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
@@ -396,7 +396,7 @@ export default {
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
-                    this.incidents.push(res.data);
+                    // this.incidents.push(res.data);
                     localStorage['post_' + res.data.id] = res.data.token
                     dataLayer.push({ event: 'marker-create' });
                     this.$emit('marker-create', res.data);
