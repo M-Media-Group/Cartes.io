@@ -12,16 +12,16 @@
                 <div class="col-md-12" style="max-width: 950px;">
                     <map-details-component :map_id="map.uuid" :map_token="map_token" :map="map" v-on:map-update="handleMapUpdate">
                         <map-markers-feed-component v-if="hasLiveData" :markers="activeMarkers"></map-markers-feed-component>
-                        <div class="card bg-dark text-white mb-3" >
+                        <div class="card bg-dark text-white mb-3">
                             <div class="card-header" data-toggle="collapse" data-target="#displayCollapse" aria-expanded="false" aria-controls="displayCollapse" style="cursor: pointer;"><i class="fa fa-sliders"></i> Map display options</div>
                             <div class="card-body collapse" id="displayCollapse">
                                 <div class="form-group row" v-if="!map_settings.show_all">
-                                    <label class="col-md-12 col-form-label" for="formControlRange">Time slider 
+                                    <label class="col-md-12 col-form-label" for="formControlRange">Time slider
                                         <small v-if="map_settings.mapSelectedAge > 0">(showing map as of {{map_settings.mapSelectedAge}} minutes ago)</small>
                                         <small v-else>(showing live map)</small>
                                     </label>
                                     <div class="col-md-12">
-                                        <input type="range" class="form-control-range w-100" id="formControlRange"  :max="mapAgeInMinutes" step="5" min="0" v-model="map_settings.mapSelectedAge">
+                                        <input type="range" class="form-control-range w-100" id="formControlRange" :max="mapAgeInMinutes" step="5" min="0" v-model="map_settings.mapSelectedAge">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -37,8 +37,9 @@
                                 </div>
                             </div>
                         </div>
-<!--                         <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
- -->                    </map-details-component>
+                        <!--                         <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
+ -->
+                    </map-details-component>
                     <h2 class="mt-5" v-if="markers && markers.length > 0">Map stats</h2>
                     <div class="row" v-if="markers && markers.length > 0">
                         <div class="col-md-6">
@@ -98,7 +99,7 @@ export default {
 
     computed: {
         mapAgeInMinutes() {
-            if(!this.map) {
+            if (!this.map) {
                 return false;
             }
             return Math.abs(Vue.moment().diff(this.map.created_at, 'minutes'))
@@ -109,11 +110,12 @@ export default {
             } else if (this.map_settings.show_all) {
                 return this.markers
             }
+
+            let markers = this.markers
             let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
-            console.log('Now: '+diff_date_time);
-            return this.markers.filter(function(marker) {
-                console.log('Marker '+marker.id+' : '+Vue.moment(marker.created_at));
-                if ( Vue.moment(marker.created_at).isBefore(diff_date_time) && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
+
+            return markers.filter(function(marker) {
+                if (Vue.moment(marker.created_at).isSameOrBefore(diff_date_time, 'minute') && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
                 }
                 return false
@@ -135,10 +137,10 @@ export default {
             if (!this.map) {
                 return false
             }
-            if (this.map.users_can_create_incidents === 'no' ) {
+            if (this.map.users_can_create_incidents === 'no') {
                 return false
             }
-            if(this.markers < 1) {
+            if (this.markers < 1) {
                 return false
             }
             return true
@@ -149,10 +151,10 @@ export default {
             }
             var map1 = this.markers.map(x => x.category);
             return map1.map(e => e.id)
-                  // store the indexes of the unique objects
-                  .map((e, i, final) => final.indexOf(e) === i && i)
-                  // eliminate the false indexes & return unique objects
-                 .filter((e) => map1[e]).map(e => map1[e]);
+                // store the indexes of the unique objects
+                .map((e, i, final) => final.indexOf(e) === i && i)
+                // eliminate the false indexes & return unique objects
+                .filter((e) => map1[e]).map(e => map1[e]);
         }
     },
 
@@ -217,6 +219,7 @@ export default {
 </script>
 <style>
 #formControlRange {
-  direction: rtl
+    direction: rtl
 }
+
 </style>
