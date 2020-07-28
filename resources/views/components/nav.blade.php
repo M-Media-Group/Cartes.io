@@ -46,13 +46,12 @@
                             <a class="dropdown-item" href="/users/{{ Auth::user()->username }}/edit">
                                     {{ __('Account settings') }}
                                 </a>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();">
+                            <button class="dropdown-item" type="submit" form="logout-form">
                                 {{ __('Logout') }}
-                            </a>
+                            </button>
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @honeypot
                                 @csrf
                             </form>
                         </div>

@@ -396,7 +396,9 @@ export default {
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
-                    // this.incidents.push(res.data);
+                    if (!this.initial_incidents) {
+                        this.incidents.push(res.data);
+                    }
                     localStorage['post_' + res.data.id] = res.data.token
                     dataLayer.push({ event: 'marker-create' });
                     this.$emit('marker-create', res.data);
