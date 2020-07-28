@@ -1,12 +1,12 @@
 <template>
     <div>
-        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarker" ref="map">
+        <l-map :zoom="2" :center="center" :maxBoundsViscosity="1.0" :worldCopyJump="true" style="width: 100%; height: 100%;" @contextmenu="addMarkerMenu" ref="map">
             <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
             <l-locatecontrol />
             <v-geosearch :options="geosearchOptions"></v-geosearch>
             <l-layer-group ref="hello_popup">
                 <l-popup>
-                    <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="submitForm()" :disabled="!submit_data.category_name">
+                    <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="addMarker()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
                         <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Start typing..." tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
@@ -305,7 +305,7 @@ export default {
             // }
             return Vue.moment(expiration_date).isBefore(Vue.moment())
         },
-        addMarker(event) {
+        addMarkerMenu(event) {
             this.$refs.hello_popup.mapObject.openPopup(event.latlng);
             if (!this.submit_data.category) {
                 $('.multiselect').focus();
@@ -340,13 +340,13 @@ export default {
             this.fullCategory = tag
             this.submit_data.category = tag.category_id
             this.submit_data.category_name = tag.name
-            this.submitForm()
+            this.addMarker()
         },
         handleSelectInput(val) {
             //this.fullCategory = val
             this.submit_data.category = val.id
             this.submit_data.category_name = val.name
-            this.submitForm()
+            this.addMarker()
         },
         inLocalStorageKey(id) {
             if (localStorage['post_' + id]) {
@@ -389,7 +389,7 @@ export default {
             localStorage.removeItem('post_' + id)
             this.$emit('marker-delete', id);
         },
-        submitForm() {
+        addMarker() {
             this.submit_data.loading = true;
             axios
                 .post('/api/maps/' + this.map_id + '/incidents', this.submit_data) // change this to post )
