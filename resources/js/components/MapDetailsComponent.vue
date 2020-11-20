@@ -124,14 +124,14 @@
                     <dt class="d-inline text-muted">Developer info</dt>
                 </summary>
                 <div>
-                    <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps.</p>
+                    <p>Use standard API requests to get data from this map. No authentication required for public and unlisted maps. <a href="https://github.com/M-Media-Group/Cartes.io/wiki/API" rel="noopener" target="_BLANK">Read the docs</a>.</p>
                     <div class="mb-3">
                         <p class="mb-0">API <code>GET</code> map endpoint</p>
                         <code>/api/maps/{{map.uuid}}</code>
                     </div>
                     <div class="mb-3">
                         <p class="mb-0">API <code>GET</code> markers endpoint</p>
-                        <code>/api/maps/{{map.uuid}}/incidents</code>
+                        <code>/api/maps/{{map.uuid}}/markers</code>
                     </div>
                     <div class="mb-3">
                         <p class="mb-0">Embed this map on your website</p>

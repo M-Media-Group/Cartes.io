@@ -179,7 +179,7 @@ export default {
 
         getAllMarkers() {
             axios
-                .get('/api/maps/' + this.map.uuid + '/incidents?show_expired=true')
+                .get('/api/maps/' + this.map.uuid + '/markers?show_expired=true')
                 .then(response => (
                     this.markers = response.data
                 ))

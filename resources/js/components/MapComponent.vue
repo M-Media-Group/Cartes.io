@@ -6,7 +6,7 @@
             <v-geosearch :options="geosearchOptions"></v-geosearch>
             <l-layer-group ref="hello_popup">
                 <l-popup>
-                    <form v-if="canPost == 'yes'" method="POST" action="/incidents" @submit.prevent="addMarker()" :disabled="!submit_data.category_name">
+                    <form v-if="canPost == 'yes'" method="POST" action="/markers" @submit.prevent="addMarker()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
                         <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Start typing..." tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
@@ -362,7 +362,7 @@ export default {
         },
         getIncidents() {
             axios
-                .get('/api/maps/' + this.map_id + '/incidents')
+                .get('/api/maps/' + this.map_id + '/markers')
                 .then(response => (
                     this.incidents = response.data
                 ))
@@ -378,7 +378,7 @@ export default {
         deleteIncident(id) {
             this.submit_data.loading = true;
             axios
-                .delete('/api/maps/' + this.map_id + '/incidents/' + id, { data: { token: localStorage['post_' + id], map_token: this.submit_data.map_token } })
+                .delete('/api/maps/' + this.map_id + '/markers/' + id, { data: { token: localStorage['post_' + id], map_token: this.submit_data.map_token } })
                 .then((res) => {
                     this.handleDeletedIncident(id);
                     this.submit_data.loading = false;
@@ -392,7 +392,7 @@ export default {
         addMarker() {
             this.submit_data.loading = true;
             axios
-                .post('/api/maps/' + this.map_id + '/incidents', this.submit_data) // change this to post )
+                .post('/api/maps/' + this.map_id + '/markers', this.submit_data) // change this to post )
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
