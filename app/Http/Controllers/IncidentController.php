@@ -53,7 +53,7 @@ class IncidentController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -68,6 +68,13 @@ class IncidentController extends Controller
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
         )->validate();
 
+        if ($map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no') {
+            Validator::make(
+                ['point' => $point],
+                ['point' => ['required', new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])]]
+            )->validate();
+        }
+
         $result = new Incident(
             [
                 'category_id' => $request->input('category'),
@@ -78,7 +85,7 @@ class IncidentController extends Controller
             ]
         );
 
-        if ($map->options && $map->options['default_expiration_time']) {
+        if ($map->options && isset($map->options['default_expiration_time'])) {
             $result->expires_at = Carbon::now()->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
         } else {
             $result->expires_at = null;

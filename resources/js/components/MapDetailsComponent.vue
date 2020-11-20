@@ -86,6 +86,31 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="password-confirm" class="col-md-12 col-form-label">Where can markers be placed</label>
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="options.limit_to_geographical_body_type" id="cdet1" value="land" :checked="submit_data.options.limit_to_geographical_body_type == 'land' ? true : false" @input="handleSelectInput($event, 'options.limit_to_geographical_body_type')">
+                                <label class="form-check-label" for="cdet1">
+                                    Only on land
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="options.limit_to_geographical_body_type" id="cdet2" value="water" @input="handleSelectInput($event, 'options.limit_to_geographical_body_type')" :checked="submit_data.options.limit_to_geographical_body_type == 'water' ? true : false">
+                                <label class="form-check-label" for="cdet2">
+                                    Only on water
+                                </label>
+                            </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="options.limit_to_geographical_body_type" id="cdet3" :value="null" @input="handleSelectInput($event, 'options.limit_to_geographical_body_type')" :checked="submit_data.options.limit_to_geographical_body_type == null ? true : false">
+                                <label class="form-check-label" for="cdet3" >
+                                    Anywhere
+                                </label>
+                            </div>
+                            <small>Setting this to "water" or "land" will also drastically limit how many markers can be created on this map per minute</small>
+                        </div>
+                    </div>
+
                     <a class="btn btn-danger btn-sm mt-3" v-if="canEdit" @click="deleteMap" :disabled="submit_data.loading">Delete map</a>
                 </div>
             </div>
@@ -138,6 +163,7 @@ export default {
                 loading: false,
                 options: {
                   default_expiration_time: this.map.options && this.map.options.default_expiration_time ? this.map.options.default_expiration_time : null,
+                  limit_to_geographical_body_type: this.map.options && this.map.options.limit_to_geographical_body_type ? this.map.options.limit_to_geographical_body_type : null,
                 },
             }
         }
@@ -188,6 +214,9 @@ export default {
             } else if (type == 'options.default_expiration_time')
             {
                 this.submit_data.options.default_expiration_time = val.target.value
+            } else if (type == 'options.limit_to_geographical_body_type')
+            {
+                this.submit_data.options.limit_to_geographical_body_type = val.target.value
             } else {
                 this.submit_data[type] = val.target.innerText
             }
