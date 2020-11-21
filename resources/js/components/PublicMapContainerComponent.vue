@@ -1,13 +1,12 @@
 <template>
-    <div style="display: flex;">
-        <div class="col-4 p-0" style="height: 100vh;">
+    <div>
+        <div class="btn btn-primary btn-lg" style="position: fixed; left:1.5rem;bottom:3rem;z-index: 10000;" v-if="menu_hidden" @click="setMenuVisibility(true)">Show maps</div>
+        <div v-else class="p-0" style="height: 100vh;position: fixed; left:0;top:0;z-index: 10000; min-width: 30%;background-color: var(--white)">
             <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-transparent card">
                 <li class="media p-3 card-header" style="cursor: pointer;display:block;">
                     <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">
                         <h5 class="mt-0 mb-0">Maps on Cartes.io</h5>
-<!--                         <button type="submit" class="btn btn-primary" form="new_map_form">
-                            Create a map
-                        </button> -->
+                        <a href="javascript:void(0)" class="btn btn-sm text-white" @click="setMenuVisibility(0)">X</a>
                     </div>
                     <div class="mt-3" style="display:flex;align-items: center;justify-content: space-between;">
                         <a class="btn btn-sm" href="#" @click="setMapSelector('user')" v-bind:class="[map_selector == 'user' ? 'btn-primary' : 'btn-dark']">Your maps</a>
@@ -27,7 +26,7 @@
                         </li>
                         <li class="media ml-3 mr-3 p-3 mb-3">
                             <div class="media-body">
-                                    <button type="submit" class="btn btn-primary mt-3 w-100" form="new_map_form">
+                                    <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
                                         Create a map
                                     </button>
                             </div>
@@ -37,7 +36,7 @@
                         <div class="text-center text-muted p-3">There's no maps to show.</div>
                         <li class="media ml-3 mr-3 p-3 mb-3">
                             <div class="media-body">
-                                    <button type="submit" class="btn btn-primary mt-3 w-100" form="new_map_form">
+                                    <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
                                         Create a map
                                     </button>
                             </div>
@@ -47,14 +46,7 @@
             </ul>
         </div>
 
-<!--         <div class="col-4 p-0" style="height: 100vh;">
-            <div class="bg-dark text-white p-3 border-dark" v-if="maps" v-for="single_map in maps" @click="getMap(single_map.uuid)">
-                <div v-if="map.uuid == single_map.uuid">Active<br/></div>
-                {{single_map.title}}
-            </div>
-        </div> -->
-
-        <div class="col-8 p-0">
+        <div class="col-12 p-0">
             <map-component v-if="map" :map_id="map.uuid" :map_token="null" style="height: 100vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="null" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
             <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
                 <div class="col text-center">
@@ -79,6 +71,7 @@ export default {
             maps: [],
             user_maps: [],
             markers: null,
+            menu_hidden: false,
             map_settings: {
                 show_all: true,
                 mapSelectedAge: 0,
@@ -275,6 +268,13 @@ export default {
 
         setMapSelector(value) {
             this.map_selector = value
+        },
+
+        setMenuVisibility(value) {
+            if (value) {
+                return this.menu_hidden = false
+            }
+            return this.menu_hidden = true
         }
 
     }

@@ -364,14 +364,14 @@ export default {
             this.debouncedGetCategories()
         },
         getIncidents() {
-            axios
+            return axios
                 .get('/api/maps/' + this.map_id + '/markers')
                 .then(response => (
                     this.incidents = response.data
                 ))
         },
         getCategories(query) {
-            axios
+            return axios
                 .get('/api/categories?query=' + this.query)
                 .then(response => {
                     this.categories = response.data
@@ -380,7 +380,7 @@ export default {
         },
         deleteIncident(id) {
             this.submit_data.loading = true;
-            axios
+            return axios
                 .delete('/api/maps/' + this.map_id + '/markers/' + id, { data: { token: localStorage['post_' + id], map_token: this.submit_data.map_token } })
                 .then((res) => {
                     this.handleDeletedIncident(id);
@@ -394,7 +394,7 @@ export default {
         },
         addMarker() {
             this.submit_data.loading = true;
-            axios
+            return axios
                 .post('/api/maps/' + this.map_id + '/markers', this.submit_data) // change this to post )
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
