@@ -9,26 +9,28 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="app">
-        @include('components.nav')
+        @includeWhen(!isset($superclean), 'components.nav')
         @yield('above_container')
-        <div class="container">
-            <div class="row justify-content-center mt-5">
 
-                <div class="col-md-12" style="max-width: 950px;">
-                    @yield('content')
+        @if(!isset($superclean))
+            <div class="container">
+                <div class="row justify-content-center mt-5">
+
+                    <div class="col-md-12" style="max-width: 950px;">
+                        @yield('content')
+                    </div>
+
                 </div>
-
             </div>
-        </div>
-        @yield('below_container')
-        <hr/>
-        <div class="footer d-flex justify-content-center">
-            <small class="mb-3">
-                <a href="/login" class="text-muted">Login</a>
-                <a href="/about" class="text-muted">About</a>
-                <a href="/privacy-policy" class="text-muted">Privacy policy</a>
-                <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
-            </small>
-        </div>
+            @yield('below_container')
+            <div class="footer d-flex justify-content-center">
+                <small class="mb-3">
+                    <a href="/login" class="text-muted">Login</a>
+                    <a href="/about" class="text-muted">About</a>
+                    <a href="/privacy-policy" class="text-muted">Privacy policy</a>
+                    <a class="text-muted" href="/terms-and-conditions">Terms and conditions</a>
+                </small>
+            </div>
+        @endif
     </div>
 @include('components.footer')
