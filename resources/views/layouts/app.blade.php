@@ -37,6 +37,7 @@
                 </div>
             </div>
         </div>
+        @yield('below_container')
         <div class="footer d-flex justify-content-center">
             <small class="mb-3">
                 <a href="/login" class="text-muted">Login</a>

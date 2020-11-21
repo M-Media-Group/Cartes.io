@@ -281,6 +281,9 @@ export default {
         map_categories(newValue) {
             this.categories = newValue;
             //$emit('incidents-count-change', newValue);
+        },
+        map_id(newValue) {
+            this.getIncidents();
         }
     },
 

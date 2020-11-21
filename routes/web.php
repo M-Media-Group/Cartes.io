@@ -31,6 +31,10 @@ Route::get('/about', function () {
     return view('about');
 });
 
+Route::get('/public-maps', function () {
+    return view('publicMaps');
+});
+
 Route::get('/notifications', function () {
     return view('notifications');
 })->middleware('auth');

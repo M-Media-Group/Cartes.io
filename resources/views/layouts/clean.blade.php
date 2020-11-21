@@ -20,6 +20,7 @@
 
             </div>
         </div>
+        @yield('below_container')
         <hr/>
         <div class="footer d-flex justify-content-center">
             <small class="mb-3">
