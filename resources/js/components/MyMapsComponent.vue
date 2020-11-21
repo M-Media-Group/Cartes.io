@@ -3,7 +3,11 @@
         <h2>Your maps</h2>
         <p>These are the maps that you've created on the site.</p>
         <map-card-component v-for='(map, i) in private_maps' :key="map.uuid" :map="map" :disable_map="i > 0 ? true : false"></map-card-component>
-        <div v-if="private_maps.length < 1" class="alert bg-dark">You have no maps yet. Create your first map or browse the public ones below.</div>
+        <div v-if="private_maps.length < 1" class="alert bg-dark">You have no maps yet. Create your first map or browse the public ones below.
+            <button type="submit" class="btn btn-primary w-100 mt-3" form="new_map_form">
+                Create your first map
+            </button>
+        </div>
         <div class="row justify-content-center mb-5" v-if="private_maps_total > 15">
             <div class="small">{{private_maps.length}} / {{private_maps_total}} of your maps are shown here</div>
         </div>

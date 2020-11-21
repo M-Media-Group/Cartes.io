@@ -3,7 +3,16 @@
 @section('content')
 <h1>Before you start creating maps, we need you to read our rules</h1>
 <br/>
-<div class="card bg-dark text-white">
+@if(!Auth::user()->hasVerifiedEmail())
+<div class="card text-dark">
+{{--   <img class="card-img-top" src="/images/correct-mapping-1.jpg" alt="Card image">
+ --}}  <div class="card-body">
+    <h5 class="card-title"><b>Confirm your email address</b></h5>
+    <p class="card-text">You won't be able to do much until you confirm your email address. Click the link we sent you.</p>
+  </div>
+</div>
+@endif
+<div class="card bg-dark text-white mt-5">
   <img class="card-img-top" src="/images/correct-mapping-1.jpg" alt="Card image">
   <div class="card-body">
     <h5 class="card-title"><b>Be as accurate as possible</b> when creating markers</h5>
