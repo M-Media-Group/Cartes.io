@@ -10,13 +10,13 @@
                         </button>
                     </div>
                 </li>
-                <div id="marker_feed_markers" class="collapse show" style="max-height:57vh; overflow-y: scroll;">
+                <div id="marker_feed_markers" class="collapse show" style="max-height:80vh; overflow-y: scroll;">
                     <template v-if="maps.length > 0">
-                        <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in maps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']">
+                        <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in maps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']" v-if="single_map.incidents_count > 0">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">{{single_map.title}}</h5>
-                                <p>{{ single_map.description }}</p>
                                 <div v-if="map && single_map.uuid == map.uuid">
+                                    <p>{{ single_map.description }}</p>
                                     <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">Open map page</a>
                                 </div>
                             </div>
