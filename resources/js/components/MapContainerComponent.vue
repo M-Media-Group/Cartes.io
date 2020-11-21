@@ -115,8 +115,7 @@ export default {
             let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
 
             return markers.filter(function(marker) {
-                // Vue.moment(marker.created_at).isSameOrBefore(diff_date_time, 'minute') 
-                if ((Vue.moment(marker.created_at) <= diff_date_time) && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
+                if (Vue.moment(marker.created_at).isSameOrBefore(diff_date_time, 'minute') && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
                 }
                 return false
