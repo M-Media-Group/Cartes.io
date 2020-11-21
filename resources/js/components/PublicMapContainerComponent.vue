@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="btn btn-primary btn-lg" style="position: fixed; left:1.5rem;bottom:3rem;z-index: 10000;" v-if="menu_hidden" @click="setMenuVisibility(true)">Show maps</div>
-        <div v-else class="p-0" style="height: 100vh;position: fixed; left:0;top:0;z-index: 10000; min-width: 30%;background-color: var(--white)">
+        <div class="btn btn-primary" style="position: fixed; left:1.5rem;bottom:3rem;z-index: 1000;" v-if="menu_hidden" @click="setMenuVisibility(true)">Show maps</div>
+        <div v-else class="p-0" style="height: 100vh;position: fixed; left:0;top:0;z-index: 1001; min-width: 18rem;max-width:30rem;background-color: var(--white)">
             <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-transparent card">
                 <li class="media p-3 card-header" style="cursor: pointer;display:block;">
                     <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">

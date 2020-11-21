@@ -12,7 +12,7 @@
     </button>
   </form>
     <public-map-container-component ></public-map-container-component>
-    <a class="navbar-brand" href="{{ url('/') }}" style="position: fixed; right: 1.5rem; top:1.5rem; z-index: 10000">
+    <a class="navbar-brand" href="{{ url('/') }}" style="position: fixed; right: 1.5rem; top:1.5rem; z-index: 1000">
       {{ config('app.name') }} <span class="text-muted small d-none">Beta</span>
     </a>
 @endsection
