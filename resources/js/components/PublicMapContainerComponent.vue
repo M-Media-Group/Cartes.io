@@ -1,7 +1,7 @@
 <template>
     <div style="display: flex;">
         <div class="col-4 p-0" style="height: 100vh;">
-            <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-dark card">
+            <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-transparent card">
                 <li class="media p-3 card-header" style="cursor: pointer;display:block;">
                     <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">
                         <h5 class="mt-0 mb-0">Maps on Cartes.io</h5>
@@ -14,20 +14,34 @@
                         <a class="btn btn-sm" href="#" @click="setMapSelector('public')" v-bind:class="[map_selector == 'public' ? 'btn-primary' : 'btn-dark']">Public maps</a>
                     </div>
                 </li>
-                <div id="marker_feed_markers" class="collapse show" style="max-height:85vh; overflow-y: scroll;">
+                <div id="marker_feed_markers" class="collapse show" style="max-height:83vh; overflow-y: scroll;">
                     <template v-if="activeMaps.length > 0">
                         <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in activeMaps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-1">{{single_map.title || "Untitled map"}}</h5>
                                 <div v-if="map && single_map.uuid == map.uuid">
                                     <p>{{ single_map.description }}</p>
-                                    <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">Open map page</a>
+                                    <a :href="/maps/+map.uuid" class="btn btn-primary btn-block w-100">Open map page</a>
                                 </div>
+                            </div>
+                        </li>
+                        <li class="media ml-3 mr-3 p-3 mb-3">
+                            <div class="media-body">
+                                    <button type="submit" class="btn btn-primary mt-3 w-100" form="new_map_form">
+                                        Create a map
+                                    </button>
                             </div>
                         </li>
                     </template>
                     <template v-else>
-                        <div class="text-center text-muted p-3">There's no public maps at this time.</div>
+                        <div class="text-center text-muted p-3">There's no maps to show.</div>
+                        <li class="media ml-3 mr-3 p-3 mb-3">
+                            <div class="media-body">
+                                    <button type="submit" class="btn btn-primary mt-3 w-100" form="new_map_form">
+                                        Create a map
+                                    </button>
+                            </div>
+                        </li>
                     </template>
                 </div>
             </ul>
