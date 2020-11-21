@@ -1,20 +1,24 @@
 <template>
     <div style="display: flex;">
         <div class="col-4 p-0" style="height: 100vh;">
-            <ul id="marker_feed" class="list-unstyled px-0 pb-3 mb-3 bg-dark card">
-                <li class="media p-3 card-header" data-toggle="collapse" data-target="#marker_feed_markers" aria-expanded="false" aria-controls="marker_feed_markers" style="cursor: pointer;">
+            <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-dark card">
+                <li class="media p-3 card-header" style="cursor: pointer;display:block;">
                     <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">
-                        <h5 class="mt-0 mb-0">Public maps</h5>
-                        <button type="submit" class="btn btn-primary" form="new_map_form">
+                        <h5 class="mt-0 mb-0">Maps on Cartes.io</h5>
+<!--                         <button type="submit" class="btn btn-primary" form="new_map_form">
                             Create a map
-                        </button>
+                        </button> -->
+                    </div>
+                    <div class="mt-3" style="display:flex;align-items: center;justify-content: space-between;">
+                        <a class="btn btn-sm" href="#" @click="setMapSelector('user')" v-bind:class="[map_selector == 'user' ? 'btn-primary' : 'btn-dark']">Your maps</a>
+                        <a class="btn btn-sm" href="#" @click="setMapSelector('public')" v-bind:class="[map_selector == 'public' ? 'btn-primary' : 'btn-dark']">Public maps</a>
                     </div>
                 </li>
-                <div id="marker_feed_markers" class="collapse show" style="max-height:80vh; overflow-y: scroll;">
-                    <template v-if="maps.length > 0">
-                        <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in maps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']" v-if="single_map.incidents_count > 0 && single_map.title">
+                <div id="marker_feed_markers" class="collapse show" style="max-height:85vh; overflow-y: scroll;">
+                    <template v-if="activeMaps.length > 0">
+                        <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in activeMaps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">{{single_map.title}}</h5>
+                                <h5 class="mt-0 mb-1">{{single_map.title || "Untitled map"}}</h5>
                                 <div v-if="map && single_map.uuid == map.uuid">
                                     <p>{{ single_map.description }}</p>
                                     <a :href="/maps/+map.uuid" class="btn btn-primary btn-block">Open map page</a>
@@ -56,8 +60,10 @@ export default {
 
     data() {
         return {
+            map_selector: 'public',
             map: null,
             maps: [],
+            user_maps: [],
             markers: null,
             map_settings: {
                 show_all: true,
@@ -79,7 +85,7 @@ export default {
     },
 
     mounted() {
-
+        this.getUsersMaps()
     },
 
     computed: {
@@ -140,6 +146,14 @@ export default {
                 .map((e, i, final) => final.indexOf(e) === i && i)
                 // eliminate the false indexes & return unique objects
                 .filter((e) => map1[e]).map(e => map1[e]);
+        },
+        activeMaps() {
+            if (this.map_selector == 'user') {
+                return this.user_maps
+            }
+            return this.maps.filter(function(single_map) {
+                return single_map.incidents_count > 0 && single_map.title !== ""
+            })
         }
     },
 
@@ -169,6 +183,29 @@ export default {
                     this.maps = response.data.data,
                     this.setMap(0)
                 ))
+        },
+
+        getUsersMaps() {
+            var ids = []
+            Object.keys(localStorage).forEach(function(key) {
+                if (key.includes('map_')) {
+                    ids.push(key.replace('map_', ''))
+                }
+            });
+
+            if (ids.length > 0) {
+                axios
+                    .get('/api/maps', {
+                        params: {
+                            ids: ids,
+                            orderBy: 'updated_at'
+                        }
+                    })
+                    .then(response => {
+                        this.user_maps = response.data.data
+                    }
+                    )
+            }
         },
 
         getAllMarkers() {
@@ -219,7 +256,11 @@ export default {
         },
 
         setMap(index) {
-            this.map = this.maps[index]
+            this.map = this.activeMaps[index]
+        },
+
+        setMapSelector(value) {
+            this.map_selector = value
         }
 
     }

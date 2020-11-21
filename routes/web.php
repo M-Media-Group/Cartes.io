@@ -31,7 +31,7 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/public-maps', function () {
+Route::get('/maps', function () {
     return view('publicMaps');
 });
 
