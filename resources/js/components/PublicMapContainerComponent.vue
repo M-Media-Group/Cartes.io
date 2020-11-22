@@ -1,52 +1,56 @@
 <template>
     <div>
-        <div class="btn btn-primary" style="position: fixed; left:1.5rem;bottom:3rem;z-index: 1000;" v-if="menu_hidden" @click="setMenuVisibility(true)">Show maps</div>
-        <div v-else class="p-0" style="height: 100vh;position: fixed; left:0;top:0;z-index: 1001; min-width: 18rem;max-width:30rem;background-color: var(--white)">
-            <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-transparent card">
-                <li class="media p-3 card-header" style="cursor: pointer;display:block;">
-                    <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">
-                        <h5 class="mt-0 mb-0">Maps on Cartes.io</h5>
-                        <a href="javascript:void(0)" class="btn btn-sm text-white" @click="setMenuVisibility(0)">X</a>
-                    </div>
-                    <div class="mt-3" style="display:flex;align-items: center;justify-content: space-between;">
-                        <a class="btn btn-sm" href="#" @click="setMapSelector('user')" v-bind:class="[map_selector == 'user' ? 'btn-primary' : 'btn-dark']">Your maps</a>
-                        <a class="btn btn-sm" href="#" @click="setMapSelector('public')" v-bind:class="[map_selector == 'public' ? 'btn-primary' : 'btn-dark']">Public maps</a>
-                    </div>
-                </li>
-                <div id="marker_feed_markers" class="collapse show" style="max-height:83vh; overflow-y: scroll;">
-                    <template v-if="activeMaps.length > 0">
-                        <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in activeMaps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']">
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1">{{single_map.title || "Untitled map"}}</h5>
-                                <div v-if="map && single_map.uuid == map.uuid">
-                                    <p>{{ single_map.description }}</p>
-                                    <a :href="/maps/+map.uuid" class="btn btn-primary btn-block w-100">Open map page</a>
+        <transition name="slide">
+            <div key="menu" style="position: fixed; left:1.5rem;bottom:3rem;z-index: 1000;" v-if="menu_hidden">
+                <div class="btn btn-primary" @click="setMenuVisibility(true)">Show all maps</div>
+                <a :href="/maps/+map.uuid" class="btn btn-secondary">Open map page</a>
+            </div>
+            <div v-else key="menu_button" class="p-0" style="height: 100vh;position: fixed; left:0;top:0;z-index: 1001; min-width: 18rem;max-width:27rem;background-color: var(--white);">
+                <ul id="marker_feed" class="list-unstyled px-0 pb-3 bg-transparent card">
+                    <li class="media p-3 card-header" style="cursor: pointer;display:block;">
+                        <div class="media-body" style="display:flex;align-items: center;justify-content: space-between;">
+                            <h5 class="mt-0 mb-0">Maps on Cartes.io</h5>
+                            <a href="javascript:void(0)" class="btn btn-sm text-white" @click="setMenuVisibility(0)">X</a>
+                        </div>
+                        <div class="mt-3" style="display:flex;align-items: center;justify-content: space-between;">
+                            <a class="btn btn-sm" href="#" @click="setMapSelector('user')" v-bind:class="[map_selector == 'user' ? 'btn-primary' : 'btn-dark']">Your maps</a>
+                            <a class="btn btn-sm" href="#" @click="setMapSelector('public')" v-bind:class="[map_selector == 'public' ? 'btn-primary' : 'btn-dark']">Public maps</a>
+                        </div>
+                    </li>
+                    <div id="marker_feed_markers" class="collapse show" style="max-height:83vh; overflow-y: scroll;">
+                        <template v-if="activeMaps.length > 0">
+                            <li class="media ml-3 mr-3 p-3 mb-3 card" v-for="single_map, index in activeMaps" :key="'map_id_'+single_map.uuid" @click="setMap(index)" v-bind:class="[map && single_map.uuid == map.uuid ? 'bg-white text-dark' : 'bg-secondary text-white feed-element']">
+                                <div class="media-body">
+                                    <h5 class="mt-0 mb-1">{{single_map.title || "Untitled map"}}</h5>
+                                    <div v-if="map && single_map.uuid == map.uuid">
+                                        <p>{{ single_map.description }}</p>
+                                        <a :href="/maps/+map.uuid" class="btn btn-primary btn-block w-100">Open map page</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="media ml-3 mr-3 p-3 mb-3">
-                            <div class="media-body">
-                                    <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
-                                        Create a map
-                                    </button>
-                            </div>
-                        </li>
-                    </template>
-                    <template v-else>
-                        <div class="text-center text-muted p-3">There's no maps to show.</div>
-                        <li class="media ml-3 mr-3 p-3 mb-3">
-                            <div class="media-body">
-                                    <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
-                                        Create a map
-                                    </button>
-                            </div>
-                        </li>
-                    </template>
-                </div>
-            </ul>
-        </div>
-
-        <div class="col-12 p-0">
+                            </li>
+                            <li class="media ml-3 mr-3 p-3 mb-3">
+                                <div class="media-body">
+                                        <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
+                                            Create a map
+                                        </button>
+                                </div>
+                            </li>
+                        </template>
+                        <template v-else>
+                            <div class="text-center text-muted p-3">There's no maps to show.</div>
+                            <li class="media ml-3 mr-3 p-3 mb-3">
+                                <div class="media-body">
+                                        <button type="submit" class="btn btn-primary mt-3 mb-5 w-100" form="new_map_form">
+                                            Create a map
+                                        </button>
+                                </div>
+                            </li>
+                        </template>
+                    </div>
+                </ul>
+            </div>
+        </transition>
+        <div class="col-12 p-0" @touchstart="setMenuVisibility(0)" @mousedown="setMenuVisibility(0)">
             <map-component v-if="map" :map_id="map.uuid" :map_token="null" style="height: 100vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="null" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
             <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
                 <div class="col text-center">
@@ -285,5 +289,15 @@ export default {
 #formControlRange {
     direction: rtl
 }
+.slide-enter-active,
+.slide-leave-active
+{
+    transition: transform 0.2s ease;
+}
 
+.slide-enter,
+.slide-leave-to {
+    transform: translateX(-100%);
+    transition: all 150ms ease-in 0s;
+}
 </style>
