@@ -179,9 +179,13 @@ span.fa {
 // 	display: none;
 // }
 
-.marker-description, .marker-description p {
-    @extend .mt-0;
-    @extend .mb-1;
+.marker-description, .marker-description > p {
+    // @extend .mt-0;
+    // @extend .mb-1;
     white-space: pre;
     word-wrap: break-word;
+}
+.marker-description p {
+    @extend .mt-0;
+    @extend .mb-1;
 }

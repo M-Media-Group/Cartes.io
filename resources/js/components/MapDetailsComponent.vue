@@ -1,11 +1,11 @@
 <template>
     <div class="row">
         <div class="col-md-7">
-            <h1 v-if="(!map || !map.title) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">Here's your new map!<small v-if="canEdit" class="text-muted"> (Click to edit the title)</small></h1>
-            <h1 v-else-if="submit_data.title" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')">{{map.title}}</h1>
+            <h1 v-if="(!map || !map.title) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')" class="w-100">Here's your new map!<small v-if="canEdit" class="text-muted"> (Click to edit the title)</small></h1>
+            <h1 v-else-if="submit_data.title" :contenteditable="canEdit" @input="handleSelectInput($event, 'title')" class="w-100">{{map.title}}</h1>
             <h1 v-else>Untitled map</h1>
             <p v-if="(!map || !map.description) && canEdit" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')" style="white-space: pre-wrap">Right click (or long-tap on mobile) on the map to add markers. Click here to edit the map description.</p>
-            <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')" style="white-space: pre-wrap">{{map.description}}</p>
+            <p v-else-if="map && map.description" :contenteditable="canEdit" @input="handleSelectInput($event, 'description')" style="white-space: pre-wrap" v-html="map.description"></p>
             <p v-else>This map has no description.</p>
         </div>
         <div class="col-md-5 mt-5 mt-md-0">
@@ -198,7 +198,7 @@ export default {
         // finished typing before making the ajax request. To learn
         // more about the _.debounce function (and its cousin
         // _.throttle), visit: https://lodash.com/docs#debounce
-        this.debouncedGetAnswer = _.debounce(this.submitForm, 750)
+        this.debouncedGetAnswer = _.debounce(this.submitForm, 950)
     },
     methods: {
         onShareError(e) {

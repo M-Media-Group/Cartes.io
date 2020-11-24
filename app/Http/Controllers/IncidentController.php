@@ -49,12 +49,12 @@ class IncidentController extends Controller
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
-            'description' => ['nullable', 'max:191', new \App\Rules\NotContainsString],
+            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -122,7 +122,7 @@ class IncidentController extends Controller
     {
         $this->authorize('update', $marker);
         $validated_data = $request->validate([
-            'description' => ['nullable', 'max:191', new \App\Rules\NotContainsString],
+            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
         ]);
 
         $validated_data['description'] = clean($validated_data['description']);
