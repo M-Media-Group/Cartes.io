@@ -15,6 +15,10 @@
                             <template slot="option" slot-scope=" props "><img v-if="props.option.icon" class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
                             </template>
                         </multiselect>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" rows="2" name="description" v-model="submit_data.description"></textarea>
+                        </div>
                         <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
                     </form>
                     <div v-else-if="canPost == 'only_logged_in'"><a href="/login">Log in</a> to Cartes.io to post on this map.</div>
@@ -26,9 +30,13 @@
                     <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 25]" />
                     <l-popup @ready="openPopup">
                         <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
-                        <p class="mt-0 mb-1" v-if="incident.marker">{{ incident.marker.label }}</p>
+                        <p class="marker-description" v-html="incident.description"></p>
                         <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
                         <small v-if="isMarkerExpired(incident.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="incident.expires_at">{{ incident.expires_at }}</span>.</small>
+                        <details class="small" v-if="incident.marker">
+                            <summary>Click to see address</summary>
+                            <p class="mt-0 mb-1">{{ incident.marker.label }}</p>
+                        </details>
                         <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(incident)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
                     </l-popup>
                 </l-marker>
@@ -184,6 +192,7 @@ export default {
                 lat: 0,
                 lng: 0,
                 category: 0,
+                description: '',
                 category_name: '',
                 loading: false,
                 map_token: this.map_token
@@ -349,7 +358,7 @@ export default {
             //this.fullCategory = val
             this.submit_data.category = val.id
             this.submit_data.category_name = val.name
-            this.addMarker()
+            // this.addMarker()
         },
         inLocalStorageKey(id) {
             if (localStorage['post_' + id]) {
@@ -399,6 +408,7 @@ export default {
                 .then((res) => {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
+                    this.submit_data.description = ""
                     if (!this.initial_incidents) {
                         this.incidents.push(res.data);
                     }

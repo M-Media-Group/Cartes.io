@@ -26,6 +26,7 @@ class Incident extends Pivot
         'category_id',
         'user_id',
         'location',
+        'description',
         'token',
         'map_id',
     ];

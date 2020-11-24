@@ -178,3 +178,9 @@ span.fa {
 // .modal-backdrop.fade.show {
 // 	display: none;
 // }
+
+.marker-description, .marker-description p {
+    @extend .mt-0;
+    @extend .mb-1;
+    white-space: pre;
+}

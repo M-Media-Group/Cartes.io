@@ -49,11 +49,12 @@ class IncidentController extends Controller
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
+            'description' => ['nullable', 'max:191', new \App\Rules\NotContainsString],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -80,6 +81,7 @@ class IncidentController extends Controller
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
                 'token' => str_random(32),
+                'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
             ]
@@ -116,9 +118,18 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Incident $marker)
     {
-        return false;
+        $this->authorize('update', $marker);
+        $validated_data = $request->validate([
+            'description' => ['nullable', 'max:191', new \App\Rules\NotContainsString],
+        ]);
+
+        $validated_data['description'] = clean($validated_data['description']);
+
+        $marker->update($validated_data);
+
+        return $marker;
     }
 
     /**
