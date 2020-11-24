@@ -8,7 +8,7 @@
  * if ( ! $this->config->get('purifier.finalize')) {
  *     $config->autoFinalize = false;
  * }
- * $config->loadArray($this->getConfig());
+ * $config->loadArray($this->getConfig());.
  *
  * You must NOT delete the default settings
  * anything in settings should be compacted with params that needed to instance HTMLPurifier_Config.
@@ -32,9 +32,9 @@ return [
         'test' => [
             'Attr.EnableID' => 'true',
         ],
-        "youtube" => [
-            "HTML.SafeIframe" => 'true',
-            "URI.SafeIframeRegexp" => "%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/)%",
+        'youtube' => [
+            'HTML.SafeIframe' => 'true',
+            'URI.SafeIframeRegexp' => '%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/)%',
         ],
         'custom_definition' => [
             'id' => 'html5-definitions',
