@@ -15,9 +15,9 @@
                             <template slot="option" slot-scope=" props "><img v-if="props.option.icon" class="rounded img-thumbnail mr-1" height="25" width="25" :src="props.option.icon" alt="" style="position: initial;">{{ props.option.name }}
                             </template>
                         </multiselect>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea class="form-control" id="description" rows="2" name="description" v-model="submit_data.description"></textarea>
+                        <div class="form-group mt-1">
+<!--                             <label for="description">Description</label>
+ -->                            <textarea class="form-control" id="description" rows="2" name="description" v-model="submit_data.description" placeholder="Description"></textarea>
                         </div>
                         <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
                     </form>
@@ -352,7 +352,7 @@ export default {
             this.fullCategory = tag
             this.submit_data.category = tag.category_id
             this.submit_data.category_name = tag.name
-            this.addMarker()
+            //this.addMarker()
         },
         handleSelectInput(val) {
             //this.fullCategory = val
