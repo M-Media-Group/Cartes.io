@@ -30,7 +30,7 @@
                     <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 25]" />
                     <l-popup @ready="openPopup">
                         <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
-                        <p class="marker-description" v-html="incident.description"></p>
+                        <p class="mb-1 mt-0 w-100 d-block" v-if="incident.description" v-html="incident.description"></p>
                         <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
                         <small v-if="isMarkerExpired(incident.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="incident.expires_at">{{ incident.expires_at }}</span>.</small>
                         <details class="small" v-if="incident.marker">
