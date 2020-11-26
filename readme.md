@@ -40,3 +40,5 @@ After running composer and npm, run the following commands to create the permiss
 - php artisan permission:create-role admin web "manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps"
 - php artisan permission:create-role editor web "manage markers|manage categories|manage maps"
 - php artisan permission:create-role reporter web "edit markers|create markers|delete markers"
+
+Important note: previously the markers table was called incidents - there is a column in the maps table that requires manual updating in MySQL - see file `2020_11_26_152012_rename_maps_can_create_incidents_column_table`
