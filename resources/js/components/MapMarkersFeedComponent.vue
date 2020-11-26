@@ -12,7 +12,7 @@
                     <li class="media ml-3 mr-3 p-3 mb-3 bg-secondary text-white card feed-element" v-for="marker in limitedMarkers" :key="'marker_feed_'+marker.id" @click="handleClick(marker)">
                         <div class="media-body">
                             <h5 class="mt-0 mb-1">{{marker.category.name}}</h5>
-                            <p class="mt-0 mb-1">{{marker.description}}</p>
+                            <p class="mt-0 mb-1" v-html="marker.description"></p>
                             <span class='timestamp small' :datetime="marker.updated_at">{{ marker.updated_at }}</span>
                         </div>
                     </li>

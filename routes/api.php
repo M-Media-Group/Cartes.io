@@ -21,7 +21,7 @@ Route::get('categories', 'CategoryController@index');
 
 // Route::resource('users', 'UserController');
 
-Route::get('maps/{map}/markers', 'IncidentController@index');
+Route::get('maps/{map}/markers', 'MarkerController@index');
 
 Route::get('maps/{map}', 'MapController@show');
 
@@ -34,10 +34,10 @@ Route::middleware('throttle:4|10,1')->group(function () {
 
 Route::middleware('throttle:30')->group(function () {
     Route::put('maps/{map}', 'MapController@update');
-    Route::delete('maps/{map}/markers/{incident}', 'IncidentController@destroy');
+    Route::delete('maps/{map}/markers/{marker}', 'MarkerController@destroy');
     Route::delete('maps/{map}', 'MapController@destroy');
 });
 
 Route::middleware('throttle:15|120')->group(function () {
-    Route::post('maps/{map}/markers', 'IncidentController@store');
+    Route::post('maps/{map}/markers', 'MarkerController@store');
 });

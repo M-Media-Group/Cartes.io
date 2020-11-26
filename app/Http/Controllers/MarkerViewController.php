@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class IncidentViewController extends Controller
+class MarkerViewController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -38,22 +38,22 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="users_can_create_incidents" class="col-md-12 col-form-label">Who can create markers</label>
+                        <label for="users_can_create_markers" class="col-md-12 col-form-label">Who can create markers</label>
                         <div class="col-md-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios4" value="yes" :checked="submit_data.users_can_create_incidents == 'yes' ? true : false" @input="handleSelectInput($event, 'users_can_create_incidents')">
+                                <input class="form-check-input" type="radio" name="users_can_create_markers" id="exampleRadios4" value="yes" :checked="submit_data.users_can_create_markers == 'yes' ? true : false" @input="handleSelectInput($event, 'users_can_create_markers')">
                                 <label class="form-check-label" for="exampleRadios4">
                                     Anyone
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios5" value="only_logged_in" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'only_logged_in' ? true : false">
+                                <input class="form-check-input" type="radio" name="users_can_create_markers" id="exampleRadios5" value="only_logged_in" @input="handleSelectInput($event, 'users_can_create_markers')" :checked="submit_data.users_can_create_markers == 'only_logged_in' ? true : false">
                                 <label class="form-check-label" for="exampleRadios5">
                                     Only people that are logged in
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="users_can_create_incidents" id="exampleRadios6" value="no" @input="handleSelectInput($event, 'users_can_create_incidents')" :checked="submit_data.users_can_create_incidents == 'no' ? true : false">
+                                <input class="form-check-input" type="radio" name="users_can_create_markers" id="exampleRadios6" value="no" @input="handleSelectInput($event, 'users_can_create_markers')" :checked="submit_data.users_can_create_markers == 'no' ? true : false">
                                 <label class="form-check-label" for="exampleRadios6">
                                     No one
                                 </label>
@@ -159,7 +159,7 @@ export default {
                 description: this.map.description,
                 token: this.map_token,
                 privacy: this.map.privacy,
-                users_can_create_incidents: this.map.users_can_create_incidents,
+                users_can_create_markers: this.map.users_can_create_markers,
                 loading: false,
                 options: {
                   default_expiration_time: this.map.options && this.map.options.default_expiration_time ? this.map.options.default_expiration_time : null,
@@ -209,7 +209,7 @@ export default {
         },
         handleSelectInput(val, type) {
 
-            if (type == 'privacy' || type == 'users_can_create_incidents') {
+            if (type == 'privacy' || type == 'users_can_create_markers') {
                 this.submit_data[type] = val.target.value
             } else if (type == 'options.default_expiration_time')
             {

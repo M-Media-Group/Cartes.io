@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Incident extends Pivot
+class Marker extends Pivot
 {
     use SpatialTrait;
     /**
@@ -18,7 +18,7 @@ class Incident extends Pivot
      */
     public $incrementing = true;
 
-    protected $table = 'incidents';
+    protected $table = 'markers';
 
     protected $touches = ['map'];
 
@@ -73,7 +73,7 @@ class Incident extends Pivot
 
     public function views()
     {
-        return $this->hasMany(\App\Models\IncidentView::class);
+        return $this->hasMany(\App\Models\MarkerView::class);
     }
 
     public function category()

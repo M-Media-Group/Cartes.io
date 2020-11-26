@@ -18,7 +18,7 @@ class MapController extends Controller
     {
 
         // $this->authorize('index', [Map::class, $map, $request->input('map_token')]);
-        //return \App\Models\Map::whereDoesntHave('incidents')->delete();
+        //return \App\Models\Map::whereDoesntHave('markers')->delete();
         $request->validate([
             'ids' => 'nullable|array|between:1,100',
             'category_ids' => 'nullable|array|between:1,10',
@@ -26,7 +26,7 @@ class MapController extends Controller
         ]);
 
         $category_ids = $request->input('category_ids');
-        $query = Map::with('categories')->withCount('incidents');
+        $query = Map::with('categories')->withCount('markers');
 
         if ($request->input('ids')) {
             $query->whereIn('uuid', $request->input('ids'))->where('privacy', '!=', 'private');
@@ -68,7 +68,7 @@ class MapController extends Controller
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
-            'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',
+            'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
         ]);
 
         $uuid = (string) Uuid::generate(4);
@@ -81,7 +81,7 @@ class MapController extends Controller
                 'uuid' => $uuid,
                 'token' => str_random(32),
                 'privacy' => $request->input('privacy', 'unlisted'),
-                'users_can_create_incidents' => $request->input('users_can_create_incidents', 'only_logged_in'),
+                'users_can_create_markers' => $request->input('users_can_create_markers', 'only_logged_in'),
                 'user_id' => $request->user() ? $request->user()->id : null,
             ]
         );
@@ -91,7 +91,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/'.$result->slug)->with('token', $result->token);
+            return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
     }
 
@@ -158,10 +158,10 @@ class MapController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
-            'users_can_create_incidents' => 'nullable|in:yes,only_logged_in,no',
+            'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
             'options.default_expiration_time' => 'nullable|numeric|between:1,525600',
             'options.limit_to_geographical_body_type' => 'nullable|in:land,water,no',
         ]);

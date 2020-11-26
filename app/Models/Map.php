@@ -18,7 +18,7 @@ class Map extends Model
         'description',
         'user_id',
         'privacy',
-        'users_can_create_incidents',
+        'users_can_create_markers',
         'token',
         'options',
         'uuid',
@@ -54,18 +54,18 @@ class Map extends Model
         return 'uuid';
     }
 
-    public function incidents()
+    public function markers()
     {
-        return $this->hasMany(\App\Models\Incident::class);
+        return $this->hasMany(\App\Models\Marker::class);
     }
 
-    // public function expired_incidents()
+    // public function expired_markers()
     // {
-    //     return $this->hasMany(\App\Models\Incident::class);
+    //     return $this->hasMany(\App\Models\Marker::class);
     // }
 
     public function categories()
     {
-        return $this->belongsToMany(\App\Models\Category::class, 'incidents')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->orWherePivot('expires_at', null)->selectRaw('categories.id, categories.name, categories.icon, count(incidents.id) as incidents_count')->groupBy('name', 'map_id');
+        return $this->belongsToMany(\App\Models\Category::class, 'markers')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->orWherePivot('expires_at', null)->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')->groupBy('name', 'map_id');
     }
 }

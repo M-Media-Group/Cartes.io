@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Incident;
 use App\Models\Map;
+use App\Models\Marker;
 use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Validator;
 
-class IncidentController extends Controller
+class MarkerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,9 @@ class IncidentController extends Controller
      */
     public function index(Request $request, Map $map)
     {
-        $this->authorize('index', [Incident::class, $map, $request->input('map_token')]);
+        $this->authorize('index', [Marker::class, $map, $request->input('map_token')]);
 
-        $data = $map->incidents();
+        $data = $map->markers();
         if ($request->input('show_expired') == 'true') {
             $data = $data->withoutGlobalScope('active');
         }
@@ -38,7 +38,7 @@ class IncidentController extends Controller
     public function store(Request $request, Map $map)
     {
         //return $request->input("map_token");
-        $this->authorize('create', [Incident::class, $map, $request->input('map_token')]);
+        $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
 
         $request->merge(['user_id' => $request->user('api')->id ?? null]);
         if ($request->input('category') < 1) {
@@ -54,7 +54,7 @@ class IncidentController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -76,7 +76,7 @@ class IncidentController extends Controller
             )->validate();
         }
 
-        $result = new Incident(
+        $result = new Marker(
             [
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
@@ -95,7 +95,7 @@ class IncidentController extends Controller
 
         $result->save();
 
-        broadcast(new \App\Events\IncidentCreated($result))->toOthers();
+        broadcast(new \App\Events\MarkerCreated($result))->toOthers();
 
         return $result->makeVisible(['token'])->load('category');
     }
@@ -106,7 +106,7 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Incident $qr)
+    public function show(Request $request, Marker $qr)
     {
         return false;
     }
@@ -118,7 +118,7 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Incident $marker)
+    public function update(Request $request, Marker $marker)
     {
         $this->authorize('update', $marker);
         $validated_data = $request->validate([
@@ -138,10 +138,10 @@ class IncidentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Map $map, Incident $incident)
+    public function destroy(Request $request, Map $map, Marker $marker)
     {
-        $this->authorize('forceDelete', [$incident, $request->input('map_token')]);
-        broadcast(new \App\Events\IncidentDeleted($incident))->toOthers();
-        $incident->delete();
+        $this->authorize('forceDelete', [$marker, $request->input('map_token')]);
+        broadcast(new \App\Events\MarkerDeleted($marker))->toOthers();
+        $marker->delete();
     }
 }

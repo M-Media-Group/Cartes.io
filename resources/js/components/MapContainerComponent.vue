@@ -1,6 +1,6 @@
 <template>
     <div>
-        <map-component v-if="map" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
+        <map-component v-if="map" :map_id="map.uuid" :map_token="map_token" style="height: 65vh;" :users_can_create_markers="map.users_can_create_markers" :map_categories="categories" :initial_markers="activeMarkers" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete" :user="user"></map-component>
         <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
             <div class="col text-center">
                 <div>Cartes.io</div>
@@ -69,7 +69,28 @@
 </template>
 <script>
 export default {
-    props: ['initial_map', 'initial_incidents', 'initial_map_token'],
+    // props: ['initial_map', 'initial_markers', 'initial_map_token', 'user'],
+
+    props: {
+        // Basic type check (`null` and `undefined` values will pass any type validation)
+        initial_map: Object,
+        // Multiple possible types
+        initial_markers: Object,
+        // Required string
+        initial_map_token: {
+          type: String,
+          required: false
+        },
+        // Object with a default value
+        user: {
+          type: Object,
+          // Object or array defaults must be returned from
+          // a factory function
+          default: function () {
+            return { }
+          }
+        }
+      },
 
     components: {},
 
@@ -77,7 +98,7 @@ export default {
         return {
             map: this.initial_map,
             map_token: this.initial_map_token,
-            markers: this.initial_incidents,
+            markers: this.initial_markers,
             map_settings: {
                 show_all: false,
                 mapSelectedAge: 0,
@@ -137,7 +158,7 @@ export default {
             if (!this.map) {
                 return false
             }
-            if (this.map.users_can_create_incidents === 'no') {
+            if (this.map.users_can_create_markers === 'no') {
                 return false
             }
             if (this.markers < 1) {
@@ -186,14 +207,14 @@ export default {
         },
 
         listenForNewMarkers() {
-            Echo.channel('maps.' + this.map.uuid).listen('IncidentCreated', (e) => {
-                this.handleMarkerCreate(e.incident);
+            Echo.channel('maps.' + this.map.uuid).listen('MarkerCreated', (e) => {
+                this.handleMarkerCreate(e.marker);
             });
         },
 
         listenForDeletedMarkers() {
-            Echo.channel('maps.' + this.map.uuid).listen('IncidentDeleted', (e) => {
-                this.handleMarkerDelete(e.incident.id);
+            Echo.channel('maps.' + this.map.uuid).listen('MarkerDeleted', (e) => {
+                this.handleMarkerDelete(e.marker.id);
             });
         },
 

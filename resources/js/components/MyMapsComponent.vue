@@ -38,7 +38,7 @@ export default {
             }
         });
         axios
-            .get('/api/maps?orderBy=incidents_count')
+            .get('/api/maps?orderBy=markers_count')
             .then(response => {
                 this.public_maps_total = response.data.total
                 this.public_maps = response.data.data

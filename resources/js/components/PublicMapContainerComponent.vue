@@ -51,7 +51,7 @@
             </div>
         </transition>
         <div class="col-12 p-0" @touchstart="setMenuVisibility(0)" @mousedown="setMenuVisibility(0)">
-            <map-component v-if="map" :map_id="map.uuid" :map_token="null" style="height: 100vh;" :users_can_create_incidents="map.users_can_create_incidents" :map_categories="categories" :initial_incidents="null" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
+            <map-component v-if="map" :map_id="map.uuid" :map_token="null" style="height: 100vh;" :users_can_create_markers="map.users_can_create_markers" :map_categories="categories" :initial_markers="null" v-on:marker-create="handleMarkerCreate" v-on:marker-delete="handleMarkerDelete"></map-component>
             <div v-else style="height: 65vh;" class="row align-items-center bg-dark">
                 <div class="col text-center">
                     <div>Cartes.io</div>
@@ -139,7 +139,7 @@ export default {
             if (!this.map) {
                 return false
             }
-            if (this.map.users_can_create_incidents === 'no') {
+            if (this.map.users_can_create_markers === 'no') {
                 return false
             }
             if (this.markers < 1) {
@@ -163,7 +163,7 @@ export default {
                 return this.user_maps
             }
             return this.maps.filter(function(single_map) {
-                return single_map.incidents_count > 0 && single_map.title !== ""
+                return single_map.markers_count > 0 && single_map.title !== ""
             })
         }
     },
@@ -228,14 +228,14 @@ export default {
         },
 
         listenForNewMarkers() {
-            Echo.channel('maps.' + this.map.uuid).listen('IncidentCreated', (e) => {
-                this.handleMarkerCreate(e.incident);
+            Echo.channel('maps.' + this.map.uuid).listen('MarkerCreated', (e) => {
+                this.handleMarkerCreate(e.marker);
             });
         },
 
         listenForDeletedMarkers() {
-            Echo.channel('maps.' + this.map.uuid).listen('IncidentDeleted', (e) => {
-                this.handleMarkerDelete(e.incident.id);
+            Echo.channel('maps.' + this.map.uuid).listen('MarkerDeleted', (e) => {
+                this.handleMarkerDelete(e.marker.id);
             });
         },
 

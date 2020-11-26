@@ -6,7 +6,7 @@
             <v-geosearch :options="geosearchOptions"></v-geosearch>
             <l-layer-group ref="hello_popup">
                 <l-popup>
-                    <form v-if="canPost == 'yes'" method="POST" action="/markers" @submit.prevent="addMarker()" :disabled="!submit_data.category_name">
+                    <form v-if="canPost == 'yes' || (canPost == 'only_logged_in' && user && user.id)" method="POST" action="/markers" @submit.prevent="addMarker()" :disabled="!submit_data.category_name">
                         <label class="my-1 mr-2">Marker label:</label>
                         <multiselect v-model="fullCategory" @input="handleSelectInput" track-by="name" label="name" placeholder="Start typing..." tag-placeholder="Add this as new label" :options="categories" :searchable="true" :allow-empty="false" :taggable="true" @tag="addTag" style="width:250px;" :show-labels="false" class="your_custom_class" :loading="submit_data.loading" :internal-search="false" :clear-on-select="false" :options-limit="300" :limit="3" :max-height="600" :show-no-results="false" @search-change="asyncFind" :preserve-search="true" required>
                             <template slot="limit" slot-scope="{ option }">Keep typing to refine your search</template>
@@ -17,7 +17,7 @@
                         </multiselect>
                         <div class="form-group mt-1">
 <!--                             <label for="description">Description</label>
- -->                            <textarea class="form-control" id="description" rows="2" name="description" v-model="submit_data.description" placeholder="Description"></textarea>
+ -->                            <textarea class="form-control" id="description" rows="2" name="description" v-model="submit_data.description" placeholder="Description (optional)"></textarea>
                         </div>
                         <input type="submit" value="Add marker" class="btn btn-primary btn-sm my-1" :disabled="submit_data.loading || !submit_data.category_name">
                     </form>
@@ -26,18 +26,18 @@
                 </l-popup>
             </l-layer-group>
             <l-marker-cluster>
-                <l-marker v-for="incident in activeIncidents" :lat-lng="incident.location.coordinates" :key="incident.id+'marker'" @click="handleOpenedPopup($event, incident.id)">
-                    <l-icon :icon-url="incident.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 25]" />
+                <l-marker v-for="marker in activeMarkers" :lat-lng="marker.location.coordinates" :key="marker.id+'marker'" @click="handleOpenedPopup($event, marker.id)">
+                    <l-icon :icon-url="marker.category.icon" :icon-size="[30, 30]" :icon-anchor="[15, 25]" />
                     <l-popup @ready="openPopup">
-                        <p class="mb-1" style="min-width: 200px;"><b>{{incident.category.name}}</b></p>
-                        <p class="mb-1 mt-0 w-100 d-block" v-if="incident.description" v-html="incident.description"></p>
-                        <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="incident.updated_at">{{ incident.updated_at }}</span>.</small>
-                        <small v-if="isMarkerExpired(incident.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="incident.expires_at">{{ incident.expires_at }}</span>.</small>
-                        <details class="small" v-if="incident.marker">
+                        <p class="mb-1" style="min-width: 200px;"><b>{{marker.category.name}}</b></p>
+                        <p class="mb-1 mt-0 w-100 d-block" v-if="marker.description" v-html="marker.description"></p>
+                        <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>.</small>
+                        <small v-if="isMarkerExpired(marker.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="marker.expires_at">{{ marker.expires_at }}</span>.</small>
+                        <details class="small" v-if="marker.marker">
                             <summary>Click to see address</summary>
-                            <p class="mt-0 mb-1">{{ incident.marker.label }}</p>
+                            <p class="mt-0 mb-1">{{ marker.marker.label }}</p>
                         </details>
-                        <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(incident)" @click="deleteIncident(incident.id)" :disabled="submit_data.loading">Delete</a>
+                        <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(marker)" @click="deleteMarker(marker.id)" :disabled="submit_data.loading">Delete</a>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -171,7 +171,7 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import VGeosearch from 'vue2-leaflet-geosearch';
 
 export default {
-    props: ['map_id', 'map_token', 'users_can_create_incidents', 'map_categories', 'initial_incidents'],
+    props: ['map_id', 'map_token', 'users_can_create_markers', 'map_categories', 'initial_markers', 'user'],
 
     components: { LMap, LTileLayer, LMarker, LPopup, 'l-locatecontrol': Vue2LeafletLocatecontrol, LIcon, 'l-marker-cluster': Vue2LeafletMarkerCluster, LLayerGroup, Multiselect, 'v-geosearch': VGeosearch },
 
@@ -181,12 +181,12 @@ export default {
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href="https://cartes.io">Cartes.io</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> &copy; <a href="https://icons8.com/attributions">Icons8</a>',
             subdomains: 'abcd',
-            incidents: this.initial_incidents,
+            markers: this.initial_markers,
             categories: this.map_categories ? this.map_categories : [],
             new_message: '',
             fullCategory: { id: null, name: '' },
             query: '',
-            open_incident: null,
+            open_marker: null,
             markerResults: {},
             submit_data: {
                 lat: 0,
@@ -215,8 +215,8 @@ export default {
 
     created: function() {
         this.$root.$on('flyTo', (f) => this.$refs.map.mapObject.flyTo(f, 16));
-        if (!this.incidents) {
-            this.getIncidents()
+        if (!this.markers) {
+            this.getMarkers()
         }
         // _.debounce is a function provided by lodash to limit how
         // often a particularly expensive operation can be run.
@@ -262,18 +262,18 @@ export default {
             if (this.submit_data.map_token) {
                 return 'yes'
             }
-            return this.users_can_create_incidents;
+            return this.users_can_create_markers;
         },
-        activeIncidents() {
-            if (this.initial_incidents) {
-                return this.incidents;
-            } else if (this.incidents) {
-                return this.incidents.filter(function(incident) {
-                    if (incident.expires_at == null) {
+        activeMarkers() {
+            if (this.initial_markers) {
+                return this.markers;
+            } else if (this.markers) {
+                return this.markers.filter(function(marker) {
+                    if (marker.expires_at == null) {
                         return true
                     }
-                    return Vue.moment(incident.expires_at).isBefore(Vue.moment())
-                    //return new Date() <= Date(Date.parse(incident.expires_at.replace(/-/g, '/')))
+                    return Vue.moment(marker.expires_at).isBefore(Vue.moment())
+                    //return new Date() <= Date(Date.parse(marker.expires_at.replace(/-/g, '/')))
                 })
             } else {
                 return [];
@@ -283,16 +283,16 @@ export default {
     },
 
     watch: {
-        initial_incidents(newValue) {
-            this.incidents = newValue;
-            //$emit('incidents-count-change', newValue);
+        initial_markers(newValue) {
+            this.markers = newValue;
+            //$emit('markers-count-change', newValue);
         },
         map_categories(newValue) {
             this.categories = newValue;
-            //$emit('incidents-count-change', newValue);
+            //$emit('markers-count-change', newValue);
         },
         map_id(newValue) {
-            this.getIncidents();
+            this.getMarkers();
         }
     },
 
@@ -326,13 +326,13 @@ export default {
             this.submit_data.lng = event.latlng.lng;
         },
         async handleOpenedPopup(event, id) {
-            this.open_incident = this.incidents.findIndex((e) => e.id === id)
-            if (this.incidents[this.open_incident] && this.incidents[this.open_incident].marker) {
-                // console.log(this.incidents[this.open_incident].marker);
+            this.open_marker = this.markers.findIndex((e) => e.id === id)
+            if (this.markers[this.open_marker] && this.markers[this.open_marker].marker) {
+                // console.log(this.markers[this.open_marker].marker);
             } else {
-                Vue.set(this.incidents[this.open_incident], 'marker', { label: "One sec, we're fetching the address..." })
+                Vue.set(this.markers[this.open_marker], 'marker', { label: "One sec, we're fetching the address..." })
                 const results = await this.geosearchOptions.provider.search({ query: event.latlng.lat + " " + event.latlng.lng })
-                Vue.set(this.incidents[this.open_incident], 'marker', results[0])
+                Vue.set(this.markers[this.open_marker], 'marker', results[0])
             }
             //this.$refs.hello_popup.mapObject.closePopup();
         },
@@ -372,11 +372,11 @@ export default {
             this.query = query
             this.debouncedGetCategories()
         },
-        getIncidents() {
+        getMarkers() {
             return axios
                 .get('/api/maps/' + this.map_id + '/markers')
                 .then(response => (
-                    this.incidents = response.data
+                    this.markers = response.data
                 ))
         },
         getCategories(query) {
@@ -387,17 +387,17 @@ export default {
                     this.submit_data.loading = false
                 })
         },
-        deleteIncident(id) {
+        deleteMarker(id) {
             this.submit_data.loading = true;
             return axios
                 .delete('/api/maps/' + this.map_id + '/markers/' + id, { data: { token: localStorage['post_' + id], map_token: this.submit_data.map_token } })
                 .then((res) => {
-                    this.handleDeletedIncident(id);
+                    this.handleDeletedMarker(id);
                     this.submit_data.loading = false;
                 });
         },
-        handleDeletedIncident(id) {
-            this.incidents = this.incidents.filter((e) => e.id !== id)
+        handleDeletedMarker(id) {
+            this.markers = this.markers.filter((e) => e.id !== id)
             localStorage.removeItem('post_' + id)
             this.$emit('marker-delete', id);
         },
@@ -409,8 +409,8 @@ export default {
                     this.$refs.hello_popup.mapObject.closePopup();
                     this.submit_data.loading = false
                     this.submit_data.description = ""
-                    if (!this.initial_incidents) {
-                        this.incidents.push(res.data);
+                    if (!this.initial_markers) {
+                        this.markers.push(res.data);
                     }
                     localStorage['post_' + res.data.id] = res.data.token
                     dataLayer.push({ event: 'marker-create' });

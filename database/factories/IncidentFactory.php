@@ -3,7 +3,7 @@
 use Faker\Generator as Faker;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 
-$factory->define(App\Models\Incident::class, function (Faker $faker) {
+$factory->define(App\Models\Marker::class, function (Faker $faker) {
     $point = new Point($faker->longitude, $faker->latitude);
 
     return [

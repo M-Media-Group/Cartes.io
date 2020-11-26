@@ -5,9 +5,9 @@
 @section('meta_image', config('app.url').'/images/map.png')
 
 @section('above_container')
-    {{-- <map-component map_id="{{$map->uuid}}" map_token="{{$token}}" style="height: 76vh;" users_can_create_incidents="{{$map->users_can_create_incidents}}" :map_categories="{{$map->categories}}"></map-component> --}}
+    {{-- <map-component map_id="{{$map->uuid}}" map_token="{{$token}}" style="height: 76vh;" users_can_create_markers="{{$map->users_can_create_markers}}" :map_categories="{{$map->categories}}"></map-component> --}}
 
-    <map-container-component :initial_map="{{$map}}" initial_map_token="{{$token}}" ></map-container-component>
+    <map-container-component :initial_map="{{$map}}" initial_map_token="{{$token}}" :user="{{Auth::user() ?? "{}" }}"></map-container-component>
 
 @endsection
 @section('content')

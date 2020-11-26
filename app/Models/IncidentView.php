@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class IncidentView extends Model
+class MarkerView extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class IncidentView extends Model
      * @var array
      */
     protected $fillable = [
-        'incident_id',
+        'marker_id',
         'user_id',
         'ip',
     ];

@@ -23,14 +23,14 @@ class Category extends Model
         return $this->belongsToMany(\App\Models\User::class);
     }
 
-    public function incidents()
+    public function markers()
     {
-        return $this->hasMany(\App\Models\Incident::class);
+        return $this->hasMany(\App\Models\Marker::class);
     }
 
     // public function maps()
     // {
-    //     return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Incident::class);
+    //     return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class);
     // }
 
     public function views()

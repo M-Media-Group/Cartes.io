@@ -8,8 +8,8 @@
             <g id="Group-8" transform="translate(123.000000, 298.000000)">
                 <g id="Group-7">
                     <polygon id="Fill-1" fill="#0D70B0" points="75 0 0 42 45 145 150 58.5"></polygon>
-                    <text id="Incident" font-family="LucidaGrande, Lucida Grande" font-size="27" font-weight="normal" letter-spacing="-0.28199999" fill="#FEFEFE">
-                        <tspan x="19" y="68">Incident</tspan>
+                    <text id="Marker" font-family="LucidaGrande, Lucida Grande" font-size="27" font-weight="normal" letter-spacing="-0.28199999" fill="#FEFEFE">
+                        <tspan x="19" y="68">Marker</tspan>
                     </text>
                     <text id="Report" font-family="LucidaGrande, Lucida Grande" font-size="15" font-weight="normal" letter-spacing="0.150000002" fill="#FEFEFE">
                         <tspan x="45" y="91">Report</tspan>

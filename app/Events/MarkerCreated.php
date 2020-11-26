@@ -2,36 +2,36 @@
 
 namespace App\Events;
 
-use App\Models\Incident;
+use App\Models\Marker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class IncidentCreated implements ShouldBroadcast
+class MarkerCreated implements ShouldBroadcast
 {
     use SerializesModels, InteractsWithSockets;
 
-    public $incident;
+    public $marker;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Incident $incident)
+    public function __construct(Marker $marker)
     {
-        $this->incident = $incident->load('category');
+        $this->marker = $marker->load('category');
     }
 
     // public function broadcastWith()
     // {
-    //     //print_r($this->incident);
+    //     //print_r($this->marker);
     //     return [
-    //         'id' => $this->incident->id,
-    //         'x' => $this->incident->X,
-    //         'y' => $this->incident->y,
-    //         'category_id' => $this->incident->category_id,
+    //         'id' => $this->marker->id,
+    //         'x' => $this->marker->X,
+    //         'y' => $this->marker->y,
+    //         'category_id' => $this->marker->category_id,
     //     ];
     // }
 
@@ -42,6 +42,6 @@ class IncidentCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('maps.'.$this->incident->map->uuid);
+        return new Channel('maps.' . $this->marker->map->uuid);
     }
 }

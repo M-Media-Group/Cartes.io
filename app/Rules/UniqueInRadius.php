@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Incident;
+use App\Models\Marker;
 use Illuminate\Contracts\Validation\Rule;
 
 class UniqueInRadius implements Rule
@@ -32,7 +32,7 @@ class UniqueInRadius implements Rule
      */
     public function passes($attribute, $value)
     {
-        $incidents = Incident::distanceSphere('location', $value, $this->radius)
+        $markers = Marker::distanceSphere('location', $value, $this->radius)
             ->when($this->category_id, function ($query) {
                 return $query->where('category_id', $this->category_id);
             })
@@ -40,7 +40,7 @@ class UniqueInRadius implements Rule
                 return $query->where('map_id', $this->map_id);
             })
             ->first();
-        if ($incidents) {
+        if ($markers) {
             return false;
         }
 
