@@ -91,7 +91,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return $result;
         } else {
-            return redirect('/maps/' . $result->slug)->with('token', $result->token);
+            return redirect('/maps/'.$result->slug)->with('token', $result->token);
         }
     }
 
@@ -158,7 +158,7 @@ class MapController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
