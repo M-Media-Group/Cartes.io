@@ -34,6 +34,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::routes();
 
+        // Passport::enableImplicitGrant();
+
+        Passport::tokensExpireIn(now()->addDays(15));
+
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+
         // Implicitly grant "Admin" role all permissions
         Gate::before(function ($user, $ability) {
             if ($user->hasRole('admin') || $user->isSuperAdmin()) {

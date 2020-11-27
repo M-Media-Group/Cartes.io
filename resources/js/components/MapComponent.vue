@@ -31,7 +31,7 @@
                     <l-popup @ready="openPopup">
                         <p class="mb-1" style="min-width: 200px;"><b>{{marker.category.name}}</b></p>
                         <p class="mb-1 mt-0 w-100 d-block" v-if="marker.description" v-html="marker.description"></p>
-                        <small class="w-100 d-block">Last report: <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>.</small>
+                        <small class="w-100 d-block">Last update: <span class='timestamp' :datetime="marker.updated_at">{{ marker.updated_at }}</span>.</small>
                         <small v-if="isMarkerExpired(marker.expires_at)" class="w-100 d-block">Expired: <span class='timestamp' :datetime="marker.expires_at">{{ marker.expires_at }}</span>.</small>
                         <details class="small" v-if="marker.marker">
                             <summary>Click to see address</summary>

@@ -58,9 +58,9 @@ class Marker extends Pivot
         //     $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
         // });
 
-        self::creating(function ($model) {
-            //$model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
-        });
+        // self::creating(function ($model) {
+        //     $model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
+        // });
 
         static::addGlobalScope('active', function (Builder $builder) {
             $builder

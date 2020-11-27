@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Map;
 use App\Models\Marker;
 use Carbon\Carbon;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Validator;
@@ -54,7 +55,7 @@ class MarkerController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -101,6 +102,93 @@ class MarkerController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeInBulk(Request $request, Map $map)
+    {
+        //return $request->input("map_token");
+        $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
+
+        $request->merge(['user_id' => $request->user('api')->id ?? null]);
+
+        $validated_data = $request->validate([
+            'markers' => 'required|array|min:1',
+            'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
+            'markers.*.lat' => 'required|numeric|between:-90,90',
+            'markers.*.lng' => 'required|numeric|between:-180,180',
+            'markers.*.description' => ['nullable', 'string', 'max:191'],
+            'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
+            'user_id' => 'exists:users,id',
+            'markers.*.created_at' => 'nullable',
+            'markers.*.updated_at' => 'nullable',
+            'markers.*.expires_at' => 'nullable',
+        ]);
+
+        //dd($validated_data);
+
+        $now = Carbon::now();
+
+        foreach ($validated_data['markers'] as $index => $marker) {
+            $point = new Point($marker['lng'], $marker['lat']);
+
+            Validator::make(
+                ['point' => $point],
+                ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
+            )->validate();
+
+            $marker['location'] = new SpatialExpression($point);
+
+            unset($marker['lat']);
+            unset($marker['lng']);
+
+            if (!isset($marker['category'])) {
+                $category = \App\Models\Category::firstOrCreate(
+                    ['slug' => str_slug($marker['category_name'])],
+                    ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
+                );
+                $marker['category_id'] = $category->id;
+                unset($marker['category_name']);
+                unset($marker['category']);
+            }
+
+            if ($map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no') {
+                Validator::make(
+                    ['point' => $point],
+                    ['point' => ['required', new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])]]
+                )->validate();
+            }
+
+            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+                $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
+            } else if (!isset($marker['expires_at'])) {
+                $marker['expires_at'] = null;
+            } else {
+                $marker['expires_at'] = Carbon::parse($marker['expires_at']);
+            }
+
+            $marker['created_at'] = Carbon::parse($marker['created_at']) ?? $now->toDateTimeString();
+            $marker['updated_at'] = Carbon::parse($marker['updated_at']) ?? $now->toDateTimeString();
+            $marker['token'] = str_random(32);
+            $marker['map_id'] = $map->id;
+            $marker['user_id'] = $validated_data['user_id'];
+
+            $validated_data['markers'][$index] = $marker;
+
+        }
+
+        //dd($validated_data['markers']);
+
+        $result = Marker::insert($validated_data['markers']);
+
+        // broadcast(new \App\Events\MarkerCreated($result))->toOthers();
+        //dd($result);
+        return response()->json($result);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -142,6 +230,6 @@ class MarkerController extends Controller
     {
         $this->authorize('forceDelete', [$marker, $request->input('map_token')]);
         broadcast(new \App\Events\MarkerDeleted($marker))->toOthers();
-        $marker->delete();
+        return $marker->delete();
     }
 }

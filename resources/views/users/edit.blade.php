@@ -54,5 +54,10 @@
 	  <button type="submit" class="btn btn-primary">Save</button>
 	  <hr>
 	</form>
-
+	  <h1>API access / authorization</h1>
+		<passport-personal-access-tokens></passport-personal-access-tokens>
+		<br/>
+		{{-- <passport-clients></passport-clients> --}}
+		<br/>
+		<passport-authorized-clients></passport-authorized-clients>
 @endsection

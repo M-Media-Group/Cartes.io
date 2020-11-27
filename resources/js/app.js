@@ -37,6 +37,21 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 Vue.component('chart-line-component', require('./components/ChartLineComponent.js').default);
 Vue.component('chart-pie-component', require('./components/ChartPieComponent.js').default);
 
+Vue.component(
+    'passport-clients',
+    require('./components/passport/Clients.vue').default
+);
+
+Vue.component(
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue').default
+);
+
+Vue.component(
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue').default
+);
+
 /** Vue Filters Start */
 Vue.filter('truncate', function (text, length, suffix) {
 	if (!text) {

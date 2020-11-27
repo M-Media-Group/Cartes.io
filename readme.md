@@ -37,8 +37,9 @@ Note, to see markers on some of these maps, you need to go into "Map display opt
 
 After running composer and npm, run the following commands to create the permissions and roles:
 - php artisan migrate
-- php artisan permission:create-role admin web "manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps"
+- php artisan permission:create-role admin web "manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps|create markers in bulk"
 - php artisan permission:create-role editor web "manage markers|manage categories|manage maps"
+- php artisan permission:create-role "power reporter" web "create markers in bulk"
 - php artisan permission:create-role reporter web "edit markers|create markers|delete markers"
 
 Important note: previously the markers table was called incidents - there is a column in the maps table that requires manual updating in MySQL - see file `2020_11_26_152012_rename_maps_can_create_incidents_column_table`

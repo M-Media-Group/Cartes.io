@@ -25,7 +25,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function index(?User $user, Map $map, $token = null)
+    public function index( ? User $user, Map $map, $token = null)
     {
         if ($map->privacy !== 'private') {
             return true;
@@ -44,24 +44,46 @@ class MarkerPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user, Map $map, $token = null)
+    public function create( ? User $user, Map $map, $token = null)
     {
+
+        if (request()->is('api*')) {
+            $user = request()->user('api');
+        }
+
         if ($token == $map->token) {
             return true;
         } elseif ($map->users_can_create_markers == 'yes') {
             return true;
         } elseif ($map->users_can_create_markers == 'only_logged_in') {
-            if (request()->is('api*')) {
-                $user = request()->user('api');
-                if (! $user) {
-                    return false;
-                }
+            if (!$user) {
+                return false;
             }
-
             return $user->hasVerifiedEmail() && $user->can('create markers');
+        } elseif ($user && $map->user_id == $user->id) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine whether the user can create markers.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function createInBulk( ? User $user, Map $map, $token = null)
+    {
+
+        if (request()->is('api*')) {
+            $user = request()->user('api');
+            if (!$user) {
+                return false;
+            }
         }
 
-        return false;
+        return $user->hasVerifiedEmail() && $user->can('create markers in bulk');
+
     }
 
     /**
@@ -121,7 +143,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function forceDelete(?User $user, Marker $marker, $map_token = null)
+    public function forceDelete( ? User $user, Marker $marker, $map_token = null)
     {
         if ($map_token == $marker->map->token) {
             return true;
@@ -129,7 +151,7 @@ class MarkerPolicy
             return true;
         } elseif ($marker->token == request()->input('token')) {
             return true;
-        } elseif (! $user) {
+        } elseif (!$user) {
             return false;
         }
 
