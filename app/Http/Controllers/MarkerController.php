@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Validator;
 
 class MarkerController extends Controller
@@ -159,8 +160,15 @@ class MarkerController extends Controller
 
         //dd($validated_data['markers']);
 
-        $result = Marker::insert($validated_data['markers']);
+        try {
+            $result = Marker::insert($validated_data['markers']);
 
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1062) {
+                throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
+            }
+        }
         // broadcast(new \App\Events\MarkerCreated($result))->toOthers();
         //dd($result);
         return response()->json($result);
