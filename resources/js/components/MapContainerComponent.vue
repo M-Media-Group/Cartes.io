@@ -132,10 +132,14 @@ export default {
                 return this.markers
             }
 
+
             let markers = this.markers
             let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
 
             return markers.filter(function(marker) {
+                if(marker.is_spam && !localStorage['post_' + marker.id]){
+                    return false
+                }
                 if (Vue.moment(marker.created_at).isSameOrBefore(diff_date_time, 'minute') && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
                 }
@@ -232,6 +236,12 @@ export default {
 
         handleApiMarkers(markers) {
             this.markers = markers
+        },
+        markerInLocalStorageKey(id) {
+            if (localStorage['post_' + id]) {
+                return true
+            }
+            return false
         }
 
     }

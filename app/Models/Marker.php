@@ -43,6 +43,7 @@ class Marker extends Pivot
         'expires_at' => 'datetime:c',
         'created_at' => 'datetime:c',
         'updated_at' => 'datetime:c',
+        'is_spam' => 'boolean',
     ];
 
     /**
