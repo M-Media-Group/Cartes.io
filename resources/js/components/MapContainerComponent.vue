@@ -219,6 +219,12 @@ export default {
 
         listenForNewMarkers() {
             Echo.channel('maps.' + this.map.uuid).listen('MarkerCreated', (e) => {
+                // this.$notify("A new marker was just added")
+                this.$notify({
+                        type: 'success',
+                        title: '"'+e.marker.category.name+'" marker was just added',
+                        text: e.marker.description
+                      })
                 this.handleMarkerCreate(e.marker);
             });
         },
@@ -234,10 +240,12 @@ export default {
         },
 
         handleMarkerDelete(id) {
-            this.markers = this.markers.filter((e) => e.id !== id)
+            this.$notify("A marker was just deleted");
+            this.markers = this.markers.filter((e) => e.id !== id);
         },
 
         handleMapUpdate(map) {
+            this.$notify("Information about this map has been updated")
             this.map = map
         },
 

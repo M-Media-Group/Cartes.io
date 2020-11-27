@@ -38,6 +38,7 @@
                             <p class="mt-0 mb-1">{{ marker.marker.label }}</p>
                         </details>
                         <a class="btn btn-link btn-sm text-danger" v-if="canDeletePost(marker)" @click="deleteMarker(marker.id)" :disabled="submit_data.loading">Delete</a>
+                        <a class="btn btn-link btn-sm text-warning" v-if="canMarkAsSpamPost(marker)" @click="markAsSpam(marker.id)" :disabled="submit_data.loading">Report as spam</a>
                     </l-popup>
                 </l-marker>
             </l-marker-cluster>
@@ -306,6 +307,15 @@ export default {
             }
             return this.inLocalStorageKey(marker.id);
         },
+        canMarkAsSpamPost(marker) {
+            if(this.inLocalStorageKey(marker.id)) {
+                return false;
+            }
+            if (this.submit_data.map_token) {
+                return true;
+            }
+            return false;
+        },
         isMarkerExpired(expiration_date) {
             if (!expiration_date) {
                 return false
@@ -396,6 +406,22 @@ export default {
                     this.submit_data.loading = false;
                 });
         },
+        markAsSpam(id) {
+            this.submit_data.loading = true;
+            return axios
+                .put('/api/maps/' + this.map_id + '/markers/' + id,  { token: localStorage['post_' + id], map_token: this.submit_data.map_token, is_spam: true  })
+                .then((res) => {
+                    this.handleDeletedMarker(id);
+                    this.submit_data.loading = false;
+                    this.$notify({
+                        type: 'success',
+                        title: 'You marked this marker as spam',
+                        text: 'Thank you for keeping our maps clean!',
+                        duration: 5000,
+                        speed: 750
+                      })
+                });
+        },
         handleDeletedMarker(id) {
             this.markers = this.markers.filter((e) => e.id !== id)
             localStorage.removeItem('post_' + id)
@@ -426,7 +452,12 @@ export default {
                     } else {
                         var message = error.response.data.message
                     }
-                    alert(message);
+                    this.$notify({
+                        type: 'error',
+                        title: 'There was an error creating this marker',
+                        text: message,
+                        duration: 8000,
+                      })
                 });
         }
     }

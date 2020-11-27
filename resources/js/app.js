@@ -12,6 +12,7 @@ window.timeago = require('timeago.js');
 window.Vue = require('vue');
 
 import { Icon }  from 'leaflet'
+import Notifications from 'vue-notification'
 
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
@@ -66,7 +67,7 @@ Vue.filter('truncate', function (text, length, suffix) {
 /** Vue Filters End */
 
 Vue.use(require('vue-moment'));
-
+Vue.use(Notifications);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

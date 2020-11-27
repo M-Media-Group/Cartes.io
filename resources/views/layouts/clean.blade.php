@@ -32,5 +32,6 @@
                 </small>
             </div>
         @endif
+        <notifications position="bottom left" classes="vue-custom-notification" />
     </div>
 @include('components.footer')

@@ -204,7 +204,11 @@ export default {
         onShareError(e) {
             copy(this.map_url, {
                 message: 'Press #{key} to copy',
-                onCopy: alert('Link copied')
+                onCopy: this.$notify({
+                        type: 'success',
+                        title: 'Link copied',
+                        duration: 5000
+                      })
             });
         },
         handleSelectInput(val, type) {

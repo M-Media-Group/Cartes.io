@@ -34,6 +34,7 @@ Route::middleware(['throttle:4|10,1'])->group(function () {
 
 Route::middleware(['throttle:30'])->group(function () {
     Route::put('maps/{map}', 'MapController@update');
+    Route::put('maps/{map}/markers/{marker}', 'MarkerController@update');
     Route::delete('maps/{map}/markers/{marker}', 'MarkerController@destroy');
     Route::delete('maps/{map}', 'MapController@destroy');
 });

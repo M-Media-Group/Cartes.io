@@ -25,13 +25,15 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function index(?User $user, Map $map, $token = null)
+    public function index( ? User $user, Map $map, $token = null)
     {
         if ($map->privacy !== 'private') {
             return true;
-        } elseif ($token == $map->token) {
+        }
+        if ($token == $map->token) {
             return true;
-        } elseif ($user && $map->user_id == $user->id) {
+        }
+        if ($user && $map->user_id == $user->id) {
             return true;
         }
 
@@ -44,26 +46,26 @@ class MarkerPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user, Map $map, $token = null)
+    public function create( ? User $user, Map $map, $token = null)
     {
         if (request()->is('api*')) {
             $user = request()->user('api');
         }
-
         if ($token == $map->token) {
             return true;
-        } elseif ($map->users_can_create_markers == 'yes') {
-            return true;
-        } elseif ($map->users_can_create_markers == 'only_logged_in') {
-            if (! $user) {
-                return false;
-            }
-
-            return $user->hasVerifiedEmail() && $user->can('create markers');
-        } elseif ($user && $map->user_id == $user->id) {
+        }
+        if ($map->users_can_create_markers == 'yes') {
             return true;
         }
-
+        if ($map->users_can_create_markers == 'only_logged_in') {
+            if (!$user) {
+                return false;
+            }
+            return $user->hasVerifiedEmail() && $user->can('create markers');
+        }
+        if ($user && $map->user_id == $user->id) {
+            return true;
+        }
         return false;
     }
 
@@ -139,15 +141,43 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function forceDelete(?User $user, Marker $marker, $map_token = null)
+    public function markAsSpam( ? User $user, Marker $marker, $map_token = null)
+    {
+        if ($user && $marker->user_id == $user->id) {
+            return false;
+        }
+        if ($user && $map->user_id == $user->id) {
+            return $user->can('mark spam');
+        }
+        if ($marker->token == request()->input('token')) {
+            return false;
+        }
+        if ($map_token == $marker->map->token) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the marker.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Marker  $marker
+     * @return mixed
+     */
+    public function forceDelete( ? User $user, Marker $marker, $map_token = null)
     {
         if ($map_token == $marker->map->token) {
             return true;
-        } elseif ($user && $marker->user_id == $user->id) {
+        }
+        if ($user && $marker->user_id == $user->id) {
             return true;
-        } elseif ($marker->token == request()->input('token')) {
+        }
+        if ($marker->token == request()->input('token')) {
             return true;
-        } elseif (! $user) {
+        }
+        if (!$user) {
             return false;
         }
 
