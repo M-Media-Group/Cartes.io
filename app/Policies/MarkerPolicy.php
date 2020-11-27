@@ -25,7 +25,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function index( ? User $user, Map $map, $token = null)
+    public function index(?User $user, Map $map, $token = null)
     {
         if ($map->privacy !== 'private') {
             return true;
@@ -44,7 +44,7 @@ class MarkerPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create( ? User $user, Map $map, $token = null)
+    public function create(?User $user, Map $map, $token = null)
     {
         if (request()->is('api*')) {
             $user = request()->user('api');
@@ -55,7 +55,7 @@ class MarkerPolicy
         } elseif ($map->users_can_create_markers == 'yes') {
             return true;
         } elseif ($map->users_can_create_markers == 'only_logged_in') {
-            if (!$user) {
+            if (! $user) {
                 return false;
             }
 
@@ -139,7 +139,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function forceDelete( ? User $user, Marker $marker, $map_token = null)
+    public function forceDelete(?User $user, Marker $marker, $map_token = null)
     {
         if ($map_token == $marker->map->token) {
             return true;
@@ -147,7 +147,7 @@ class MarkerPolicy
             return true;
         } elseif ($marker->token == request()->input('token')) {
             return true;
-        } elseif (!$user) {
+        } elseif (! $user) {
             return false;
         }
 

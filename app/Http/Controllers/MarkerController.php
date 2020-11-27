@@ -56,7 +56,7 @@ class MarkerController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -121,7 +121,6 @@ class MarkerController extends Controller
         $now = Carbon::now();
 
         foreach ($validated_data['markers'] as $index => $marker) {
-
             $point = new Point($marker['lng'], $marker['lat']);
 
             $this->validateCreate($request, $marker, $map, $point);
@@ -131,7 +130,7 @@ class MarkerController extends Controller
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (!isset($marker['category'])) {
+            if (! isset($marker['category'])) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['slug' => str_slug($marker['category_name'])],
                     ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
@@ -141,9 +140,9 @@ class MarkerController extends Controller
                 unset($marker['category']);
             }
 
-            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (!isset($marker['expires_at'])) {
+            } elseif (! isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
@@ -162,7 +161,6 @@ class MarkerController extends Controller
 
         try {
             $result = Marker::insert($validated_data['markers']);
-
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
@@ -222,7 +220,6 @@ class MarkerController extends Controller
 
     private function validateCreate($request, $marker, $map, $point)
     {
-
         $marker_validator = Validator::make(
             ['point' => $point],
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
@@ -231,6 +228,7 @@ class MarkerController extends Controller
         $marker_validator->sometimes('point', [new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])], function ($input) use ($map) {
             return $map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no';
         });
+
         return $marker_validator->validate();
     }
 }
