@@ -40,13 +40,13 @@
                         <!--                         <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
  -->
                     </map-details-component>
-                    <h2 class="mt-5" v-if="markers && markers.length > 0">Map stats</h2>
-                    <div class="row" v-if="markers && markers.length > 0">
+                    <h2 class="mt-5" v-if="nonSpamMarkers && nonSpamMarkers.length > 0">Map stats</h2>
+                    <div class="row" v-if="nonSpamMarkers && nonSpamMarkers.length > 0">
                         <div class="col-md-6">
                             <h3>Total markers</h3>
                             <div class="jumbotron jumbotron-fluid bg-dark rounded">
                                 <div class="container">
-                                    <div class="display-4 text-center">{{markers.length}}</div>
+                                    <div class="display-4 text-center">{{nonSpamMarkers.length}}</div>
                                     <p class="lead text-center">All the markers created.</p>
                                 </div>
                             </div>
@@ -55,13 +55,13 @@
                             <h3>Active markers</h3>
                             <div class="jumbotron jumbotron-fluid bg-dark rounded">
                                 <div class="container">
-                                    <div class="display-4 text-center">{{markers.length - expiredMarkers.length}}</div>
+                                    <div class="display-4 text-center">{{nonSpamMarkers.length - expiredMarkers.length}}</div>
                                     <p class="lead text-center">Markers that are currently live.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <map-markers-chart-component v-if="markers && markers.length > 0" :markers="markers"></map-markers-chart-component>
+                    <map-markers-chart-component v-if="nonSpamMarkers && nonSpamMarkers.length > 0" :markers="markers"></map-markers-chart-component>
                 </div>
             </div>
         </div>
@@ -125,21 +125,28 @@ export default {
             }
             return Math.abs(Vue.moment().diff(this.map.created_at, 'minutes'))
         },
+        nonSpamMarkers() {
+            if (!this.markers) {
+                return []
+            }
+            return this.markers.filter(function(marker) {
+                if(marker.is_spam && !localStorage['post_' + marker.id]){
+                    return false
+                }
+                return true
+            })
+        },
         activeMarkers() {
             if (!this.markers) {
                 return []
             } else if (this.map_settings.show_all) {
-                return this.markers
+                return this.nonSpamMarkers
             }
 
-
-            let markers = this.markers
             let diff_date_time = Vue.moment().subtract(this.map_settings.mapSelectedAge, 'minutes');
 
-            return markers.filter(function(marker) {
-                if(marker.is_spam && !localStorage['post_' + marker.id]){
-                    return false
-                }
+            return this.nonSpamMarkers.filter(function(marker) {
+
                 if (Vue.moment(marker.created_at).isSameOrBefore(diff_date_time, 'minute') && (marker.expires_at == null || Vue.moment(diff_date_time).isBefore(marker.expires_at))) {
                     return true
                 }
