@@ -55,7 +55,7 @@ class MarkerController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -65,17 +65,7 @@ class MarkerController extends Controller
 
         $point = new Point($request->lng, $request->lat);
 
-        Validator::make(
-            ['point' => $point],
-            ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
-        )->validate();
-
-        if ($map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no') {
-            Validator::make(
-                ['point' => $point],
-                ['point' => ['required', new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])]]
-            )->validate();
-        }
+        $this->validateCreate($request, $request->input(), $map, $point);
 
         $result = new Marker(
             [
@@ -112,7 +102,7 @@ class MarkerController extends Controller
         //return $request->input("map_token");
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
-        $request->merge(['user_id' => $request->user('api')->id ?? null]);
+        $request->merge(['user_id' => $request->user('api')->id]);
 
         $validated_data = $request->validate([
             'markers' => 'required|array|min:1',
@@ -127,24 +117,20 @@ class MarkerController extends Controller
             'markers.*.expires_at' => 'nullable',
         ]);
 
-        //dd($validated_data);
-
         $now = Carbon::now();
 
         foreach ($validated_data['markers'] as $index => $marker) {
+
             $point = new Point($marker['lng'], $marker['lat']);
 
-            Validator::make(
-                ['point' => $point],
-                ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
-            )->validate();
+            $this->validateCreate($request, $marker, $map, $point);
 
             $marker['location'] = new SpatialExpression($point);
 
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (! isset($marker['category'])) {
+            if (!isset($marker['category'])) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['slug' => str_slug($marker['category_name'])],
                     ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
@@ -154,16 +140,9 @@ class MarkerController extends Controller
                 unset($marker['category']);
             }
 
-            if ($map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no') {
-                Validator::make(
-                    ['point' => $point],
-                    ['point' => ['required', new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])]]
-                )->validate();
-            }
-
-            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (! isset($marker['expires_at'])) {
+            } elseif (!isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
@@ -231,5 +210,19 @@ class MarkerController extends Controller
         broadcast(new \App\Events\MarkerDeleted($marker))->toOthers();
 
         return $marker->delete();
+    }
+
+    private function validateCreate($request, $marker, $map, $point)
+    {
+
+        $marker_validator = Validator::make(
+            ['point' => $point],
+            ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
+        );
+
+        $marker_validator->sometimes('point', [new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])], function ($input) use ($map) {
+            return $map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no';
+        });
+        return $marker_validator->validate();
     }
 }
