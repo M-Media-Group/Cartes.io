@@ -19,12 +19,12 @@ class WebRouteTest extends TestCase
         $blacklist = [
             // 'about',
         ];
-        $dynamicReg = "/{\\S*}/"; //used for omitting dynamic urls that have {} in uri (http://laravel-tricks.com/tricks/adding-a-sitemap-to-your-laravel-application#comment-1830836789)
+        $dynamicReg = '/{\\S*}/'; //used for omitting dynamic urls that have {} in uri (http://laravel-tricks.com/tricks/adding-a-sitemap-to-your-laravel-application#comment-1830836789)
         $this->be(\App\Models\User::firstOrFail());
         foreach ($routeCollection as $route) {
-            if (!preg_match($dynamicReg, $route->uri()) &&
+            if (! preg_match($dynamicReg, $route->uri()) &&
                 in_array('GET', $route->methods()) &&
-                !in_array($route->uri(), $blacklist)
+                ! in_array($route->uri(), $blacklist)
             ) {
                 $start = $this->microtimeFloat();
                 // fwrite(STDERR, print_r('test ' . $route->uri() . "\n", true));
@@ -32,16 +32,15 @@ class WebRouteTest extends TestCase
                 $end = $this->microtimeFloat();
                 $temps = round($end - $start, 3);
                 // fwrite(STDERR, print_r('time: ' . $temps . "\n", true));
-                $this->assertLessThan(15, $temps, "too long time for " . $route->uri());
+                $this->assertLessThan(15, $temps, 'too long time for '.$route->uri());
                 try {
-                    $this->assertNotEquals(500, $response->getStatusCode(), $route->uri() . "failed to load");
-                    $this->assertNotEquals(404, $response->getStatusCode(), $route->uri() . "failed to load");
+                    $this->assertNotEquals(500, $response->getStatusCode(), $route->uri().'failed to load');
+                    $this->assertNotEquals(404, $response->getStatusCode(), $route->uri().'failed to load');
                 } catch (\Exception $e) {
-                    fwrite(STDERR, print_r("\n" . $e . "\n", true));
+                    fwrite(STDERR, print_r("\n".$e."\n", true));
                     continue;
                 }
             }
-
         }
     }
 
@@ -59,9 +58,8 @@ class WebRouteTest extends TestCase
 
     public function microtimeFloat()
     {
-        list($usec, $asec) = explode(" ", microtime());
+        [$usec, $asec] = explode(' ', microtime());
 
-        return ((float) $usec + (float) $asec);
-
+        return (float) $usec + (float) $asec;
     }
 }

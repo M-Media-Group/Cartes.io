@@ -21,5 +21,4 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText(config('app.name'));
     }
-
 }
