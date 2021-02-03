@@ -9,19 +9,12 @@ require('./bootstrap');
 
 window.timeago = require('timeago.js');
 
-window.Vue = require('vue');
+import Vue from 'vue';
 
-import { Icon }  from 'leaflet'
 import Notifications from 'vue-notification'
 
-// this part resolve an issue where the markers would not appear
-delete Icon.Default.prototype._getIconUrl;
+window.Vue = Vue;
 
-Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-});
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -30,13 +23,15 @@ Icon.Default.mergeOptions({
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-const files = require.context('./', true, /\.vue$/i)
-files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+const files = require.context('./', true, /\.vue$/i, 'lazy').keys();
 
+files.forEach((file) => {
+    Vue.component(file.split('/').pop().split('.')[0], () => import(`${file}`));
+});
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-Vue.component('chart-line-component', require('./components/ChartLineComponent.js').default);
-Vue.component('chart-pie-component', require('./components/ChartPieComponent.js').default);
+Vue.component('chart-line-component', () => import('./components/ChartLineComponent.js'));
+Vue.component('chart-pie-component', () => import('./components/ChartPieComponent.js'));
 
 Vue.component(
     'passport-clients',
@@ -69,6 +64,7 @@ Vue.filter('truncate', function (text, length, suffix) {
 Vue.use(require('vue-moment'));
 Vue.use(Notifications);
 /**
+
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.

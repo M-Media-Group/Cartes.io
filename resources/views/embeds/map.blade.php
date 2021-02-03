@@ -1,7 +1,7 @@
 @extends('layouts.embed', ['index_and_googlebots' => $map->privacy == 'public' ? true : false])
 
 @section('title', $map->title ?? "Untitled map")
-@section('meta_description', $map->description)
+@section('meta_description', $map->description ?? "No map description")
 @section('meta_image', config('app.url').'/images/map.png')
 
 @section('above_container')

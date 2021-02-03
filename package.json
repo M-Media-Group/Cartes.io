@@ -1,37 +1,38 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "production": "mix --production"
     },
     "devDependencies": {
-        "axios": "^0.18.1",
+        "axios": "^0.21.1",
         "bootstrap": "^4.5.3",
         "browser-sync": "^2.26.13",
         "browser-sync-webpack-plugin": "^2.2.2",
         "cross-env": "^5.2.1",
         "jquery": "^3.5.1",
-        "laravel-mix": "^4.1.4",
+        "laravel-mix": "^6.0.11",
         "lodash": "^4.17.20",
         "popper.js": "^1.16.1",
-        "purify-css": "^1.2.5",
+        "postcss": "^8.2.4",
+        "purify-css": "^1.1.9",
         "purifycss-webpack": "^0.7.0",
-        "resolve-url-loader": "^2.3.2",
+        "resolve-url-loader": "^3.1.2",
         "sass": "^1.29.0",
         "sass-loader": "^7.3.1",
         "vue": "^2.6.12",
-        "vue-template-compiler": "^2.6.12"
+        "vue-loader": "^15.9.6",
+        "vue-template-compiler": "^2.6.12",
+        "webpack-cli": "^4.5.0"
     },
     "dependencies": {
         "chart.js": "^2.9.4",
         "copy-to-clipboard": "^3.3.1",
         "laravel-echo": "^1.9.0",
-        "leaflet": "^1.6.0",
+        "leaflet": "1.6",
         "leaflet-geosearch": "^2.7.0",
         "leaflet.markercluster": "^1.4.1",
         "pusher-js": "^6.0.3",
@@ -45,5 +46,6 @@
         "vue2-leaflet-geosearch": "^1.0.6",
         "vue2-leaflet-locatecontrol": "^1.0.1",
         "vue2-leaflet-markercluster": "^3.1.0"
-    }
+    },
+    "name": "site"
 }

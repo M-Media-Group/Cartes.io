@@ -35,6 +35,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(\App\Models\Category::class, 'category_views');
     }
 
+    public function maps()
+    {
+        return $this->hasMany(\App\Models\Map::class);
+    }
+
+    public function markers()
+    {
+        return $this->hasMany(\App\Models\Marker::class);
+    }
+
     public function isSuperAdmin()
     {
         return $this->id == config('blog.super_admin_id');

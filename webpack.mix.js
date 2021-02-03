@@ -11,7 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.sourceMaps().js('resources/js/app.js', 'public/js').extract();
+mix.sourceMaps().js('resources/js/app.js', 'public/js').vue();
 mix.sass('resources/sass/app.scss', 'public/css').styles([
 
 ], 'public/css/all.css').sourceMaps().version();
@@ -19,11 +19,6 @@ mix.sass('resources/sass/app.scss', 'public/css').styles([
 mix.options({
   extractVueStyles: false, // Extract .vue component styling to file, rather than inline.
 //  processCssUrls: true, // Process/optimize relative stylesheet url()'s. Set to false, if you don't want them touched.
-	purifyCss: {
-	    purifyOptions: {
-	        whitelist: ['*leaflet*', 'badge', 'code', 'modal', 'text-*']
-	    },
-	}
 //  uglify: {}, // Uglify-specific options. https://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
 //  postCss: [] // Post-CSS options: https://github.com/postcss/postcss/blob/master/docs/plugins.md
 });

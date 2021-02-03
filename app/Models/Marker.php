@@ -87,6 +87,11 @@ class Marker extends Pivot
         return $this->belongsTo(\App\Models\Map::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
     public function getXAttribute()
     {
         return $this->location->getLng();

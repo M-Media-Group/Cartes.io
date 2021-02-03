@@ -154,10 +154,10 @@ export default {
             })
         },
         expiredMarkers() {
-            if (!this.markers) {
+            if (!this.nonSpamMarkers) {
                 return []
             }
-            return this.markers.filter(function(marker) {
+            return this.nonSpamMarkers.filter(function(marker) {
                 if (!marker.expires_at) {
                     return false
                 }

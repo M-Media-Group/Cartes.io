@@ -25,7 +25,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function index(?User $user, Map $map, $token = null)
+    public function index( ? User $user, Map $map, $token = null)
     {
         if ($map->privacy !== 'private') {
             return true;
@@ -46,7 +46,7 @@ class MarkerPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user, Map $map, $token = null)
+    public function create( ? User $user, Map $map, $token = null)
     {
         if (request()->is('api*')) {
             $user = request()->user('api');
@@ -58,11 +58,7 @@ class MarkerPolicy
             return true;
         }
         if ($map->users_can_create_markers == 'only_logged_in') {
-            if (! $user) {
-                return false;
-            }
-
-            return $user->hasVerifiedEmail() && $user->can('create markers');
+            return $user && $user->hasVerifiedEmail() && $user->can('create markers');
         }
         if ($user && $map->user_id == $user->id) {
             return true;
@@ -143,7 +139,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function markAsSpam(?User $user, Marker $marker, $map_token = null)
+    public function markAsSpam( ? User $user, Marker $marker, $map_token = null)
     {
         if ($user && $marker->user_id == $user->id) {
             return false;
@@ -168,7 +164,7 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function forceDelete(?User $user, Marker $marker, $map_token = null)
+    public function forceDelete( ? User $user, Marker $marker, $map_token = null)
     {
         if ($map_token == $marker->map->token) {
             return true;
@@ -179,10 +175,7 @@ class MarkerPolicy
         if ($marker->token == request()->input('token')) {
             return true;
         }
-        if (! $user) {
-            return false;
-        }
 
-        return $user->can('delete markers');
+        return $user && $user->can('delete markers');
     }
 }

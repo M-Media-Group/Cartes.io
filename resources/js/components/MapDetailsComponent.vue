@@ -137,6 +137,10 @@
                         <p class="mb-0">Embed this map on your website</p>
                         <code>&lt;iframe src="https://cartes.io/embeds/maps/{{map.uuid}}?type=map" width="100%" height="400" frameborder="0">&lt;/iframe></code>
                     </div>
+                    <div class="mb-3">
+                        <p class="mb-0">Shortcode, using our <a target="_BLANK" href="https://wordpress.org/plugins/cartes/">WordPress plugin</a></p>
+                        <code>[cartes_map uuid="{{map.uuid}}"]</code>
+                    </div>
                     <p>When using the API or embedding the map, you must attribute this website on your front-end.</p>
                 </div>
             </details>

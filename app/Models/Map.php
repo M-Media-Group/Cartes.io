@@ -59,6 +59,11 @@ class Map extends Model
         return $this->hasMany(\App\Models\Marker::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
     // public function expired_markers()
     // {
     //     return $this->hasMany(\App\Models\Marker::class);

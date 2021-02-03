@@ -27,7 +27,7 @@ Route::get('maps/{map}', 'MapController@show');
 
 Route::get('maps', 'MapController@index');
 
-Route::middleware(['throttle:4|10,1'])->group(function () {
+Route::middleware(['throttle:5|10,1'])->group(function () {
     // Route::apiResource('maps', 'MapController');
     Route::post('maps', 'MapController@store');
 });

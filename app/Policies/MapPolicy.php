@@ -24,7 +24,7 @@ class MapPolicy
      * @param  \App\Models\Map  $map
      * @return mixed
      */
-    public function view(?User $user, Map $map)
+    public function view( ? User $user, Map $map)
     {
         if ($map->privacy !== 'private') {
             return true;
@@ -45,7 +45,7 @@ class MapPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(?User $user)
+    public function create( ? User $user)
     {
         return true;
     }
@@ -57,7 +57,7 @@ class MapPolicy
      * @param  \App\Models\Map  $map
      * @return mixed
      */
-    public function update(?User $user, Map $map)
+    public function update( ? User $user, Map $map)
     {
         if ($user && $map->user_id == $user->id) {
             return true;
@@ -65,8 +65,10 @@ class MapPolicy
         if ($map->token == request()->input('token')) {
             return true;
         }
-
-        return $user->can('edit maps');
+        if ($user) {
+            return $user->can('edit maps');
+        }
+        return false;
     }
 
     /**
@@ -76,7 +78,7 @@ class MapPolicy
      * @param  \App\Models\Map  $map
      * @return mixed
      */
-    public function delete(?User $user, Map $map)
+    public function delete( ? User $user, Map $map)
     {
         if ($map->user_id == $user->id) {
             return true;
@@ -107,7 +109,7 @@ class MapPolicy
      * @param  \App\Models\Map  $map
      * @return mixed
      */
-    public function forceDelete(?User $user, Map $map)
+    public function forceDelete( ? User $user, Map $map)
     {
         if ($user && $map->user_id == $user->id) {
             return true;
@@ -115,7 +117,9 @@ class MapPolicy
         if ($map->token == request()->input('token')) {
             return true;
         }
-
-        return $user->can('delete maps');
+        if ($user) {
+            return $user->can('delete maps');
+        }
+        return false;
     }
 }

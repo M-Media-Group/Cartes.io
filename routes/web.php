@@ -55,8 +55,6 @@ Route::post('me/apply/reporter', 'UserController@applyForReporter');
 
 Route::resource('roles', 'RoleController');
 
-Route::resource('markers', 'MarkerController');
-
 Route::post('/maps', 'MapController@store');
 
 Route::get('/maps/{map}', 'MapController@show');
