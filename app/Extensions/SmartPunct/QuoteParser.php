@@ -34,8 +34,7 @@ class QuoteParser extends AbstractInlineParser
     }
 
     /**
-     * @param InlineParserContext $inlineContext
-     *
+     * @param  InlineParserContext  $inlineContext
      * @return bool
      */
     public function parse(InlineParserContext $inlineContext)
@@ -69,8 +68,7 @@ class QuoteParser extends AbstractInlineParser
     }
 
     /**
-     * @param string $character
-     *
+     * @param  string  $character
      * @return string|null
      */
     private function getCharacterType($character)
@@ -83,9 +81,8 @@ class QuoteParser extends AbstractInlineParser
     }
 
     /**
-     * @param string $charBefore
-     * @param string $charAfter
-     *
+     * @param  string  $charBefore
+     * @param  string  $charAfter
      * @return string[]
      */
     private function determineFlanking($charBefore, $charAfter)

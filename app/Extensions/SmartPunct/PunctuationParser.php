@@ -29,8 +29,7 @@ class PunctuationParser extends AbstractInlineParser
     }
 
     /**
-     * @param InlineParserContext $inlineContext
-     *
+     * @param  InlineParserContext  $inlineContext
      * @return bool
      */
     public function parse(InlineParserContext $inlineContext)
