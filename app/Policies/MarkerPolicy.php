@@ -89,16 +89,17 @@ class MarkerPolicy
      * @param  \App\Models\Marker  $marker
      * @return mixed
      */
-    public function update(User $user, Marker $marker)
+    public function update(?User $user, Marker $marker)
     {
-        if ($marker->user_id == $user->id) {
+        if ($user && $marker->user_id == $user->id) {
             return true;
-        }
-        if ($marker->token == request()->input('token')) {
+        } else if ($marker->token == request()->input('token')) {
             return true;
+        } else if ($user) {
+            return $user->can('edit markers');
+        } else {
+            return false;
         }
-
-        return $user->can('edit markers');
     }
 
     /**
