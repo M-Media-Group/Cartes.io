@@ -93,9 +93,9 @@ class MarkerPolicy
     {
         if ($user && $marker->user_id == $user->id) {
             return true;
-        } else if ($marker->token == request()->input('token')) {
+        } elseif ($marker->token == request()->input('token')) {
             return true;
-        } else if ($user) {
+        } elseif ($user) {
             return $user->can('edit markers');
         } else {
             return false;
