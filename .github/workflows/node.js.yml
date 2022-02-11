@@ -5,36 +5,40 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    # - name: Install Composer Dependencies
-    #   run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-    # - name: Generate key
-    #   run: php artisan key:generate
+      - uses: actions/checkout@v2
+      # - name: Copy .env
+      #   run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      # - name: Install Composer Dependencies
+      #   run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      # - name: Generate key
+      #   run: php artisan key:generate
 
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v2
-      env:
-        PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
-        PUSHER_APP_CLUSTER: eu
-      with:
-        node-version: 16.x
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run production --if-present
-#     - run: npm test
-    - name: Deploy
-      uses: jbrooksuk/laravel-forge-action@v1.0.2
-      with:
-        trigger_url: ${{ secrets.TRIGGER_URL }}
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        env:
+          PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
+          PUSHER_APP_CLUSTER: eu
+        with:
+          node-version: 16.x
+          cache: "npm"
+      - run: npm ci
+      # - run: npm run production --if-present
+      - run: |
+          touch .env
+          echo MIX_PUSHER_APP_KEY =${{ secrets.PUSHER_APP_SECRET }} >> .env
+          echo MIX_PUSHER_APP_CLUSTER =${{ secrets.PUSHER_APP_SECRET }} >> .env
+          npm run production --if-present
+      #     - run: npm test
+      - name: Deploy
+        uses: jbrooksuk/laravel-forge-action@v1.0.2
+        with:
+          trigger_url: ${{ secrets.TRIGGER_URL }}

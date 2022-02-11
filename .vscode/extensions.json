@@ -10,6 +10,7 @@
         "amiralizadeh9480.laravel-extra-intellisense",
         "shufo.vscode-blade-formatter",
         "onecentlin.laravel-blade",
-        "neilbrayfield.php-docblocker"
+        "neilbrayfield.php-docblocker",
+        "redhat.vscode-yaml"
     ]
 }
