@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "mrmlnc.vscode-apache",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql",
+        "ms-azuretools.vscode-docker",
+        "octref.vetur",
+        "xdebug.php-debug",
+        "bmewburn.vscode-intelephense-client",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "shufo.vscode-blade-formatter",
+        "onecentlin.laravel-blade",
+        "neilbrayfield.php-docblocker"
+    ]
+}
