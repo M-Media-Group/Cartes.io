@@ -55,7 +55,7 @@ class MarkerController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => str_slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -129,7 +129,7 @@ class MarkerController extends Controller
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (!isset($marker['category'])) {
+            if (! isset($marker['category'])) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['slug' => str_slug($marker['category_name'])],
                     ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
@@ -139,9 +139,9 @@ class MarkerController extends Controller
                 unset($marker['category']);
             }
 
-            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (!isset($marker['expires_at'])) {
+            } elseif (! isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
@@ -219,7 +219,7 @@ class MarkerController extends Controller
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
         );
 
-        if (!isset($map->options['limit_to_geographical_body_type'])) {
+        if (! isset($map->options['limit_to_geographical_body_type'])) {
             return $marker_validator->validate();
         }
 
