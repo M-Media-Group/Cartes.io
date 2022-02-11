@@ -22,7 +22,7 @@ jobs:
         node-version: 16.x
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run production --if-present
 #     - run: npm test
     - name: Deploy
       uses: jbrooksuk/laravel-forge-action@v1.0.2
