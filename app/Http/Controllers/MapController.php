@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Map;
 use Illuminate\Http\Request;
-use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Webpatser\Uuid\Uuid;
 
 class MapController extends Controller
 {
@@ -92,7 +92,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return response()->json($result);
         } else {
-            return redirect('/maps/' . $result->slug)->with('token', $result->token);
+            return redirect('/maps/'.$result->slug)->with('token', $result->token);
         }
     }
 
@@ -159,7 +159,7 @@ class MapController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',

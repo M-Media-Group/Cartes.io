@@ -14,10 +14,10 @@
 
 namespace App\Extensions\CategoryAutolink;
 
+use Illuminate\Support\Str;
 use League\CommonMark\Inline\Element\Link;
 use League\CommonMark\Inline\Parser\AbstractInlineParser;
 use League\CommonMark\InlineParserContext;
-use Illuminate\Support\Str;
 
 class CategoryParser extends AbstractInlineParser
 {
@@ -52,9 +52,9 @@ class CategoryParser extends AbstractInlineParser
             return false;
         }
 
-        $profileUrl = '/categories/' . Str::slug($handle);
+        $profileUrl = '/categories/'.Str::slug($handle);
 
-        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#' . $handle));
+        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#'.$handle));
 
         return true;
     }
