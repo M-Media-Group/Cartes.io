@@ -1,9 +1,3 @@
-<style scoped>
-.action-link {
-  cursor: pointer;
-}
-</style>
-
 <template>
   <div>
     <div>
@@ -194,7 +188,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import axios from "axios";
+
 export default {
   /*
    * The component's data.
@@ -212,13 +208,6 @@ export default {
         errors: [],
       },
     };
-  },
-
-  /**
-   * Prepare the component (Vue 1.x).
-   */
-  ready() {
-    this.prepareComponent();
   },
 
   /**
@@ -336,3 +325,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.action-link {
+  cursor: pointer;
+}
+</style>

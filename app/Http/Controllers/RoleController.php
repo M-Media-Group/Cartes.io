@@ -50,10 +50,12 @@ class RoleController extends Controller
     {
         $this->authorize('create', Role::class);
 
-        $this->validate($request, [
-            'name' => 'required|unique:roles|max:10',
-            'permissions' => 'required',
-        ]
+        $this->validate(
+            $request,
+            [
+                'name' => 'required|unique:roles|max:10',
+                'permissions' => 'required',
+            ]
         );
 
         $name = $request['name'];
@@ -70,8 +72,10 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role'.$role->name.' added!');
+            ->with(
+                'flash_message',
+                'Role' . $role->name . ' added!'
+            );
     }
 
     /**
@@ -111,7 +115,7 @@ class RoleController extends Controller
         $this->authorize('update', $role);
 
         $this->validate($request, [
-            'name' => 'required|max:10|unique:roles,name,'.$role->id,
+            'name' => 'required|max:10|unique:roles,name,' . $role->id,
             'permissions' => 'required',
         ]);
 
@@ -131,8 +135,10 @@ class RoleController extends Controller
         }
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role'.$role->name.' updated!');
+            ->with(
+                'flash_message',
+                'Role' . $role->name . ' updated!'
+            );
     }
 
     /**
@@ -143,12 +149,14 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('delete', $role);
         $role = Role::findOrFail($id);
+        $this->authorize('delete', $role);
         $role->delete();
 
         return redirect()->route('roles.index')
-            ->with('flash_message',
-                'Role deleted!');
+            ->with(
+                'flash_message',
+                'Role deleted!'
+            );
     }
 }

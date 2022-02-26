@@ -1,8 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-laravel navbar-transparent">
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
-{{--                 <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}">
- --}}                {{ config('app.name') }} <span class="text-muted small d-none">Beta</span>
+            {{-- <img src="{{ config('blog.logo_url') }}" width="45" height="45" alt="{{config('app.name')}}"> --}} {{ config('app.name') }} <span class="text-muted small d-none">Beta</span>
 
         </a>
 
@@ -20,12 +19,13 @@
                     <li class="nav-item mr-3 d-md-block d-none">
                         <a class="nav-link" href="/login">{{ __('Login') }}</a>
                     </li>
-{{--                     <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="/register">{{ __('Sign up') }}</a>
                     </li> --}}
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->username }} <span class="caret"></span>
                         </a>
 
@@ -44,8 +44,8 @@
                                 </a>
                             @endcan
                             <a class="dropdown-item" href="/users/{{ Auth::user()->username }}/edit">
-                                    {{ __('Account settings') }}
-                                </a>
+                                {{ __('Account settings') }}
+                            </a>
                             <button class="dropdown-item" type="submit" form="logout-form">
                                 {{ __('Logout') }}
                             </button>
@@ -58,10 +58,10 @@
                     </li>
                 @endguest
                 <form method="POST" action="/maps" class="mb-0" id="new_map_form">
-                @csrf
-                <button type="submit" class="btn btn-primary">
-                {{ __('New map') }}
-                </button>
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        {{ __('New map') }}
+                    </button>
                 </form>
             </ul>
         </div>

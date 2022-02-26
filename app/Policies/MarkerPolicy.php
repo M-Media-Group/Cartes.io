@@ -145,7 +145,7 @@ class MarkerPolicy
         if ($user && $marker->user_id == $user->id) {
             return false;
         }
-        if ($user && $map->user_id == $user->id) {
+        if ($user && $marker->map->user_id == $user->id) {
             return $user->can('mark spam');
         }
         if ($marker->token == request()->input('token')) {

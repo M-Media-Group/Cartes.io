@@ -1,16 +1,15 @@
-@if($cookieConsentConfig['enabled'] && ! $alreadyConsentedWithCookies)
-
+@if ($cookieConsentConfig['enabled'] && !$alreadyConsentedWithCookies)
     @include('cookieConsent::dialogContents')
 
     <script>
-
-        window.laravelCookieConsent = (function () {
+        window.laravelCookieConsent = (function() {
 
             const COOKIE_VALUE = 1;
             const COOKIE_DOMAIN = '{{ config('session.domain') ?? request()->getHost() }}';
 
             function consentWithCookies() {
-                setCookie('{{ $cookieConsentConfig['cookie_name'] }}', COOKIE_VALUE, {{ $cookieConsentConfig['cookie_lifetime'] }});
+                setCookie('{{ $cookieConsentConfig['cookie_name'] }}', COOKIE_VALUE,
+                    {{ $cookieConsentConfig['cookie_lifetime'] }});
                 hideCookieDialog();
             }
 
@@ -29,10 +28,10 @@
             function setCookie(name, value, expirationInDays) {
                 const date = new Date();
                 date.setTime(date.getTime() + (expirationInDays * 24 * 60 * 60 * 1000));
-                document.cookie = name + '=' + value
-                    + ';expires=' + date.toUTCString()
-                    + ';domain=' + COOKIE_DOMAIN
-                    + ';path=/{{ config('session.secure') ? ';secure' : null }}';
+                document.cookie = name + '=' + value +
+                    ';expires=' + date.toUTCString() +
+                    ';domain=' + COOKIE_DOMAIN +
+                    ';path=/{{ config('session.secure') ? ';secure' : null }}';
             }
 
             if (cookieExists('{{ $cookieConsentConfig['cookie_name'] }}')) {
@@ -51,5 +50,4 @@
             };
         })();
     </script>
-
 @endif

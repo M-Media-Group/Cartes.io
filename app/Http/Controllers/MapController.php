@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Map;
 use Illuminate\Http\Request;
-use Uuid;
-use View;
+use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 
 class MapController extends Controller
 {
@@ -77,9 +78,9 @@ class MapController extends Controller
             [
                 'title' => $request->input('title'),
                 'description' => clean($request->input('description')),
-                'slug' => $request->input('slug', str_slug($uuid)),
+                'slug' => $request->input('slug', Str::slug($uuid)),
                 'uuid' => $uuid,
-                'token' => str_random(32),
+                'token' => Str::random(32),
                 'privacy' => $request->input('privacy', 'unlisted'),
                 'users_can_create_markers' => $request->input('users_can_create_markers', 'only_logged_in'),
                 'user_id' => $request->user() ? $request->user()->id : null,
@@ -91,7 +92,7 @@ class MapController extends Controller
         if ($request->is('api*')) {
             return response()->json($result);
         } else {
-            return redirect('/maps/'.$result->slug)->with('token', $result->token);
+            return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
     }
 
@@ -158,7 +159,7 @@ class MapController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',

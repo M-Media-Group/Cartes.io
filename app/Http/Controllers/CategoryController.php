@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -69,7 +70,7 @@ class CategoryController extends Controller
         $result = new Category(
             [
                 'name' => $request->input('name'),
-                'slug' => str_slug($request->input('name')),
+                'slug' => Str::slug($request->input('name')),
                 'icon' => Storage::url($image_path),
             ]
         );
@@ -88,7 +89,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->with('markers')->firstOrFail();
         $this->authorize('view', $category);
-        if (! $request->user()) {
+        if (!$request->user()) {
             $user_id = null;
         } else {
             $user_id = $request->user()->id;
@@ -139,11 +140,11 @@ class CategoryController extends Controller
         $category->update(
             [
                 'name' => $request->input('name'),
-                'slug' => str_slug($request->input('name')),
+                'slug' => Str::slug($request->input('name')),
             ]
         );
 
-        return redirect('/categories/'.str_slug($request->input('name')));
+        return redirect('/categories/' . Str::slug($request->input('name')));
     }
 
     /**

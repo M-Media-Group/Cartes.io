@@ -29,7 +29,7 @@ class MapPolicy
         if ($map->privacy !== 'private') {
             return true;
         }
-        if (request()->has('token') && $token == request()->input('token')) {
+        if (request()->has('token') && $map->token == request()->input('token')) {
             return true;
         }
         if ($user && $map->user_id == $user->id) {

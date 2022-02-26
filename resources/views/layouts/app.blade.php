@@ -2,12 +2,14 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true ])
+    @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true
+    ])
 </head>
 
 <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}" height="0"
+            width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="app">
         @include('components.nav')
@@ -20,15 +22,17 @@
                 <div class="col-md-3 order-md-12 custom-small-text">
                     <hr>
                     @section('sidebar')
-                    @if( config('blog.instagram_username'))
-                    {{ config('app.name') }} on <a href="{{config('blog.instagram_url')}}">Instagram</a>!
-                    <hr>
-                    @endif
-                    <p>{{ config('app.name') }}.</p>
-                    <p>This is an open source project. Feel free to contribute to the development on <a href="https://github.com/M-Media-Group/Cartes.io">GitHub</a></p>
-                    @if(!Auth::check())
-                    <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info, make maps private, and get updates as the project grows.</p>
-                    @endif
+                        @if (config('blog.instagram_username'))
+                            {{ config('app.name') }} on <a href="{{ config('blog.instagram_url') }}">Instagram</a>!
+                            <hr>
+                        @endif
+                        <p>{{ config('app.name') }}.</p>
+                        <p>This is an open source project. Feel free to contribute to the development on <a
+                                href="https://github.com/M-Media-Group/Cartes.io">GitHub</a></p>
+                        @if (!Auth::check())
+                            <p><a href="/register">Sign up</a> to {{ config('app.name', 'us') }} to get more info, make
+                                maps private, and get updates as the project grows.</p>
+                        @endif
 
                     @show
                 </div>

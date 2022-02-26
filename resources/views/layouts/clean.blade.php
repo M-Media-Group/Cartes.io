@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
-     @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true ])
+    @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true
+    ])
 </head>
+
 <body>
-     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}" height="0"
+            width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="app">
         @includeWhen(!isset($superclean), 'components.nav')
         @yield('above_container')
 
-        @if(!isset($superclean))
+        @if (!isset($superclean))
             <div class="container">
                 <div class="row justify-content-center mt-5">
 
@@ -34,4 +37,4 @@
         @endif
         <notifications position="bottom left" classes="vue-custom-notification" />
     </div>
-@include('components.footer')
+    @include('components.footer')

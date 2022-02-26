@@ -65,7 +65,9 @@ class Marker extends Pivot
 
         static::addGlobalScope('active', function (Builder $builder) {
             $builder
-                ->where('expires_at', '>',
+                ->where(
+                    'expires_at',
+                    '>',
                     Carbon::now()->toDateTimeString()
                 )
                 ->orWhere('expires_at', null);

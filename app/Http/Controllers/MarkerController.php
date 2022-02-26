@@ -10,6 +10,7 @@ use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 
 class MarkerController extends Controller
 {
@@ -55,9 +56,9 @@ class MarkerController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
-                ['slug' => str_slug($request->input('category_name'))],
+                ['slug' => Str::slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
             );
             $request->merge(['category' => $category->id]);
@@ -71,7 +72,7 @@ class MarkerController extends Controller
             [
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
-                'token' => str_random(32),
+                'token' => Str::random(32),
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
@@ -129,9 +130,9 @@ class MarkerController extends Controller
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (! isset($marker['category'])) {
+            if (!isset($marker['category'])) {
                 $category = \App\Models\Category::firstOrCreate(
-                    ['slug' => str_slug($marker['category_name'])],
+                    ['slug' => Str::slug($marker['category_name'])],
                     ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
                 );
                 $marker['category_id'] = $category->id;
@@ -139,9 +140,9 @@ class MarkerController extends Controller
                 unset($marker['category']);
             }
 
-            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (! isset($marker['expires_at'])) {
+            } elseif (!isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
@@ -149,7 +150,7 @@ class MarkerController extends Controller
 
             $marker['created_at'] = Carbon::parse($marker['created_at']) ?? $now->toDateTimeString();
             $marker['updated_at'] = Carbon::parse($marker['updated_at']) ?? $now->toDateTimeString();
-            $marker['token'] = str_random(32);
+            $marker['token'] = Str::random(32);
             $marker['map_id'] = $map->id;
             $marker['user_id'] = $validated_data['user_id'];
 
@@ -219,7 +220,7 @@ class MarkerController extends Controller
             ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
         );
 
-        if (! isset($map->options['limit_to_geographical_body_type'])) {
+        if (!isset($map->options['limit_to_geographical_body_type'])) {
             return $marker_validator->validate();
         }
 

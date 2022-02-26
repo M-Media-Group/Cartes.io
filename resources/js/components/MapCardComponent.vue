@@ -47,7 +47,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 export default {
   props: ["map", "is_minimal", "disable_map"],
   data() {
