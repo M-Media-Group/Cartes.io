@@ -9,7 +9,7 @@
     },
     "devDependencies": {
         "@types/jquery": "^3.5.14",
-        "axios": "^0.21.1",
+        "axios": "^0.21.2",
         "bootstrap": "^4.5.3",
         "browser-sync": "^2.26.13",
         "browser-sync-webpack-plugin": "^2.2.2",
