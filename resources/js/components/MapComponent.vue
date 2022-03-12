@@ -76,19 +76,34 @@
               <!--                             <label for="description">Description</label>
  -->
               <textarea
-                class="form-control"
+                class="form-control mt-1"
                 id="description"
                 rows="2"
                 name="description"
                 v-model="submit_data.description"
                 placeholder="Description (optional)"
               ></textarea>
+              <input
+                v-if="linkOption === 'required' || linkOption === 'optional'"
+                class="form-control mt-1"
+                type="url"
+                pattern="https://.*"
+                :placeholder="
+                  'Link' + (linkOption === 'optional' ? ' (optional)' : '')
+                "
+                :required="linkOption === 'required'"
+                v-model="submit_data.link"
+              />
             </div>
             <input
               type="submit"
               value="Add marker"
               class="btn btn-primary btn-sm my-1"
-              :disabled="submit_data.loading || !submit_data.category_name"
+              :disabled="
+                submit_data.loading ||
+                !submit_data.category_name ||
+                (linkOption === 'required' && !submit_data.link)
+              "
             />
           </form>
           <div v-else-if="canPost == 'only_logged_in'">
@@ -118,6 +133,11 @@
               v-if="marker.description"
               v-html="marker.description"
             ></p>
+            <small class="w-100 d-block" v-if="marker.link"
+              ><a :href="marker.link" target="blank">{{
+                marker.link.split("/")[2]
+              }}</a>
+            </small>
             <small class="w-100 d-block"
               >Last update:
               <span class="timestamp" :datetime="marker.updated_at">{{
@@ -463,6 +483,7 @@ export default {
     "map_categories",
     "initial_markers",
     "user",
+    "linkOption",
   ],
 
   components: {
@@ -500,6 +521,7 @@ export default {
         category_name: "",
         loading: false,
         map_token: this.map_token,
+        link: "",
       },
       geosearchOptions: {
         // Important part Here

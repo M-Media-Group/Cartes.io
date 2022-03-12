@@ -191,14 +191,7 @@
                   name="options.default_expiration_time"
                   id="cdet1"
                   value="4320"
-                  :checked="
-                    submit_data.options.default_expiration_time == 4320
-                      ? true
-                      : false
-                  "
-                  @input="
-                    handleSelectInput($event, 'options.default_expiration_time')
-                  "
+                  v-model="submit_data.options.default_expiration_time"
                 />
                 <label class="form-check-label" for="cdet1">
                   after 3 days
@@ -211,14 +204,7 @@
                   name="options.default_expiration_time"
                   id="cdet2"
                   value="180"
-                  @input="
-                    handleSelectInput($event, 'options.default_expiration_time')
-                  "
-                  :checked="
-                    submit_data.options.default_expiration_time == 180
-                      ? true
-                      : false
-                  "
+                  v-model="submit_data.options.default_expiration_time"
                 />
                 <label class="form-check-label" for="cdet2">
                   after 3 hours
@@ -231,14 +217,7 @@
                   name="options.default_expiration_time"
                   id="cdet3"
                   :value="null"
-                  @input="
-                    handleSelectInput($event, 'options.default_expiration_time')
-                  "
-                  :checked="
-                    submit_data.options.default_expiration_time == null
-                      ? true
-                      : false
-                  "
+                  v-model="submit_data.options.default_expiration_time"
                 />
                 <label class="form-check-label" for="cdet3"> Never </label>
               </div>
@@ -257,18 +236,7 @@
                   name="options.limit_to_geographical_body_type"
                   id="cdet1"
                   value="land"
-                  :checked="
-                    submit_data.options.limit_to_geographical_body_type ==
-                    'land'
-                      ? true
-                      : false
-                  "
-                  @input="
-                    handleSelectInput(
-                      $event,
-                      'options.limit_to_geographical_body_type'
-                    )
-                  "
+                  v-model="submit_data.options.limit_to_geographical_body_type"
                 />
                 <label class="form-check-label" for="cdet1">
                   Only on land
@@ -281,18 +249,7 @@
                   name="options.limit_to_geographical_body_type"
                   id="cdet2"
                   value="water"
-                  @input="
-                    handleSelectInput(
-                      $event,
-                      'options.limit_to_geographical_body_type'
-                    )
-                  "
-                  :checked="
-                    submit_data.options.limit_to_geographical_body_type ==
-                    'water'
-                      ? true
-                      : false
-                  "
+                  v-model="submit_data.options.limit_to_geographical_body_type"
                 />
                 <label class="form-check-label" for="cdet2">
                   Only on water
@@ -305,17 +262,7 @@
                   name="options.limit_to_geographical_body_type"
                   id="cdet3"
                   :value="null"
-                  @input="
-                    handleSelectInput(
-                      $event,
-                      'options.limit_to_geographical_body_type'
-                    )
-                  "
-                  :checked="
-                    submit_data.options.limit_to_geographical_body_type == null
-                      ? true
-                      : false
-                  "
+                  v-model="submit_data.options.limit_to_geographical_body_type"
                 />
                 <label class="form-check-label" for="cdet3"> Anywhere </label>
               </div>
@@ -323,6 +270,47 @@
                 >Setting this to "water" or "land" will also drastically limit
                 how many markers can be created on this map per minute</small
               >
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="password-confirm" class="col-md-12 col-form-label"
+              >Are links allowed</label
+            >
+            <div class="col-md-12">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="options.links"
+                  id="cdet1"
+                  value="required"
+                  v-model="submit_data.options.links"
+                />
+                <label class="form-check-label" for="cdet1"> Required </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="options.links"
+                  id="cdet2"
+                  value="optional"
+                  v-model="submit_data.options.links"
+                />
+                <label class="form-check-label" for="cdet2"> Optional </label>
+              </div>
+              <div class="form-check disabled">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="options.links"
+                  id="cdet3"
+                  :value="null"
+                  v-model="submit_data.options.links"
+                />
+                <label class="form-check-label" for="cdet3"> Disabled </label>
+              </div>
             </div>
           </div>
 
@@ -434,6 +422,10 @@ export default {
             this.map.options && this.map.options.limit_to_geographical_body_type
               ? this.map.options.limit_to_geographical_body_type
               : null,
+          links:
+            this.map.options && this.map.options.links
+              ? this.map.options.links
+              : null,
         },
       },
     };
@@ -458,6 +450,13 @@ export default {
     title: function (newQuestion, oldQuestion) {
       this.submit_data.title = "Waiting for you to stop typing...";
       this.debouncedGetAnswer();
+    },
+    // watch any changes ib submit_data.options
+    "submit_data.options": {
+      handler: function (newValue, oldValue) {
+        this.debouncedGetAnswer();
+      },
+      deep: true,
     },
   },
   created: function () {

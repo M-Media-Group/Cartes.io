@@ -171,6 +171,7 @@ class MapController extends Controller
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
             'options.default_expiration_time' => 'nullable|numeric|between:1,525600',
             'options.limit_to_geographical_body_type' => 'nullable|in:land,water,no',
+            'options.links' => 'nullable|in:required,optional,disabled',
         ]);
 
         $validatedData['description'] = clean($validatedData['description']);

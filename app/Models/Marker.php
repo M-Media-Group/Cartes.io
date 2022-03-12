@@ -29,6 +29,7 @@ class Marker extends Pivot
         'description',
         'token',
         'map_id',
+        'link',
     ];
     protected $spatialFields = [
         'location',

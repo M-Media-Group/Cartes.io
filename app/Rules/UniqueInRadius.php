@@ -32,7 +32,8 @@ class UniqueInRadius implements Rule
      */
     public function passes($attribute, $value)
     {
-        $markers = Marker::distanceSphere('location', $value, $this->radius)
+        $marker = new Marker();
+        $markers = $marker->distanceSphere('location', $value, $this->radius)
             ->when($this->category_id, function ($query) {
                 return $query->where('category_id', $this->category_id);
             })

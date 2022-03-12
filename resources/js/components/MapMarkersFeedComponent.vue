@@ -44,6 +44,13 @@
               <span class="timestamp small" :datetime="marker.updated_at">{{
                 marker.updated_at
               }}</span>
+              <a
+                v-if="marker.link"
+                class="badge badge-secondary small"
+                :href="marker.link"
+                target="blank"
+                >{{ marker.link.split("/")[2] }}</a
+              >
             </div>
           </li>
         </template>

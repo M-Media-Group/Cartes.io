@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class MarkerController extends Controller
 {
@@ -54,9 +55,10 @@ class MarkerController extends Controller
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable|exists:users,id',
+            'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
         ]);
 
-        if (! $request->input('category')) {
+        if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => Str::slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -76,6 +78,7 @@ class MarkerController extends Controller
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
+                'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             ]
         );
 
@@ -116,6 +119,7 @@ class MarkerController extends Controller
             'markers.*.created_at' => 'nullable',
             'markers.*.updated_at' => 'nullable',
             'markers.*.expires_at' => 'nullable',
+            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
         ]);
 
         $now = Carbon::now();
@@ -130,7 +134,7 @@ class MarkerController extends Controller
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (! isset($marker['category'])) {
+            if (!isset($marker['category'])) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['slug' => Str::slug($marker['category_name'])],
                     ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
@@ -140,13 +144,15 @@ class MarkerController extends Controller
                 unset($marker['category']);
             }
 
-            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (! isset($marker['expires_at'])) {
+            } elseif (!isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
             }
+
+            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $marker['link'] : null;
 
             $marker['created_at'] = Carbon::parse($marker['created_at']) ?? $now->toDateTimeString();
             $marker['updated_at'] = Carbon::parse($marker['updated_at']) ?? $now->toDateTimeString();
@@ -213,18 +219,40 @@ class MarkerController extends Controller
         return $marker->delete();
     }
 
-    private function validateCreate($request, $marker, $map, $point)
+    private function validateCreate(Request $request, $marker, $map, $point)
     {
-        $marker_validator = Validator::make(
-            ['point' => $point],
-            ['point' => ['required', new \App\Rules\UniqueInRadius(15, $map->id, $request->input('category'))]]
+        // Merge the point to the marker
+        $marker['point'] = $point;
+
+        // Instantiate a new validator instance.
+        $validator = Validator::make($marker, [
+            'point' => ['required'],
+        ]);
+
+        // If a link is present, check it
+        $validator->sometimes('link', 'url', function ($input) use ($map) {
+            return $input->link !== null && optional($map->options)['links'] && optional($map->options)['links'] !== "disabled";
+        });
+
+        $validator->sometimes(
+            'point',
+            [
+                new \App\Rules\UniqueInRadius(
+                    optional($map->options)['require_minimum_seperation_radius'] ?? 15,
+                    $map->id,
+                    $request->input('category')
+                )
+            ],
+            function ($input) use ($map) {
+                return !optional($map->options)['require_minimum_seperation_radius'];
+            }
         );
 
-        if (! isset($map->options['limit_to_geographical_body_type'])) {
-            return $marker_validator->validate();
+        if (!optional($map->options)['limit_to_geographical_body_type']) {
+            return $validator->validate();
         }
 
-        return $marker_validator->sometimes('point', [new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])], function ($input) use ($map) {
+        return $validator->sometimes('point', [new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])], function ($input) use ($map) {
             return $map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no';
         })->validate();
     }
