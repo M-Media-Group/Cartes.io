@@ -25,9 +25,7 @@
         :contenteditable="canEdit"
         @input="handleSelectInput($event, 'description')"
         style="white-space: pre-wrap"
-      >
-        Right click (or long-tap on mobile) on the map to add markers. Click
-        here to edit the map description.
+      >Right click (or long-tap on mobile) on the map to add markers. Click here to edit the map description.
       </p>
       <p
         v-else-if="map && map.description"
