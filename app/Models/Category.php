@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
@@ -36,5 +37,23 @@ class Category extends Model
     public function views()
     {
         return $this->hasMany(\App\Models\CategoryView::class);
+    }
+
+    public function getRelatedCategoriesAttribute()
+    {
+        return DB::table("`categories`")
+            ->join("markers", function ($join) {
+                $join->on("markers.`category_id`", "=", "categories.id");
+            })
+            ->select("categories.`name`", "categories.id", "count (markers.map_id)")
+            ->whereIn("markers.map_id", function ($query) {
+                $query->from("`markers`")
+                    ->select("map_id")
+                    ->where("category_id", "=", $this->id);
+            })
+            ->where("markers.category_id", "<>", $this->id)
+            ->orderBy("3", "desc")
+            ->groupBy("2")
+            ->get();
     }
 }

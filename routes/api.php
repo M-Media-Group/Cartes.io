@@ -20,11 +20,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('categories', 'CategoryController@index');
 
+Route::get('categories/{category}/related', 'CategoryController@related');
+
 // Route::resource('users', 'UserController');
 
 Route::get('maps/{map}/markers', 'MarkerController@index');
 
 Route::get('maps/{map}', 'MapController@show');
+
+Route::get('maps/{map}/related', 'MapController@related');
 
 Route::get('maps', 'MapController@index');
 

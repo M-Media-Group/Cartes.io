@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Map extends Model
 {
@@ -72,5 +73,30 @@ class Map extends Model
     public function categories()
     {
         return $this->belongsToMany(\App\Models\Category::class, 'markers')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->orWherePivot('expires_at', null)->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
+    }
+
+    /**
+     * Simple collaborative  filtering.
+     *
+     * @see https://arctype.com/blog/collaborative-filtering-tutorial/ - Thanks arctype!
+     * @return Collection
+     */
+    public function getRelatedMapsAttribute()
+    {
+        return DB::table("`maps`")
+            ->join("markers", function ($join) {
+                $join->on("markers.`map_id`", "=", "maps.id");
+            })
+            ->select("maps.title", "maps.uuid", "count (markers.category_id) as score")
+            ->whereIn("markers.category_id", function ($query) {
+                $query->from("`markers`")
+                    ->select("category_id")
+                    ->where("map_id", "=", $this->id);
+            })
+            ->where("markers.map_id", "<>", $this->id)
+            ->where("maps.privacy", "=", "public")
+            ->orderBy("3", "desc")
+            ->groupBy("2")
+            ->get();
     }
 }

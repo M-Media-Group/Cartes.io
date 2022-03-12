@@ -11,6 +11,7 @@
         "shufo.vscode-blade-formatter",
         "onecentlin.laravel-blade",
         "neilbrayfield.php-docblocker",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "GitHub.copilot"
     ]
 }
