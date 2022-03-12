@@ -65,3 +65,5 @@ window.Echo = new Echo({
     cluster: 'eu',
     encrypted: true
 });
+
+axios.defaults.headers.common['X-Socket-ID'] = window.Echo.socketId();
