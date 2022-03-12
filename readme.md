@@ -27,13 +27,17 @@ Some awesome maps have already been created by the community and shared publicly
 
 Note, to see markers on some of these maps, you need to go into "Map display options", and then check the "Show all markers" checkbox.
 
+- [Ukraine crisis](https://cartes.io/maps/139c1aa3-228e-4a8d-9d77-289dc6c70d8e#2/43.7/7.3): Live tracking from multiple sources of the unfolding events in Ukraine
 - [Coronavirus Drive-Thru testing points](https://cartes.io/maps/a61bce50-20be-4b31-a7ee-cfaa31325813#2/43.7/7.3): This map shows identified Coronavirus drive-thru testing points around the world.
 - [Twin Cities riots](https://cartes.io/maps/651107a9-1d22-46a8-8254-111f7ac74a2b#2/43.7/7.3): This map evolved from the Minnesota protests and was used by locals to mark dangerous markers as they happend. 135 events were reported.
 - [Places to get help in Beirut](https://cartes.io/maps/a7967e04-38e6-4328-a0b4-e5d2c3282687#13/33.8889/35.5291): Following the 2020 explosion in Beirut, this map was created to raise awareness within the local community on where they can get help.
 - [Little free libraries on the French Riviera](https://cartes.io/maps/4b8e280f-0682-42a7-be43-f3d2ea729f7b#12/43.7111/7.2970): This map shows the locations of public little free libraries - a box where you can leave and borrow books out in the open.
 - [The hardest airports to fly in to](https://cartes.io/maps/9dec23f1-5fa9-4841-a1c2-5086968ba8f1): Here's a non exhaustive map of some of the hardest places to land a plane around the world!
 
-## Install
+## Interact with in Python
+See the Cartes.io package at https://pypi.org/project/py-cartes-io/ - `pip install py-cartes-io`, which allows you to interact with the Cartes.io API in a fluent Pythonic way.
+
+## Development installation
 
 After running composer and npm, run the following commands to create the permissions and roles:
 - php artisan migrate
