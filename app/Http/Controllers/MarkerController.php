@@ -15,12 +15,38 @@ use Illuminate\Validation\Rule;
 
 class MarkerController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Map $map)
+    public function index(Request $request)
+    {
+        return Marker::where('is_spam', false)
+            ->whereHas('map', function ($query) {
+                $query->where('privacy', 'public');
+            })
+            ->with(['map' => function ($query) {
+                $query->select('uuid', 'id');
+            }])
+            ->when($request->input('category_id'), function ($query) use ($request) {
+                return $query->whereHas('categories', function ($query) use ($request) {
+                    $query->where('category_id', $request->input('category_id'));
+                });
+            })
+            ->when($request->input('show_expired') == 'true', function ($query) {
+                return $query->withoutGlobalScope('active');
+            })
+            ->paginate();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByMap(Request $request, Map $map)
     {
         $this->authorize('index', [Marker::class, $map, $request->input('map_token')]);
 

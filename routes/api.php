@@ -24,13 +24,15 @@ Route::get('categories/{category}/related', 'CategoryController@related');
 
 // Route::resource('users', 'UserController');
 
-Route::get('maps/{map}/markers', 'MarkerController@index');
+Route::get('maps/{map}/markers', 'MarkerController@indexByMap');
 
 Route::get('maps/{map}', 'MapController@show');
 
 Route::get('maps/{map}/related', 'MapController@related');
 
 Route::get('maps', 'MapController@index');
+
+Route::get('markers', 'MarkerController@index');
 
 Route::middleware(['throttle:5|10,1'])->group(function () {
     // Route::apiResource('maps', 'MapController');

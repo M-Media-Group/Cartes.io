@@ -385,6 +385,15 @@
             </p>
             <code>[cartes_map uuid="{{ map.uuid }}"]</code>
           </div>
+          <div class="mb-3">
+            <p class="mb-0">
+              Python, using our
+              <a target="_BLANK" href="https://pypi.org/project/py-cartes-io/"
+                >Python package</a
+              >
+            </p>
+            <code>cartes.Maps('{{ map.uuid }}').get()</code>
+          </div>
           <p>
             When using the API or embedding the map, you must attribute this
             website on your front-end.
