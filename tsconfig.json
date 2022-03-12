@@ -1,12 +1,17 @@
 {
-    "include": [
-        "resources/assets/js/**/*"
+    "exclude": [
+        "resources/assets/js/vendor/*",
+        "resources/assets/js/vendor/**/*"
     ],
     "compilerOptions": {
-        "module": "es2015",
+        "module": "es2020",
         "moduleResolution": "node",
         "target": "es5",
         "sourceMap": true,
-        "allowJs": false
+        "allowJs": false,
+        "typeRoots": [
+            "node_modules/@types",
+            "resources/@types"
+        ],
     }
 }

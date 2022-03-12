@@ -115,6 +115,7 @@
 
 <script lang="ts">
 import axios from "axios";
+import Vue from "vue";
 
 export default {
   props: ["map_id", "map_token", "map"],
@@ -246,7 +247,7 @@ export default {
     // finished typing before making the ajax request. To learn
     // more about the _.debounce function (and its cousin
     // _.throttle), visit: https://lodash.com/docs#debounce
-    this.debouncedGetAnswer = _.debounce(this.submitForm, 750);
+    this.debouncedGetAnswer = window._.debounce(this.submitForm, 750);
   },
   methods: {
     resolve(prop, obj) {
@@ -314,15 +315,16 @@ export default {
         .catch((error) => {
           this.submit_data.loading = false;
           console.log(error);
+          let message = "";
           if (error.response.data.errors) {
-            var message = Object.entries(error.response.data.errors)
+            message = Object.entries(error.response.data.errors)
               .map(
                 ([error_name, error_value], i) =>
                   `${error_name}: ${error_value[0]} | `
               )
               .join("\n");
           } else {
-            var message = error.response.data.message;
+            message = error.response.data.message;
           }
           alert(message);
         });

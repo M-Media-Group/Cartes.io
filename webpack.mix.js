@@ -11,14 +11,30 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.sourceMaps().ts('resources/js/app.js', 'public/js').vue();
-mix.sass('resources/sass/app.scss', 'public/css').styles([
-
-], 'public/css/all.css').sourceMaps().version();
-
-mix.options({
-  extractVueStyles: false, // Extract .vue component styling to file, rather than inline.
-  //  processCssUrls: true, // Process/optimize relative stylesheet url()'s. Set to false, if you don't want them touched.
-  //  uglify: {}, // Uglify-specific options. https://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
-  //  postCss: [] // Post-CSS options: https://github.com/postcss/postcss/blob/master/docs/plugins.md
+mix.webpackConfig({
+    stats: {
+        hash: true,
+        children: true,
+        errors: true,
+        errorDetails: true,
+        warnings: true,
+        publicPath: true,
+    }
 });
+
+mix.sourceMaps().ts('resources/js/app.ts', 'public/js').vue({
+    extractVueStyles: false,
+    // options: {
+    //     loaders: {
+    //         scss: 'vue-style-loader!css-loader!sass-loader',
+    //         sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+    //     },
+    // },
+});
+
+mix.sass('resources/sass/app.scss', 'public/css')
+    // .styles([], 'public/css/all.css')
+    .sourceMaps();
+
+mix.version();
+

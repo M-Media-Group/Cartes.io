@@ -4,7 +4,6 @@
         "mtxr.sqltools",
         "mtxr.sqltools-driver-mysql",
         "ms-azuretools.vscode-docker",
-        "octref.vetur",
         "xdebug.php-debug",
         "bmewburn.vscode-intelephense-client",
         "amiralizadeh9480.laravel-extra-intellisense",
@@ -12,6 +11,6 @@
         "onecentlin.laravel-blade",
         "neilbrayfield.php-docblocker",
         "redhat.vscode-yaml",
-        "GitHub.copilot"
+        "github.copilot"
     ]
 }

@@ -340,15 +340,21 @@ export default {
     },
 
     listenForNewMarkers() {
-      Echo.channel("maps." + this.map.uuid).listen("MarkerCreated", (e) => {
-        this.handleMarkerCreate(e.marker);
-      });
+      window.Echo.channel("maps." + this.map.uuid).listen(
+        "MarkerCreated",
+        (e) => {
+          this.handleMarkerCreate(e.marker);
+        }
+      );
     },
 
     listenForDeletedMarkers() {
-      Echo.channel("maps." + this.map.uuid).listen("MarkerDeleted", (e) => {
-        this.handleMarkerDelete(e.marker.id);
-      });
+      window.Echo.channel("maps." + this.map.uuid).listen(
+        "MarkerDeleted",
+        (e) => {
+          this.handleMarkerDelete(e.marker.id);
+        }
+      );
     },
 
     handleMarkerCreate(marker) {

@@ -87,7 +87,7 @@ class Map extends Model
         return $this->query()->join("markers", function ($join) {
             $join->on("markers.map_id", "=", "maps.id");
         })
-            ->select("maps.title", "maps.uuid", DB::raw("COUNT(markers.category_id) as score"))
+            ->select("maps.*", DB::raw("COUNT(markers.category_id) as score"))
             ->whereIn("markers.category_id", function ($query) {
                 $query->from("markers")
                     ->select("category_id")
@@ -97,6 +97,8 @@ class Map extends Model
             ->where("maps.privacy", "=", "public")
             ->orderBy("score", "desc")
             ->groupBy("maps.uuid", "markers.map_id")
+            ->withCount("markers")
+            ->with("categories")
             ->get();
     }
 }

@@ -11,3 +11,4 @@ npm-debug.log
 yarn-error.log
 .DS_Store
 .post_test_deploy.sh
+.devcontainer/.mysql-data

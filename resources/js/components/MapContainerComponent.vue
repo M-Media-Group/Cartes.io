@@ -81,6 +81,21 @@
                     </div>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-md-12 col-form-label">Related maps</label>
+                  <div class="col-md-12">
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        id="show_all_checkbox"
+                        v-model="map_settings.show_related"
+                      />
+                      <label class="form-check-label" for="show_all_checkbox">
+                        Show related maps
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <!--                         <api-data-transformer-component v-on:markers-updated="handleApiMarkers"></api-data-transformer-component>
@@ -119,6 +134,15 @@
             v-if="nonSpamMarkers && nonSpamMarkers.length > 0"
             :markers="markers"
           ></map-markers-chart-component>
+          <template v-if="map_settings.show_related && relatedMaps.length > 0">
+            <h2>Related maps</h2>
+            <map-card-component
+              v-for="(map, i) in relatedMaps"
+              :key="map.uuid"
+              :map="map"
+              :disable_map="i > 2 ? true : false"
+            ></map-card-component>
+          </template>
         </div>
       </div>
     </div>
@@ -159,9 +183,11 @@ export default {
       map: this.initial_map,
       map_token: this.initial_map_token,
       markers: this.initial_markers,
+      relatedMaps: [],
       map_settings: {
         show_all: false,
         mapSelectedAge: 0,
+        show_related: true,
       },
     };
   },
@@ -172,6 +198,7 @@ export default {
     }
     this.listenForNewMarkers();
     this.listenForDeletedMarkers();
+    this.getRelatedMaps();
   },
 
   mounted() {},
@@ -284,31 +311,49 @@ export default {
         .then((response) => (this.markers = response.data));
     },
 
+    getRelatedMaps() {
+      if (!this.map_settings.show_related) {
+        return;
+      }
+
+      axios
+        .get("/api/maps/" + this.map.uuid + "/related")
+        .then((response) => (this.relatedMaps = response.data));
+    },
+
     listenForNewMarkers() {
-      Echo.channel("maps." + this.map.uuid).listen("MarkerCreated", (e) => {
-        // this.$notify("A new marker was just added")
-        this.$notify({
-          type: "success",
-          title: '"' + e.marker.category.name + '" marker was just added',
-          text: e.marker.description,
-        });
-        this.handleMarkerCreate(e.marker);
-      });
+      window.Echo.channel("maps." + this.map.uuid).listen(
+        "MarkerCreated",
+        (e) => {
+          // this.$notify("A new marker was just added")
+          this.$notify({
+            type: "success",
+            title: '"' + e.marker.category.name + '" marker was just added',
+            text: e.marker.description,
+          });
+          this.handleMarkerCreate(e.marker);
+        }
+      );
     },
 
     listenForDeletedMarkers() {
-      Echo.channel("maps." + this.map.uuid).listen("MarkerDeleted", (e) => {
-        this.handleMarkerDelete(e.marker.id);
-      });
+      window.Echo.channel("maps." + this.map.uuid).listen(
+        "MarkerDeleted",
+        (e) => {
+          this.handleMarkerDelete(e.marker.id);
+        }
+      );
     },
 
     handleMarkerCreate(marker) {
       this.markers.push(marker);
+      this.getRelatedMaps();
     },
 
     handleMarkerDelete(id) {
       this.$notify("A marker was just deleted");
       this.markers = this.markers.filter((e) => e.id !== id);
+      this.getRelatedMaps();
     },
 
     handleMapUpdate(map) {

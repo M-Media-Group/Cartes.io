@@ -9,9 +9,21 @@ require('./bootstrap');
 
 window.timeago = require('timeago.js');
 
-import Vue from 'vue';
+import Vue, { VueConstructor } from 'vue';
 
 import Notifications from 'vue-notification'
+declare global {
+    interface Window {
+        timeago: any;
+        Vue: any;
+    }
+}
+
+declare module 'vue/types/vue' {
+    interface VueConstructor {
+        moment: any;
+    }
+}
 
 window.Vue = Vue;
 
@@ -50,9 +62,9 @@ Vue.component(
 
 /** Vue Filters Start */
 Vue.filter('truncate', function (text, length, suffix) {
-	if (!text) {
-		return "No description available";
-	}
+    if (!text) {
+        return "No description available";
+    }
     if (text.length > length) {
         return text.substring(0, length) + suffix;
     } else {

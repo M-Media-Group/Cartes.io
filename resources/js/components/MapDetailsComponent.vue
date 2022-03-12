@@ -410,7 +410,7 @@
 </template>
 <script lang="ts">
 import NavigatorShare from "vue-navigator-share";
-import copy from "copy-to-clipboard";
+import * as copy from "copy-to-clipboard";
 import axios from "axios";
 
 export default {
@@ -470,7 +470,7 @@ export default {
     // finished typing before making the ajax request. To learn
     // more about the _.debounce function (and its cousin
     // _.throttle), visit: https://lodash.com/docs#debounce
-    this.debouncedGetAnswer = _.debounce(this.submitForm, 950);
+    this.debouncedGetAnswer = window._.debounce(this.submitForm, 950);
   },
   methods: {
     onShareError(e) {
@@ -513,15 +513,16 @@ export default {
         .catch((error) => {
           this.submit_data.loading = false;
           console.log(error);
+          let message = "";
           if (error.response.data.errors) {
-            var message = Object.entries(error.response.data.errors)
+            message = Object.entries(error.response.data.errors)
               .map(
                 ([error_name, error_value], i) =>
                   `${error_name}: ${error_value[0]} | `
               )
               .join("\n");
           } else {
-            var message = error.response.data.message;
+            message = error.response.data.message;
           }
           alert(message);
         });

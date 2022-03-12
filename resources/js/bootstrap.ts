@@ -14,6 +14,17 @@ try {
     require('bootstrap');
 } catch (e) { }
 
+declare global {
+    interface Window {
+        Popper: any;
+        jQuery: typeof jQuery;
+        $: JQuery;
+        Pusher: Pusher;
+        Echo: Echo;
+        _: any;
+    }
+}
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -31,7 +42,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = (token as any).content;
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
@@ -44,6 +55,7 @@ import axios from 'axios';
  */
 
 import Echo from 'laravel-echo'
+import Pusher from 'pusher-js/types/src/core/pusher';
 
 window.Pusher = require('pusher-js');
 

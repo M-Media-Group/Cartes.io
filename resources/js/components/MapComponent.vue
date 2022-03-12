@@ -51,7 +51,7 @@
               :preserve-search="true"
               required
             >
-              <template slot="limit" slot-scope="{ option }"
+              <template slot="limit"
                 >Keep typing to refine your search</template
               >
               <template slot="noOptions"
@@ -453,6 +453,7 @@ import Vue2LeafletMarkerCluster from "vue2-leaflet-markercluster";
 import Multiselect from "vue-multiselect";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import VGeosearch from "vue2-leaflet-geosearch";
+import axios from "axios";
 
 export default {
   props: [
