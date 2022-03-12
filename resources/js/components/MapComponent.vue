@@ -89,7 +89,8 @@
                 type="url"
                 pattern="https://.*"
                 :placeholder="
-                  'Link' + (linkOption === 'optional' ? ' (optional)' : '')
+                  'Link using https://' +
+                  (linkOption === 'optional' ? ' (optional)' : '')
                 "
                 :required="linkOption === 'required'"
                 v-model="submit_data.link"
