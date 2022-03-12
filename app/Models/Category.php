@@ -41,19 +41,18 @@ class Category extends Model
 
     public function getRelatedCategoriesAttribute()
     {
-        return DB::table("`categories`")
-            ->join("markers", function ($join) {
-                $join->on("markers.`category_id`", "=", "categories.id");
-            })
-            ->select("categories.`name`", "categories.id", "count (markers.map_id)")
+        return $this->query()->join("markers", function ($join) {
+            $join->on("markers.category_id", "=", "categories.id");
+        })
+            ->select("categories.name", "categories.id", DB::raw("COUNT(markers.category_id) as score"))
             ->whereIn("markers.map_id", function ($query) {
-                $query->from("`markers`")
+                $query->from("markers")
                     ->select("map_id")
                     ->where("category_id", "=", $this->id);
             })
             ->where("markers.category_id", "<>", $this->id)
-            ->orderBy("3", "desc")
-            ->groupBy("2")
+            ->orderBy("score", "desc")
+            ->groupBy("categories.id", "markers.category_id")
             ->get();
     }
 }

@@ -83,20 +83,20 @@ class Map extends Model
      */
     public function getRelatedMapsAttribute()
     {
-        return DB::table("`maps`")
-            ->join("markers", function ($join) {
-                $join->on("markers.`map_id`", "=", "maps.id");
-            })
-            ->select("maps.title", "maps.uuid", "count (markers.category_id) as score")
+        // return $this->related;
+        return $this->query()->join("markers", function ($join) {
+            $join->on("markers.map_id", "=", "maps.id");
+        })
+            ->select("maps.title", "maps.uuid", DB::raw("COUNT(markers.category_id) as score"))
             ->whereIn("markers.category_id", function ($query) {
-                $query->from("`markers`")
+                $query->from("markers")
                     ->select("category_id")
                     ->where("map_id", "=", $this->id);
             })
             ->where("markers.map_id", "<>", $this->id)
             ->where("maps.privacy", "=", "public")
-            ->orderBy("3", "desc")
-            ->groupBy("2")
+            ->orderBy("score", "desc")
+            ->groupBy("maps.uuid", "markers.map_id")
             ->get();
     }
 }
