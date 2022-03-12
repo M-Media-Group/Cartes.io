@@ -11,7 +11,7 @@
       v-on:marker-create="handleMarkerCreate"
       v-on:marker-delete="handleMarkerDelete"
       :user="user"
-      :linkOption="map.options.links"
+      :linkOption="map.options ? map.options.links : null"
     ></map-component>
     <div v-else style="height: 65vh" class="row align-items-center bg-dark">
       <div class="col text-center">

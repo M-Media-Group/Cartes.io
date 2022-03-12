@@ -6,7 +6,7 @@
       style="height: 50vh"
       :map_categories="map.categories"
       :users_can_create_markers="map.users_can_create_markers"
-      :linkOption="map.options.links"
+      :linkOption="map.options ? map.options.links : null"
     ></map-component>
     <div
       v-if="map.categories && !disable_map"
