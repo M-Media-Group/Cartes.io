@@ -50,6 +50,10 @@
         <template v-else>
           <div class="text-center text-muted p-3">
             There's no active markers at this time.
+            <br />
+            <a href="#" @click.prevent="$emit('showAllMarkers')"
+              >Show all historical markers</a
+            >
           </div>
         </template>
       </div>

@@ -30,6 +30,7 @@
             <map-markers-feed-component
               v-if="hasLiveData"
               :markers="activeMarkers"
+              @showAllMarkers="map_settings.show_all = true"
             ></map-markers-feed-component>
             <div class="card bg-dark text-white mb-3">
               <div
@@ -87,10 +88,13 @@
                     <div class="form-check">
                       <input
                         type="checkbox"
-                        id="show_all_checkbox"
+                        id="show_related_checkbox"
                         v-model="map_settings.show_related"
                       />
-                      <label class="form-check-label" for="show_all_checkbox">
+                      <label
+                        class="form-check-label"
+                        for="show_related_checkbox"
+                      >
                         Show related maps
                       </label>
                     </div>
