@@ -66,4 +66,6 @@ window.Echo = new Echo({
     encrypted: true
 });
 
-axios.defaults.headers.common['X-Socket-ID'] = window.Echo.socketId();
+window.Echo.connector.pusher.connection.bind('connected', function () {
+    axios.defaults.headers.common['X-Socket-ID'] = window.Echo.socketId();
+});
