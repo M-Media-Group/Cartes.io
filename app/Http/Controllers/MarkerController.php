@@ -81,7 +81,8 @@ class MarkerController extends Controller
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable|exists:users,id',
-            'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
+            'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
+            "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
         ]);
 
         if (!$request->input('category')) {
