@@ -142,6 +142,23 @@ class MapController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Map  $map
+     * @return \Illuminate\Http\Response
+     */
+    public function showAr(Request $request, Map $map)
+    {
+        $this->authorize('view', $map);
+
+        $data = [
+            'map' => $map->load('categories'),
+        ];
+
+        return View::make('ar/map', $data);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Map  $map
