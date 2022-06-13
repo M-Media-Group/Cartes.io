@@ -14,10 +14,11 @@
     <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
         @foreach ($map->markers as $marker)
             <a-text value="{{ $marker->category->name }}" look-at="[gps-camera]" scale="70 70 70"
-                gps-entity-place="latitude: {{ $marker->x }}; longitude: {{ $marker->y }};">
+                gps-entity-place="latitude: {{ round($marker->x, 6) }}; longitude: {{ round($marker->y, 6) }};">
             </a-text>
         @endforeach
-        <a-camera gps-camera rotation-reader></a-camera>
+        <a-camera gps-camera rotation-reader>
+        </a-camera>
     </a-scene>
 </body>
 
