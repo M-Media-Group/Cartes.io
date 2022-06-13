@@ -1,26 +1,24 @@
-@extends('layouts.clean', ['index_and_googlebots' => $map->privacy == 'public' ? true : false])
+<!DOCTYPE html>
+<html>
 
-@section('title', $map->title ?? 'Untitled map')
-@section('meta_description', $map->description ?? 'No map description')
-@section('meta_image', config('app.url') . '/images/map.png')
-
-@section('header_scripts')
-
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>AR Demo</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+</head>
 
-@endsection
-
-@section('above_container')
-    {{ round($map->markers[0]->x, 6) }}
-    <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
+<body style="margin: 0; overflow: hidden;">
+    <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
         @foreach ($map->markers as $marker)
-            <a-text value="{{ $marker->category->name }}" look-at="[gps-camera]" scale="120 120 120"
+            <a-text value="{{ $marker->category->name }}" scale="120 120 120"
                 gps-entity-place="latitude: {{ round($marker->x, 6) }}; longitude: {{ round($marker->y, 6) }};">
             </a-text>
         @endforeach
         <a-camera gps-camera rotation-reader> </a-camera>
     </a-scene>
+</body>
 
-@endsection
+</html>
