@@ -16,10 +16,8 @@
 
     <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
         @foreach ($map->markers as $marker)
-
-        @endforeach
-        <a-text value="{{ $marker->category->name }}" look-at="[gps-camera]" scale="120 120 120"
-            gps-entity-place="latitude: {{ $marker->y }}; longitude: {{ $marker->x }};"></a-text>
+            <a-text value="{{ $marker->category->name }}" look-at="[gps-camera]" scale="120 120 120"
+                gps-entity-place="latitude: {{ $marker->y }}; longitude: {{ $marker->x }};"></a-text>
         @endforeach
         <a-camera gps-camera rotation-reader> </a-camera>
     </a-scene>
