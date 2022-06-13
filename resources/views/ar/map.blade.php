@@ -17,7 +17,7 @@
                 gps-entity-place="latitude: {{ $marker->x }}; longitude: {{ $marker->y }};">
             </a-text>
         @endforeach
-        <a-camera gps-new-camera rotation-reader>
+        <a-camera gps-camera rotation-reader>
         </a-camera>
     </a-scene>
 @endsection
