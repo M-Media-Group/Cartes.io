@@ -13,11 +13,12 @@
 @endsection
 
 @section('above_container')
-
-    <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
+    {{ round($map->markers[0]->x, 6) }}
+    <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;">
         @foreach ($map->markers as $marker)
             <a-text value="{{ $marker->category->name }}" look-at="[gps-camera]" scale="120 120 120"
-                gps-entity-place="latitude: {{ $marker->y }}; longitude: {{ $marker->x }};"></a-text>
+                gps-entity-place="latitude: {{ round($marker->x, 6) }}; longitude: {{ round($marker->y, 6) }};">
+            </a-text>
         @endforeach
         <a-camera gps-camera rotation-reader> </a-camera>
     </a-scene>
