@@ -14,7 +14,15 @@
 			"extensions": [
 				"xdebug.php-debug",
 				"bmewburn.vscode-intelephense-client",
-				"mrmlnc.vscode-apache"
+				"mrmlnc.vscode-apache",
+				"neilbrayfield.php-docblocker",
+				"shufo.vscode-blade-formatter",
+				"onecentlin.laravel-blade",
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"github.copilot",
+				"eg2.vscode-npm-script",
+				"christian-kohler.npm-intellisense",
+				"octref.vetur"
 			]
 		}
 	},
