@@ -33,14 +33,14 @@
                 "-dxdebug.mode=debug",
                 "-dxdebug.start_with_request=yes",
                 "-S",
-                "localhost:80"
+                "0.0.0.0:80"
             ],
             "program": "",
             "cwd": "${workspaceRoot}/public",
             "port": 9003,
             "serverReadyAction": {
-                "pattern": "Development Server \\(http://localhost:([0-9]+)\\) started",
-                "uriFormat": "http://localhost:%s",
+                "pattern": "Development Server \\(http://0.0.0.0:([0-9]+)\\) started",
+                "uriFormat": "http://0.0.0.0:%s",
                 "action": "openExternally"
             }
         }
