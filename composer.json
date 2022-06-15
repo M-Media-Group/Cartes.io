@@ -23,6 +23,7 @@
         "mews/purifier": "^3.3",
         "pusher/pusher-php-server": "~4.0",
         "spatie/laravel-cookie-consent": "2.9.0",
+        "spatie/laravel-cors": "^1.7",
         "spatie/laravel-honeypot": "~2.0.0",
         "spatie/laravel-image-optimizer": "^1.3",
         "spatie/laravel-permission": "^2.29",
