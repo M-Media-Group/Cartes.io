@@ -96,7 +96,7 @@ class Map extends Model
             ->where("markers.map_id", "<>", $this->id)
             ->where("maps.privacy", "=", "public")
             ->orderBy("score", "desc")
-            ->groupBy("maps.uuid", "markers.map_id")
+            ->groupBy("maps.uuid", "markers.map_id", "maps.id", "maps.slug", "maps.title", "maps.description", "maps.user_id", "maps.privacy", "maps.users_can_create_markers", "maps.options", "maps.token", "maps.created_at", "maps.updated_at")
             ->withCount("markers")
             ->with("categories")
             ->get();

@@ -12,6 +12,9 @@ const mix = require('laravel-mix');
  */
 
 mix.webpackConfig({
+    devServer: {
+        server: 'https',
+    },
     stats: {
         hash: true,
         children: true,

@@ -12,6 +12,16 @@
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-locatecontrol />
       <v-geosearch :options="geosearchOptions"></v-geosearch>
+      <l-control
+        class="leaflet-control-ar leaflet-bar leaflet-control"
+        v-if="supportsAr"
+      >
+        <a
+          :href="'https://cartesio.netlify.app/?mapId=' + map_id"
+          target="_BLANK"
+          >AR</a
+        >
+      </l-control>
       <l-layer-group ref="hello_popup">
         <l-popup>
           <form
@@ -468,6 +478,7 @@ import {
   LMarker,
   LPopup,
   LIcon,
+  LControl,
 } from "vue2-leaflet";
 import Vue2LeafletLocatecontrol from "vue2-leaflet-locatecontrol/Vue2LeafletLocatecontrol";
 import Vue2LeafletMarkerCluster from "vue2-leaflet-markercluster";
@@ -498,6 +509,7 @@ export default {
     LLayerGroup,
     Multiselect,
     "v-geosearch": VGeosearch,
+    LControl,
   },
 
   data() {
@@ -608,6 +620,12 @@ export default {
       } else {
         return [];
       }
+    },
+    supportsAr() {
+      const hasGPS = "geolocation" in navigator;
+      const hasCamera = "camera" in navigator;
+      const isMobile = "ontouchstart" in window;
+      return hasGPS && hasCamera && isMobile;
     },
   },
 
