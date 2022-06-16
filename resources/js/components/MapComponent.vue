@@ -622,10 +622,15 @@ export default {
       }
     },
     supportsAr() {
-      const hasGPS = "geolocation" in navigator;
-      const hasCamera = "camera" in navigator;
-      const isMobile = "ontouchstart" in window;
-      return hasGPS && hasCamera && isMobile;
+      return (
+        navigator.geolocation &&
+        "geolocation" in navigator &&
+        navigator.mediaDevices &&
+        "mediaDevices" in navigator &&
+        // Check if the device has accelerometer and gyroscope
+        window.DeviceOrientationEvent &&
+        "DeviceOrientationEvent" in window
+      );
     },
   },
 
