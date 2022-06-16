@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,20 +32,27 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
-        \App\Models\Marker::where('elevation', null)->chunkById(50, function ($markers) {
+        \App\Models\Marker::where('elevation', null)->chunkById(1000, function ($markers) {
 
             $coordinates = [];
 
-            // For each marker, get the x and y attribute
             $markers->each(function ($marker) use (&$coordinates) {
-                array_push($coordinates, $marker->x . "," . $marker->y);
+                $coordinates[] = [
+                    'latitude' => $marker->x,
+                    'longitude' => $marker->y,
+                ];
             });
 
-            $coordinates = implode("|", $coordinates);
+            $requestData['locations'] = $coordinates;
+
+            // Call the API
+            $client = new Client();
+            $response = $client->post('https://api.open-elevation.com/api/v1/lookup', [
+                'json' => $requestData,
+            ]);
 
             // Call the api https://api.open-elevation.com/api/v1/lookup?locations=41.161758,-8.583933|41.161758,-8.583933
-            $api_url = 'https://api.open-elevation.com/api/v1/lookup?locations=' . $coordinates;
-            $elevationResults = json_decode(file_get_contents($api_url), true);
+            $elevationResults = json_decode($response->getBody()->getContents(), true);
 
             // Loop through the results and update the elevation. The results are in the same order as the coordinates.
             foreach ($elevationResults['results'] as $key => $result) {
