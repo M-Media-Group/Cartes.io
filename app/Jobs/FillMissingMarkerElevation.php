@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class FillMissingMarkerElevation implements ShouldQueue
 {
@@ -33,13 +32,7 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
-        $className = (new \ReflectionClass($this))->getShortName();
-        Log::info($className . ' job started');
-
-        \App\Models\Marker::where('elevation', null)->chunkById(500, function ($markers) {
-
-            // Log the count of markers
-            Log::info('Filling missing marker elevations for markers count (chunked): ' . count($markers));
+        \App\Models\Marker::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) {
 
             $coordinates = [];
 
@@ -73,6 +66,5 @@ class FillMissingMarkerElevation implements ShouldQueue
                 $marker->save();
             }
         });
-        Log::info($className . ' job complete');
     }
 }
