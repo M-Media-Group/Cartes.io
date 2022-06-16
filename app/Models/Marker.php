@@ -5,7 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class Marker extends Pivot
@@ -60,9 +60,13 @@ class Marker extends Pivot
         //     $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
         // });
 
-        // self::creating(function ($model) {
-        //     $model->expires_at = Carbon::now()->addMinutes(180)->toDateTimeString();
-        // });
+        self::created(function ($model) {
+            broadcast(new \App\Events\MarkerCreated($model))->toOthers();
+        });
+
+        self::deleting(function ($model) {
+            broadcast(new \App\Events\MarkerDeleted($model))->toOthers();
+        });
 
         static::addGlobalScope('active', function (Builder $builder) {
             $builder

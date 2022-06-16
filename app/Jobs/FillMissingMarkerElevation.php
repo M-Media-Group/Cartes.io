@@ -63,7 +63,9 @@ class FillMissingMarkerElevation implements ShouldQueue
             foreach ($elevationResults['results'] as $key => $result) {
                 $marker = $markers[$key];
                 $marker->elevation = $result['elevation'];
-                $marker->save();
+
+                // Save the marker elevation - we skip updating the updated_at timestamp here since its not actually updated by a user, but automatically
+                $marker->save(['timestamps' => false]);
             }
         });
     }

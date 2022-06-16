@@ -47,10 +47,10 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\PasswordReset' => [
             \App\Listeners\LogPasswordReset::class,
         ],
-        \App\Events\MarkerCreated::class => [
-        ],
-        \App\Events\MarkerDeleted::class => [
-        ],
+
+        \App\Events\MarkerCreated::class => [],
+
+        \App\Events\MarkerDeleted::class => [],
     ];
 
     /**

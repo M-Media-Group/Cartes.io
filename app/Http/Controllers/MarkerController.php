@@ -119,8 +119,6 @@ class MarkerController extends Controller
 
         $result->save();
 
-        broadcast(new \App\Events\MarkerCreated($result))->toOthers();
-
         return $result->makeVisible(['token'])->load('category');
     }
 
@@ -201,8 +199,8 @@ class MarkerController extends Controller
                 throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
             }
         }
-        // broadcast(new \App\Events\MarkerCreated($result))->toOthers();
         //dd($result);
+
         return response()->json($result);
     }
 
@@ -244,7 +242,6 @@ class MarkerController extends Controller
     public function destroy(Request $request, Map $map, Marker $marker)
     {
         $this->authorize('forceDelete', [$marker, $request->input('map_token')]);
-        broadcast(new \App\Events\MarkerDeleted($marker))->toOthers();
 
         return $marker->delete();
     }
