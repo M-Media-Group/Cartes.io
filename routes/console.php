@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
+
+Artisan::command('fill-missing-marker-elevation', function () {
+    $this->info('Filling missing marker elevation...');
+    App\Jobs\FillMissingMarkerElevation::dispatch();
+    $this->info('Done');
+})->describe('Fill missing marker elevation');
