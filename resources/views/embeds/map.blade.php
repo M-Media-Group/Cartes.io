@@ -6,7 +6,7 @@
 
 @section('above_container')
 
-    @if (request()->get('type') == 'card')
+    @if (request()->type == 'card')
         <map-card-component :map="{{ $map }}" :is_minimal="true" style="height:100%;max-width: 100%;">
         </map-card-component>
     @else
