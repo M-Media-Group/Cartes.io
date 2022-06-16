@@ -29,6 +29,7 @@ class Marker extends Pivot
         'description',
         'token',
         'map_id',
+        'elevation',
         'link',
     ];
     protected $spatialFields = [
@@ -62,6 +63,17 @@ class Marker extends Pivot
 
         self::created(function ($model) {
             broadcast(new \App\Events\MarkerCreated($model))->toOthers();
+        });
+
+        /**
+         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times)
+         *
+         * @todo move to a listener
+         */
+        self::saved(function ($model) {
+            if (!$model->elevation) {
+                \App\Jobs\FillMissingMarkerElevation::dispatch();
+            }
         });
 
         self::deleting(function ($model) {
