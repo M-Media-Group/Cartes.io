@@ -24,7 +24,7 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-    <link href="{{ mix('css/all.css') }}" rel="stylesheet">
+    {{-- <link href="{{ mix('css/all.css') }}" rel="stylesheet"> --}}
 
     @yield('header_scripts')
 
@@ -50,7 +50,6 @@
         html {
             height: 100%;
         }
-
     </style>
 </head>
 

@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class FillMissingMarkerElevation implements ShouldQueue
 {
@@ -32,7 +33,13 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
+        $className = (new \ReflectionClass($this))->getShortName();
+        Log::info($className . ' job started');
+
         \App\Models\Marker::where('elevation', null)->chunkById(500, function ($markers) {
+
+            // Log the count of markers
+            Log::info('Filling missing marker elevations for markers count (chunked): ' . count($markers));
 
             $coordinates = [];
 
@@ -54,10 +61,9 @@ class FillMissingMarkerElevation implements ShouldQueue
             // If there was an error, stop
             if ($response->getStatusCode() !== 200) {
                 // Throw an exception
-                throw new \Exception('Error calling Open Elevation API - returned ' . $response->getStatusCode());
+                throw new \Exception('Error calling Open Elevation API - returned code ' . $response->getStatusCode());
             }
 
-            // Call the api https://api.open-elevation.com/api/v1/lookup?locations=41.161758,-8.583933|41.161758,-8.583933
             $elevationResults = json_decode($response->getBody()->getContents(), true);
 
             // Loop through the results and update the elevation. The results are in the same order as the coordinates.
@@ -67,5 +73,6 @@ class FillMissingMarkerElevation implements ShouldQueue
                 $marker->save();
             }
         });
+        Log::info($className . ' job complete');
     }
 }
