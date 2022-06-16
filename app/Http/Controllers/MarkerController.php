@@ -82,6 +82,7 @@ class MarkerController extends Controller
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
             'user_id' => 'nullable|exists:users,id',
             'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
+            'elevation' => 'nullable|numeric|between:-100000,100000',
             "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
         ]);
 
@@ -105,6 +106,7 @@ class MarkerController extends Controller
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
+                'elevation' => $request->input('elevation'),
                 'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             ]
         );
@@ -146,6 +148,7 @@ class MarkerController extends Controller
             'markers.*.created_at' => 'nullable',
             'markers.*.updated_at' => 'nullable',
             'markers.*.expires_at' => 'nullable',
+            'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
         ]);
 
