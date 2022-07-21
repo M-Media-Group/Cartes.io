@@ -79,26 +79,27 @@ class Map extends Model
      * Simple collaborative  filtering.
      *
      * @see https://arctype.com/blog/collaborative-filtering-tutorial/ - Thanks arctype!
+     *
      * @return Collection
      */
     public function getRelatedMapsAttribute()
     {
         // return $this->related;
-        return $this->query()->join("markers", function ($join) {
-            $join->on("markers.map_id", "=", "maps.id");
+        return $this->query()->join('markers', function ($join) {
+            $join->on('markers.map_id', '=', 'maps.id');
         })
-            ->select("maps.*", DB::raw("COUNT(markers.category_id) as score"))
-            ->whereIn("markers.category_id", function ($query) {
-                $query->from("markers")
-                    ->select("category_id")
-                    ->where("map_id", "=", $this->id);
+            ->select('maps.*', DB::raw('COUNT(markers.category_id) as score'))
+            ->whereIn('markers.category_id', function ($query) {
+                $query->from('markers')
+                    ->select('category_id')
+                    ->where('map_id', '=', $this->id);
             })
-            ->where("markers.map_id", "<>", $this->id)
-            ->where("maps.privacy", "=", "public")
-            ->orderBy("score", "desc")
-            ->groupBy("maps.uuid", "markers.map_id", "maps.id", "maps.slug", "maps.title", "maps.description", "maps.user_id", "maps.privacy", "maps.users_can_create_markers", "maps.options", "maps.token", "maps.created_at", "maps.updated_at")
-            ->withCount("markers")
-            ->with("categories")
+            ->where('markers.map_id', '<>', $this->id)
+            ->where('maps.privacy', '=', 'public')
+            ->orderBy('score', 'desc')
+            ->groupBy('maps.uuid', 'markers.map_id', 'maps.id', 'maps.slug', 'maps.title', 'maps.description', 'maps.user_id', 'maps.privacy', 'maps.users_can_create_markers', 'maps.options', 'maps.token', 'maps.created_at', 'maps.updated_at')
+            ->withCount('markers')
+            ->with('categories')
             ->get();
     }
 }
