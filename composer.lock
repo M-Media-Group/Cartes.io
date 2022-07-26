@@ -2784,12 +2784,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering.git",
-                "reference": "01c992a74936c14b67875122abee3928729e9b9f"
+                "reference": "4836a6e1569eabfd1f98289012e2f9971238beb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/M-Media-Group/Laravel-Collaborative-Filtering/zipball/01c992a74936c14b67875122abee3928729e9b9f",
-                "reference": "01c992a74936c14b67875122abee3928729e9b9f",
+                "url": "https://api.github.com/repos/M-Media-Group/Laravel-Collaborative-Filtering/zipball/4836a6e1569eabfd1f98289012e2f9971238beb9",
+                "reference": "4836a6e1569eabfd1f98289012e2f9971238beb9",
                 "shasum": ""
             },
             "require": {
@@ -2838,7 +2838,7 @@
                 "issues": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering/issues",
                 "source": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering/tree/master"
             },
-            "time": "2022-07-26T15:19:52+00:00"
+            "time": "2022-07-26T15:48:43+00:00"
         },
         {
             "name": "monolog/monolog",
