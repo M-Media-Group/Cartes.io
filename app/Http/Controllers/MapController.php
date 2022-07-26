@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\View;
 
 class MapController extends Controller
 {
+
+    // Constructor with middlewares
+    public function __construct()
+    {
+        $this->middleware('throttle:5|10,1')->only('store');
+        $this->middleware('throttle:30')->only(['update', 'destroy']);
+    }
     /**
      * Display a listing of the resource.
      *

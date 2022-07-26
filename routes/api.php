@@ -26,24 +26,15 @@ Route::get('categories/{category}/related', 'CategoryController@related');
 
 Route::get('maps/{map}/markers', 'MarkerController@indexByMap');
 
-Route::get('maps/{map}', 'MapController@show');
-
 Route::get('maps/{map}/related', 'MapController@related');
 
-Route::get('maps', 'MapController@index');
+Route::apiResource('maps', 'MapController');
 
 Route::get('markers', 'MarkerController@index');
 
-Route::middleware(['throttle:5|10,1'])->group(function () {
-    // Route::apiResource('maps', 'MapController');
-    Route::post('maps', 'MapController@store');
-});
-
 Route::middleware(['throttle:30'])->group(function () {
-    Route::put('maps/{map}', 'MapController@update');
     Route::put('maps/{map}/markers/{marker}', 'MarkerController@update');
     Route::delete('maps/{map}/markers/{marker}', 'MarkerController@destroy');
-    Route::delete('maps/{map}', 'MapController@destroy');
 });
 
 Route::middleware('throttle:15|120')->group(function () {
