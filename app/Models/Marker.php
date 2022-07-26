@@ -7,6 +7,7 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Builder;
 // use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Str;
 
 class Marker extends Pivot
 {
@@ -63,6 +64,9 @@ class Marker extends Pivot
         // });
 
         self::creating(function ($model) {
+            $model->user_id = $model->user_id ?? (request()->user() ? request()->user()->id : null);
+            $model->token = Str::random(32);
+
             // If an expires_at is already set, keep it
             if ($model->expires_at) {
                 return;

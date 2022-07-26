@@ -46,7 +46,7 @@ class Map extends Model
         self::creating(function ($model) {
             $model->token = Str::random(32);
             $model->uuid = (string) Uuid::generate(4);
-            $model->user_id = request()->user() ? request()->user()->id : null;
+            $model->user_id = $model->user_id ?? (request()->user() ? request()->user()->id : null);
             $model->slug = $model->slug ?? Str::slug($model->uuid);
             $model->users_can_create_markers = $model->users_can_create_markers ?? 'only_logged_in';
             $model->privacy = $model->privacy ?? 'unlisted';
@@ -84,7 +84,11 @@ class Map extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(\App\Models\Category::class, 'markers')->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())->orWherePivot('expires_at', null)->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
+        return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class)
+            ->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())
+            ->orWherePivot('expires_at', null)
+            ->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')
+            ->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
     }
 
     /**

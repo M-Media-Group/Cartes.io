@@ -102,7 +102,6 @@ class MarkerController extends Controller
             [
                 'category_id' => $request->input('category'),
                 'user_id' => $request->input('user_id'),
-                'token' => Str::random(32),
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
