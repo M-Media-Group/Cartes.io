@@ -26,7 +26,6 @@ class MapController extends Controller
             'orderBy' => 'nullable|string',
         ]);
 
-        $category_ids = $request->input('category_ids');
         $query = Map::with('categories')->withCount('markers');
 
         if ($request->input('ids')) {
@@ -78,20 +77,16 @@ class MapController extends Controller
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
         ]);
 
-        $uuid = (string) Uuid::generate(4);
-
         $result = new Map(
             [
                 'title' => $request->input('title'),
                 'description' => clean($request->input('description')),
-                'slug' => $request->input('slug', Str::slug($uuid)),
-                'uuid' => $uuid,
-                'token' => Str::random(32),
-                'privacy' => $request->input('privacy', 'unlisted'),
-                'users_can_create_markers' => $request->input('users_can_create_markers', 'only_logged_in'),
-                'user_id' => $request->user() ? $request->user()->id : null,
+                'slug' => $request->input('slug'),
+                'privacy' => $request->input('privacy'),
+                'users_can_create_markers' => $request->input('users_can_create_markers'),
             ]
         );
+
         $result->save();
         $result->makeVisible(['token']);
 

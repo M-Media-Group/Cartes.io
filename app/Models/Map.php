@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Webpatser\Uuid\Uuid;
 
 class Map extends Model
 {
@@ -40,9 +42,14 @@ class Map extends Model
     public static function boot()
     {
         parent::boot();
-        // self::creating(function ($model) {
-        //     $model->uuid = (string) Uuid::generate(4);
-        // });
+        self::creating(function ($model) {
+            $model->token = Str::random(32);
+            $model->uuid = (string) Uuid::generate(4);
+            $model->user_id = request()->user() ? request()->user()->id : null;
+            $model->slug = $model->slug ?? Str::slug($model->uuid);
+            $model->users_can_create_markers = $model->users_can_create_markers ?? 'only_logged_in';
+            $model->privacy = $model->privacy ?? 'unlisted';
+        });
     }
 
     /**
