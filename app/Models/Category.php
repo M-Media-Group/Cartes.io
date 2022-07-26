@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasRelated;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Category extends Model
 {
+    use HasRelated;
     /**
      * The attributes that are mass assignable.
      *
@@ -54,18 +55,6 @@ class Category extends Model
 
     public function getRelatedCategoriesAttribute()
     {
-        return $this->query()->join("markers", function ($join) {
-            $join->on("markers.category_id", "=", "categories.id");
-        })
-            ->select("categories.name", "categories.id", DB::raw("COUNT(markers.category_id) as score"))
-            ->whereIn("markers.map_id", function ($query) {
-                $query->from("markers")
-                    ->select("map_id")
-                    ->where("category_id", "=", $this->id);
-            })
-            ->where("markers.category_id", "<>", $this->id)
-            ->orderBy("score", "desc")
-            ->groupBy("categories.id", "markers.category_id")
-            ->get();
+        return $this->getRelatedModels('markers', 'map_id');
     }
 }
