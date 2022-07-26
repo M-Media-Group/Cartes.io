@@ -94,11 +94,7 @@ class CategoryController extends Controller
         $category = Category::where('slug', $slug)->with('markers')->firstOrFail();
         $this->authorize('view', $category);
 
-        \App\Models\CategoryView::create(
-            [
-                'category_id' => $category->id,
-            ]
-        );
+        $category->views()->create();
 
         if ($request->is('api*')) {
             return $category;
