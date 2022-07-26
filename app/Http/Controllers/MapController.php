@@ -88,7 +88,7 @@ class MapController extends Controller
         $result->save();
         $result->makeVisible(['token']);
 
-        if ($request->is('api*')) {
+        if ($request->wantsJson()) {
             return response()->json($result);
         } else {
             return redirect('/maps/' . $result->slug)->with('token', $result->token);
@@ -105,7 +105,7 @@ class MapController extends Controller
     {
         $this->authorize('view', $map);
         $map->load('categories');
-        if ($request->is('api*')) {
+        if ($request->wantsJson()) {
             return $map;
         }
 

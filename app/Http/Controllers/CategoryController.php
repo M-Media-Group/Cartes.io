@@ -27,7 +27,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $search_query = $request->input('query');
-        if ($request->is('api*')) {
+        if ($request->wantsJson()) {
             return Category::withCount('views')
                 ->when($search_query, function ($query, $search_query) {
                     return $query->where('name', 'like', "%{$search_query}%");
@@ -96,7 +96,7 @@ class CategoryController extends Controller
 
         $category->views()->create();
 
-        if ($request->is('api*')) {
+        if ($request->wantsJson()) {
             return $category;
         } else {
             return view('categories.show', ['category' => $category]);
