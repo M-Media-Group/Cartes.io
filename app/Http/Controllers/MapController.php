@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
-use Webpatser\Uuid\Uuid;
 
 class MapController extends Controller
 {
