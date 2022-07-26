@@ -50,6 +50,10 @@ class Map extends Model
             $model->users_can_create_markers = $model->users_can_create_markers ?? 'only_logged_in';
             $model->privacy = $model->privacy ?? 'unlisted';
         });
+
+        self::saving(function ($model) {
+            $model->description = clean($model->description);
+        });
     }
 
     /**

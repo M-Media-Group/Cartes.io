@@ -78,7 +78,7 @@ class MapController extends Controller
         $result = new Map(
             [
                 'title' => $request->input('title'),
-                'description' => clean($request->input('description')),
+                'description' => $request->input('description'),
                 'slug' => $request->input('slug'),
                 'privacy' => $request->input('privacy'),
                 'users_can_create_markers' => $request->input('users_can_create_markers'),
@@ -183,8 +183,6 @@ class MapController extends Controller
             'options.limit_to_geographical_body_type' => 'nullable|in:land,water,no',
             'options.links' => 'nullable|in:required,optional,disabled',
         ]);
-
-        $validatedData['description'] = clean($validatedData['description']);
 
         $map->update($validatedData);
 
