@@ -56,7 +56,7 @@ class MapController extends Controller
     public function related(Request $request, Map $map)
     {
         $this->authorize('view', $map);
-        return $map->relatedMaps;
+        return $map->related;
     }
 
     /**

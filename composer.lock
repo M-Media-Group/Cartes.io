@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32b0eb328e8b4668e27ef649941e3b81",
+    "content-hash": "cd25950936c18393bad7f31b06d1aa6a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2777,6 +2777,68 @@
                 "source": "https://github.com/mewebstudio/Purifier/tree/3.3.8"
             },
             "time": "2022-07-20T12:14:06+00:00"
+        },
+        {
+            "name": "mmedia/laravel-collaborative-filtering",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering.git",
+                "reference": "01c992a74936c14b67875122abee3928729e9b9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/M-Media-Group/Laravel-Collaborative-Filtering/zipball/01c992a74936c14b67875122abee3928729e9b9f",
+                "reference": "01c992a74936c14b67875122abee3928729e9b9f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.8.0|^8.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MMedia\\LaravelCollaborativeFiltering\\LaravelCollaborativeFilteringServiceProvider"
+                    ],
+                    "aliases": {
+                        "LaravelCollaborativeFiltering": "MMedia\\LaravelCollaborativeFiltering\\LaravelCollaborativeFilteringFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MMedia\\LaravelCollaborativeFiltering\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "M Media",
+                    "email": "contact@mmediagroup.fr",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple trait to add collaborative filtering to your models",
+            "homepage": "https://github.com/mmedia/laravel-collaborative-filtering",
+            "keywords": [
+                "laravel-collaborative-filtering",
+                "mmedia"
+            ],
+            "support": {
+                "issues": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering/issues",
+                "source": "https://github.com/M-Media-Group/Laravel-Collaborative-Filtering/tree/master"
+            },
+            "time": "2022-07-26T15:19:52+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -10389,7 +10451,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "mmedia/laravel-collaborative-filtering": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

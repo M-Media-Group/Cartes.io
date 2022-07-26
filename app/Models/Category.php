@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\HasRelated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 
 class Category extends Model
 {
-    use HasRelated;
+    use HasCollaborativeFiltering;
     /**
      * The attributes that are mass assignable.
      *
@@ -53,8 +53,19 @@ class Category extends Model
         return $this->hasMany(\App\Models\CategoryView::class);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @deprecated use the relationship related() instead
+     * @return void
+     */
     public function getRelatedCategoriesAttribute()
     {
-        return $this->getRelatedModels('markers', 'map_id');
+        return $this->getRelatedModels(\App\Models\Marker::class, 'map_id');
+    }
+
+    public function related()
+    {
+        return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'map_id');
     }
 }

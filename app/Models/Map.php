@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\HasRelated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Webpatser\Uuid\Uuid;
+use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 
 class Map extends Model
 {
-    use HasRelated;
+    use HasCollaborativeFiltering;
     /**
      * The attributes that are mass assignable.
      *
@@ -91,15 +91,23 @@ class Map extends Model
             ->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
     }
 
+    public function related()
+    {
+        return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'category_id')
+            ->where($this->getTable() . ".privacy", "=", "public")
+            ->with("categories");
+    }
+
     /**
      * Simple collaborative  filtering.
      *
+     * @deprecated use the related() relationship instead
      * @see https://arctype.com/blog/collaborative-filtering-tutorial/ - Thanks arctype!
      * @return Collection
      */
     public function getRelatedMapsAttribute()
     {
-        return $this->getRelatedModels('markers', 'category_id', function ($query) {
+        return $this->getRelatedModels(\App\Models\Marker::class, 'category_id', function ($query) {
             return $query
                 ->where($this->getTable() . ".privacy", "=", "public")
                 ->with("categories");

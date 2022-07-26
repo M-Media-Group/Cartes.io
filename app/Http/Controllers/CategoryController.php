@@ -41,7 +41,7 @@ class CategoryController extends Controller
 
     public function related(Request $request, Category $category)
     {
-        return $category->relatedCategories;
+        return $category->related;
     }
 
     /**

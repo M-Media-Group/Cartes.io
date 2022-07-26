@@ -21,6 +21,7 @@
         "lcobucci/jwt": "3.3.3",
         "league/flysystem-aws-s3-v3": "~1.0",
         "mews/purifier": "^3.3",
+        "mmedia/laravel-collaborative-filtering": "dev-master",
         "pusher/pusher-php-server": "~4.0",
         "spatie/laravel-cookie-consent": "2.9.0",
         "spatie/laravel-cors": "^1.7",
