@@ -31,6 +31,7 @@ class Marker extends Pivot
         'map_id',
         'elevation',
         'link',
+        'expires_at',
     ];
     protected $spatialFields = [
         'location',
@@ -60,6 +61,18 @@ class Marker extends Pivot
         // static::addGlobalScope('area', function (Builder $builder) {
         //     $builder->addSelect(DB::raw('id, X(`location`) as x, Y(`location`) as y, category_id, user_id, created_at, updated_at'));
         // });
+
+        self::creating(function ($model) {
+            // If an expires_at is already set, keep it
+            if ($model->expires_at) {
+                return;
+            }
+            if ($model->map_id && $model->map->options && isset($model->map->options['default_expiration_time'])) {
+                $model->expires_at = Carbon::now()->addMinutes($model->map->options['default_expiration_time'])->toDateTimeString();
+            } else {
+                $model->expires_at = null;
+            }
+        });
 
         self::created(function ($model) {
             broadcast(new \App\Events\MarkerCreated($model))->toOthers();

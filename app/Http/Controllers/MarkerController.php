@@ -111,14 +111,7 @@ class MarkerController extends Controller
             ]
         );
 
-        if ($map->options && isset($map->options['default_expiration_time'])) {
-            $result->expires_at = Carbon::now()->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-        } else {
-            $result->expires_at = null;
-        }
-
         $result->save();
-
         return $result->makeVisible(['token'])->load('category');
     }
 
