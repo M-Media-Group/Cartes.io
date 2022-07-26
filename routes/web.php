@@ -33,9 +33,6 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/maps', function () {
-    return view('publicMaps');
-});
 
 Route::get('/notifications', function () {
     return view('notifications');
@@ -57,9 +54,7 @@ Route::post('me/apply/reporter', 'UserController@applyForReporter');
 
 Route::resource('roles', 'RoleController');
 
-Route::post('/maps', 'MapController@store');
-
-Route::get('/maps/{map}', 'MapController@show');
+Route::resource('maps', 'MapController')->only(['index', 'show', 'store']);
 
 Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
 

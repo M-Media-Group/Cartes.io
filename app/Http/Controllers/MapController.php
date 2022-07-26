@@ -16,6 +16,10 @@ class MapController extends Controller
     public function index(Request $request)
     {
 
+        if (!$request->wantsJson()) {
+            return view('publicMaps');
+        }
+
         // $this->authorize('index', [Map::class, $map, $request->input('map_token')]);
         //return \App\Models\Map::whereDoesntHave('markers')->delete();
         $request->validate([
