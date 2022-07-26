@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -18,6 +19,18 @@ class Category extends Model
         'icon',
     ];
     protected $hidden = ['pivot', 'created_at', 'updated_at'];
+
+    /**
+     *  Setup model event hooks.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
+    }
 
     public function user()
     {

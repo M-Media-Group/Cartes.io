@@ -16,4 +16,17 @@ class CategoryView extends Model
         'user_id',
         'ip',
     ];
+
+    /**
+     *  Setup model event hooks.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model->user_id = $model->user_id ?? (request()->user() ? request()->user()->id : null);
+            $model->ip = $model->ip ?? request()->ip() ?? null;
+        });
+    }
 }

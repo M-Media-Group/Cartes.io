@@ -75,7 +75,6 @@ class CategoryController extends Controller
         $result = new Category(
             [
                 'name' => $request->input('name'),
-                'slug' => Str::slug($request->input('name')),
                 'icon' => Storage::url($image_path),
             ]
         );
@@ -94,16 +93,10 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->with('markers')->firstOrFail();
         $this->authorize('view', $category);
-        if (!$request->user()) {
-            $user_id = null;
-        } else {
-            $user_id = $request->user()->id;
-        }
+
         \App\Models\CategoryView::create(
             [
                 'category_id' => $category->id,
-                'user_id' => $user_id,
-                'ip' => $request->ip(),
             ]
         );
 
@@ -145,7 +138,6 @@ class CategoryController extends Controller
         $category->update(
             [
                 'name' => $request->input('name'),
-                'slug' => Str::slug($request->input('name')),
             ]
         );
 
