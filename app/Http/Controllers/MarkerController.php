@@ -174,8 +174,8 @@ class MarkerController extends Controller
 
             $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $marker['link'] : null;
 
-            $marker['created_at'] = Carbon::parse($marker['created_at']) ?? $now->toDateTimeString();
-            $marker['updated_at'] = Carbon::parse($marker['updated_at']) ?? $now->toDateTimeString();
+            $marker['created_at'] = $marker['created_at'] ? Carbon::parse($marker['created_at']) : $now->toDateTimeString();
+            $marker['updated_at'] = $marker['updated_at'] ? Carbon::parse($marker['updated_at']) : $now->toDateTimeString();
             $marker['token'] = Str::random(32);
             $marker['map_id'] = $map->id;
             $marker['user_id'] = $validated_data['user_id'];
