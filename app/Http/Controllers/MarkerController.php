@@ -197,6 +197,7 @@ class MarkerController extends Controller
 
         try {
             $result = Marker::insert($validated_data['markers']);
+            return response()->json($result);
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
@@ -204,8 +205,6 @@ class MarkerController extends Controller
             }
         }
         //dd($result);
-
-        return response()->json($result);
     }
 
     /**
