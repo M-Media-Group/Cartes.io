@@ -144,6 +144,8 @@ class MarkerController extends Controller
 
         $now = Carbon::now();
 
+        $insertableData = [];
+
         foreach ($validated_data['markers'] as $index => $marker) {
             $point = new Point($marker['lng'], $marker['lat']);
 
@@ -192,12 +194,14 @@ class MarkerController extends Controller
             $marker['map_id'] = $map->id;
             $marker['user_id'] = $validated_data['user_id'];
 
+            $insertableData[] = $marker;
+
             $validated_data['markers'][$index] = $marker;
         }
 
         try {
-            $result = Marker::insert($validated_data['markers']);
-            return response()->json($result);
+            $result = Marker::insert($insertableData);
+            return response()->json(['success' => $result]);
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
