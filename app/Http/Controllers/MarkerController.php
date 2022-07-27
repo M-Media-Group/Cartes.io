@@ -122,7 +122,6 @@ class MarkerController extends Controller
      */
     public function storeInBulk(Request $request, Map $map)
     {
-        //return $request->input("map_token");
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
         $request->merge(['user_id' => $request->user('api')->id]);
@@ -156,14 +155,15 @@ class MarkerController extends Controller
             unset($marker['lat']);
             unset($marker['lng']);
 
-            if (!isset($marker['category'])) {
+            $marker['category_id'] = $marker['category'];
+            unset($marker['category']);
+
+            if (!isset($marker['category_id'])) {
                 $category = \App\Models\Category::firstOrCreate(
-                    ['slug' => Str::slug($marker['category_name'])],
-                    ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
+                    ['name' => $marker['category_name']]
                 );
                 $marker['category_id'] = $category->id;
                 unset($marker['category_name']);
-                unset($marker['category']);
             }
 
             if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
@@ -208,7 +208,6 @@ class MarkerController extends Controller
                 throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
             }
         }
-        //dd($result);
     }
 
     /**
