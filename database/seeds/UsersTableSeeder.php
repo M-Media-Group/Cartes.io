@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -11,9 +13,10 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\User::class, 100)->create()->each(function ($u) {
-            $u->markers()->save(factory(App\Marker::class)->make());
-        }
+        factory(App\Models\User::class, 100)->create()->each(
+            function ($u) {
+                $u->markers()->save(factory(App\Marker::class)->make());
+            }
         );
     }
 }
