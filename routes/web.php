@@ -33,11 +33,6 @@ Route::get('/about', function () {
     return view('about');
 });
 
-
-Route::get('/notifications', function () {
-    return view('notifications');
-})->middleware('auth');
-
 Route::middleware(ProtectAgainstSpam::class)->group(function () {
     Auth::routes(['verify' => true]);
 });
