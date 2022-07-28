@@ -394,6 +394,15 @@
             </p>
             <code>cartes.Maps('{{ map.uuid }}').get()</code>
           </div>
+          <div class="mb-3">
+            <p class="mb-0">
+              JS, using our
+              <a target="_BLANK" href="https://www.npmjs.com/package/@m-media/npm-cartes-io/"
+                >NPM package</a
+              >
+            </p>
+            <code>cartes.maps('{{ map.uuid }}').get()</code>
+          </div>
           <p>
             When using the API or embedding the map, you must attribute this
             website on your front-end.

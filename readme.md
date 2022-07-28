@@ -37,6 +37,9 @@ Note, to see markers on some of these maps, you need to go into "Map display opt
 ## Interact with in Python
 See the Cartes.io package at https://pypi.org/project/py-cartes-io/ - `pip install py-cartes-io`, which allows you to interact with the Cartes.io API in a fluent Pythonic way.
 
+## Interact with in JS
+See the Cartes.io NPM package at https://www.npmjs.com/package/@m-media/npm-cartes-io - `npm install @m-media/npm-cartes-io`, which allows you to interact with the Cartes.io API in a fluent way in JS.
+
 ## Development installation
 
 After running composer and npm, run the following commands to create the permissions and roles:
