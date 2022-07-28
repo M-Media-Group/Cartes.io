@@ -288,6 +288,7 @@ export default {
               delete headers.common["X-Requested-With"];
               delete headers.common["X-CSRF-TOKEN"];
               delete headers["X-Socket-Id"];
+              delete headers.common["X-Socket-ID"];
               return data;
             },
           ],
