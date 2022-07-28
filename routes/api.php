@@ -22,18 +22,12 @@ Route::get('categories', 'CategoryController@index');
 
 Route::get('categories/{category}/related', 'CategoryController@related');
 
-// Route::resource('users', 'UserController');
-
 Route::get('maps/{map}/related', 'MapController@related');
 
 Route::apiResource('maps', 'MapController');
 
-Route::get('markers', 'MarkerController@indexAll');
-
 Route::middleware('throttle:markers')->group(function () {
+    Route::get('markers', 'MarkerController@indexAll');
     Route::apiResource('maps.markers', 'MarkerController');
-});
-
-Route::middleware(['throttle:markers', 'auth:api'])->group(function () {
-    Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk');
+    Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk')->middleware('auth:api');
 });
