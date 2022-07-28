@@ -60,16 +60,6 @@ class MapController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return redirect('/');
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -143,17 +133,6 @@ class MapController extends Controller
         ];
 
         return View::make('embeds/map', $data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Map  $map
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Map $map)
-    {
-        //
     }
 
     /**
