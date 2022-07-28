@@ -29,27 +29,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
@@ -86,10 +65,10 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         $validatedData = $request->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id, 'min:3'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
         ]);
 
         $user->update(
@@ -110,7 +89,7 @@ class UserController extends Controller
             }
         }
 
-        return redirect('/users/'.urlencode($request->input('username')));
+        return redirect('/users/' . urlencode($request->input('username')));
     }
 
     /**
