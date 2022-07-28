@@ -48,11 +48,6 @@ class Category extends Model
     //     return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class);
     // }
 
-    public function views()
-    {
-        return $this->hasMany(\App\Models\CategoryView::class);
-    }
-
     /**
      * Undocumented function
      *

@@ -28,14 +28,13 @@ class CategoryController extends Controller
     {
         $search_query = $request->input('query');
         if ($request->wantsJson()) {
-            return Category::withCount('views')
-                ->when($search_query, function ($query, $search_query) {
-                    return $query->where('name', 'like', "%{$search_query}%");
-                })
+            return Category::when($search_query, function ($query, $search_query) {
+                return $query->where('name', 'like', "%{$search_query}%");
+            })
                 ->orderBy($request->input('orderBy', 'created_at'), 'desc')
                 ->get();
         } else {
-            return view('categories.index', ['categories' => Category::withCount('views')->simplePaginate(7)]);
+            return view('categories.index', ['categories' => Category::simplePaginate(7)]);
         }
     }
 
@@ -93,8 +92,6 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->with('markers')->firstOrFail();
         $this->authorize('view', $category);
-
-        $category->views()->create();
 
         if ($request->wantsJson()) {
             return $category;
