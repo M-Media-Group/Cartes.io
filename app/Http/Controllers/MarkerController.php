@@ -94,7 +94,7 @@ class MarkerController extends Controller
             $request->merge(['category' => $category->id]);
         }
 
-        $point = new Point($request->lng, $request->lat);
+        $point = new Point($request->lat, $request->lng);
 
         $this->validateCreate($request, $request->input(), $map, $point);
 
@@ -146,7 +146,7 @@ class MarkerController extends Controller
         $insertableData = [];
 
         foreach ($validated_data['markers'] as $index => $marker) {
-            $point = new Point($marker['lng'], $marker['lat']);
+            $point = new Point($marker['lat'], $marker['lng']);
 
             $this->validateCreate($request, $marker, $map, $point);
 

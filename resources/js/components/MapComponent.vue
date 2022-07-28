@@ -126,7 +126,7 @@
       <l-marker-cluster>
         <l-marker
           v-for="marker in activeMarkers"
-          :lat-lng="marker.location.coordinates"
+          :lat-lng="[marker.location.coordinates[1], marker.location.coordinates[0]]"
           :key="marker.id + 'marker'"
           @click="handleOpenedPopup($event, marker.id)"
         >

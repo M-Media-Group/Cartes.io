@@ -108,7 +108,7 @@ export default {
         200
       );
 
-      this.$root.$emit("flyTo", marker.location.coordinates);
+      this.$root.$emit("flyTo", [marker.location.coordinates[1], marker.location.coordinates[0]]);
     },
     listenForSocketConnect() {
       window.Echo.connector.pusher.connection.bind("connected", () => {
