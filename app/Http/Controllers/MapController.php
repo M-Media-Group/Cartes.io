@@ -12,8 +12,8 @@ class MapController extends Controller
     // Constructor with middlewares
     public function __construct()
     {
-        $this->middleware('throttle:5|10,1')->only('store');
-        $this->middleware('throttle:30')->only(['update', 'destroy']);
+        $this->middleware('throttle:maps')->only('store');
+        $this->middleware('throttle:maps')->only(['update', 'destroy']);
     }
     /**
      * Display a listing of the resource.

@@ -26,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->configureRateLimiting();
 
         parent::boot();
     }
@@ -83,8 +83,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('maps', function (Request $request) {
             return $request->user()
-                ? Limit::perMinute(60)->by($request->user()->id)
-                : Limit::perMinute(10)->by($request->ip());
+                ? Limit::perMinute(30)->by($request->user()->id)
+                : Limit::perMinute(5)->by($request->ip());
         });
     }
 }
