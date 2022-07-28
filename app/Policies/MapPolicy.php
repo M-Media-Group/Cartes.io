@@ -6,6 +6,10 @@ use App\Models\Map;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ *
+ * @todo slowly deprecating token in favor of map_token
+ */
 class MapPolicy
 {
     use HandlesAuthorization;
@@ -29,7 +33,7 @@ class MapPolicy
         if ($map->privacy !== 'private') {
             return true;
         }
-        if (request()->has('token') && $map->token == request()->input('token')) {
+        if ((request()->has('token') || request()->has('map_token')) && ($map->token == request()->input('token') || $map->token == request()->input('map_token'))) {
             return true;
         }
         if ($user && $map->user_id == $user->id) {
@@ -62,7 +66,7 @@ class MapPolicy
         if ($user && $map->user_id == $user->id) {
             return true;
         }
-        if ($map->token == request()->input('token')) {
+        if ($map->token == request()->input('token') || $map->token == request()->input('map_token')) {
             return true;
         }
         if ($user) {
@@ -84,7 +88,7 @@ class MapPolicy
         if ($map->user_id == $user->id) {
             return true;
         }
-        if ($map->token == request()->input('token')) {
+        if ($map->token == request()->input('token') || $map->token == request()->input('map_token')) {
             return true;
         }
 
@@ -115,7 +119,7 @@ class MapPolicy
         if ($user && $map->user_id == $user->id) {
             return true;
         }
-        if ($map->token == request()->input('token')) {
+        if ($map->token == request()->input('token') || $map->token == request()->input('map_token')) {
             return true;
         }
         if ($user) {
