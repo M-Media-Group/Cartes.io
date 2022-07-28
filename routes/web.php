@@ -15,8 +15,6 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 |
  */
 
-//Route::get('/', 'PostController@index');
-
 Route::get('/privacy-policy', function () {
     return view('privacy');
 });
@@ -39,8 +37,6 @@ Route::middleware(ProtectAgainstSpam::class)->group(function () {
 
 Route::get('/', 'HomeController@index')->name('home');
 
-//Route::resource('posts', 'PostController');
-
 Route::resources([
     'users' => 'UserController',
     'roles' => 'RoleController',
@@ -51,19 +47,3 @@ Route::resources([
 Route::post('me/apply/reporter', 'UserController@applyForReporter');
 
 Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
-
-Route::get('/ar/maps/{map}', 'MapController@showAr');
-
-// Route::get('{slug?}', function () {
-//     //http://feeds.bbci.co.uk/news/world/rss.xml
-//     $feed = Feeds::make([
-//         'https://www.reddit.com/r/breakingnews/.rss', 'https://www.reddit.com/r/news/.rss', 'http://feeds.bbci.co.uk/news/world/rss.xml', 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en',
-//     ]);
-//     $data = [
-//         'title' => $feed->get_title(),
-//         'permalink' => $feed->get_permalink(),
-//         'items' => $feed->get_items(),
-//     ];
-
-//     return View::make('map', $data);
-// });
