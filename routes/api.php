@@ -32,15 +32,15 @@ Route::apiResource('maps', 'MapController');
 
 Route::get('markers', 'MarkerController@index');
 
-Route::middleware(['throttle:30'])->group(function () {
+Route::middleware('throttle:markers')->group(function () {
     Route::put('maps/{map}/markers/{marker}', 'MarkerController@update');
     Route::delete('maps/{map}/markers/{marker}', 'MarkerController@destroy');
 });
 
-Route::middleware('throttle:15|120')->group(function () {
+Route::middleware('throttle:markers')->group(function () {
     Route::post('maps/{map}/markers', 'MarkerController@store');
 });
 
-Route::middleware(['throttle:15', 'auth:api'])->group(function () {
+Route::middleware(['throttle:markers', 'auth:api'])->group(function () {
     Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk');
 });
