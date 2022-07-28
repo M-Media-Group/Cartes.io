@@ -46,4 +46,6 @@ After running composer and npm, run the following commands to create the permiss
 - php artisan permission:create-role "power reporter" web "create markers in bulk"
 - php artisan permission:create-role reporter web "edit markers|create markers|delete markers|mark spam"
 
-Important note: previously the markers table was called incidents - there is a column in the maps table that requires manual updating in MySQL - see file `2020_11_26_152012_rename_maps_can_create_incidents_column_table`
+## Roadmap
+
+The general plan is that this repo will be simplified to containing just the core app and its API, while the frontend will be developed in a seperate repo, [here](https://github.com/M-Media-Group/Cartes.io-Web-App). If you're a frontend developer, please feel free to contribute on that repo to the development of the web-app.
