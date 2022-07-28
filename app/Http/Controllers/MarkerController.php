@@ -252,7 +252,7 @@ class MarkerController extends Controller
         return $marker->delete();
     }
 
-    private function validateCreate(Request $request, $marker, $map, $point)
+    private function validateCreate(Request $request, $marker, Map $map, Point $point)
     {
         // Merge the point to the marker
         $marker['point'] = $point;
