@@ -21,7 +21,7 @@ class MarkerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function indexAll(Request $request)
     {
         return Marker::where('is_spam', false)
             ->whereHas('map', function ($query) {
@@ -46,7 +46,7 @@ class MarkerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexByMap(Request $request, Map $map)
+    public function index(Request $request, Map $map)
     {
         $this->authorize('index', [Marker::class, $map, $request->input('map_token')]);
 

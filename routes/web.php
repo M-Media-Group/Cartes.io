@@ -41,15 +41,14 @@ Route::get('/', 'HomeController@index')->name('home');
 
 //Route::resource('posts', 'PostController');
 
-Route::resource('categories', 'CategoryController');
-
-Route::resource('users', 'UserController');
+Route::resources([
+    'users' => 'UserController',
+    'roles' => 'RoleController',
+    'maps' => 'MapController',
+    'categories' => 'CategoryController',
+]);
 
 Route::post('me/apply/reporter', 'UserController@applyForReporter');
-
-Route::resource('roles', 'RoleController');
-
-Route::resource('maps', 'MapController')->only(['index', 'show', 'store']);
 
 Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
 
