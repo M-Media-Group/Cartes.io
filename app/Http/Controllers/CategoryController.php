@@ -9,15 +9,6 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Instantiate a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //$this->middleware(['verified', 'optimizeImages'])->except(['index', 'show']);
-    }
 
     /**
      * Display a listing of the resource.
@@ -51,7 +42,6 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create', Category::class);
-
         return view('categories.create');
     }
 
