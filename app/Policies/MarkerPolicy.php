@@ -13,7 +13,7 @@ class MarkerPolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasPermissionTo('manage markers')) {
+        if ($user->hasPermissionTo('manage markers', 'web')) {
             return true;
         }
     }
@@ -79,7 +79,7 @@ class MarkerPolicy
             return $map->user_id == $user->id;
         }
 
-        return $user->hasVerifiedEmail() && $user->can('create markers in bulk');
+        return $user->hasVerifiedEmail() && $user->hasPermissionTo('create markers in bulk', 'web');
     }
 
     /**

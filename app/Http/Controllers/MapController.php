@@ -22,7 +22,6 @@ class MapController extends Controller
      */
     public function index(Request $request)
     {
-
         if (!$request->wantsJson()) {
             return view('publicMaps');
         }
@@ -105,7 +104,9 @@ class MapController extends Controller
     public function show(Request $request, Map $map)
     {
         $this->authorize('view', $map);
+
         $map->load('categories');
+
         if ($request->wantsJson()) {
             return $map;
         }
