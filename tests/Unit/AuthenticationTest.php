@@ -29,7 +29,7 @@ class AuthenticationTest extends TestCase
 
     public function testRedirectLoggedOutUserTest()
     {
-        $response = $this->get('/notifications');
+        $response = $this->get('/email/verify');
         $response->assertRedirect('/login');
     }
 
@@ -41,7 +41,11 @@ class AuthenticationTest extends TestCase
 
     public function testLoginHoneypot()
     {
-        $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/login', []);
+        $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/login', [
+            'email' => 'test@test.com',
+            'password' => 'test',
+            'my_name' => 'test', // Honeypot field
+        ]);
         $response->assertStatus(200);
     }
 
