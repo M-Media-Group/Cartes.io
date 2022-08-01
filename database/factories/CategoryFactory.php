@@ -2,12 +2,22 @@
 
 namespace Database\Factories;
 
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(App\Models\Category::class, function (Faker $faker) {
-    return [
-        'name' => $faker->text(32),
-        'slug' => $faker->uuid,
-        'icon' => '/images/logo.svg',
-    ];
-});
+class CategoryFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return
+            [
+                'name' => $this->faker->text(16),
+                'slug' => $this->faker->uuid,
+                'icon' => '/images/logo.svg',
+            ];
+    }
+}
