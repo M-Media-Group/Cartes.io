@@ -112,8 +112,6 @@ class WebRouteTest extends TestCase
      */
     private function testNonSkippedUrls($assertions = null)
     {
-        // $this->withoutEvents();
-
         $testedUrls = [];
         foreach ($this->nonSkippedRoutes() as $route) {
             $response = $this->callRoute($route)['response'];
@@ -149,8 +147,13 @@ class WebRouteTest extends TestCase
     private function callRoute(\Illuminate\Routing\Route $route): array
     {
         $start = $this->microtimeFloat();
+
+        /**
+         * @todo fix weird issue with these lines - first call always returns a 404 while the second works
+         */
         $response = $this->call('GET', $route->uri());
         $response = $this->call('GET', $route->uri());
+
         $end = $this->microtimeFloat();
         $time = round($end - $start, 3);
         $this->assertLessThan(15, $time, 'too long time for ' . $route->uri());
