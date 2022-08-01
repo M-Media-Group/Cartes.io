@@ -15,7 +15,7 @@ class CategoryFactory extends Factory
     {
         return
             [
-                'name' => $this->faker->text(16),
+                'name' => $this->faker->words(2, true),
                 'slug' => $this->faker->uuid,
                 'icon' => '/images/logo.svg',
             ];

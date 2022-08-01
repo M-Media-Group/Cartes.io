@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Category;
 use App\Models\Marker;
+use App\Models\User;
 use Tests\TestCase;
 
 class MarkerTest extends TestCase
@@ -77,6 +78,82 @@ class MarkerTest extends TestCase
         $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testFailCreateMarkerInBulkUnauthenticated()
+    {
+        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = $marker['location']->getLat();
+        $marker['lng'] = $marker['location']->getLng();
+        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response->assertStatus(401);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testFailCreateMarkerInBulkUnauthorised()
+    {
+        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'api');
+
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = $marker['location']->getLat();
+        $marker['lng'] = $marker['location']->getLng();
+        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response->assertStatus(403);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCreateMarkerInBulk()
+    {
+        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = $marker['location']->getLat();
+        $marker['lng'] = $marker['location']->getLng();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $markers = ['markers' => [$marker->toArray()]];
+
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = $marker['location']->getLat();
+        $marker['lng'] = $marker['location']->getLng();
+        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', $markers);
+        $response->assertStatus(200);
     }
 
     /**

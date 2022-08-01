@@ -21,7 +21,7 @@ class MarkerFactory extends Factory
             [
                 'token' => $faker->uuid,
                 'location' => $point,
-                'description' => $faker->text(191),
+                'description' => $faker->words(1, true),
                 'category_id' => Category::factory(),
             ];
     }
