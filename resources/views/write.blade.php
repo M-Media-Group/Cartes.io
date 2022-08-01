@@ -30,13 +30,12 @@
         </div>
     </div>
     <br />
-    @markdown
-    @endmarkdown
-    <br />
     {{-- && Auth::user()->hasVerifiedEmail() RE-ADD this when ready with emails --}}
     @if (Auth::user()->can('apply to report'))
-        <a href="#" class="btn btn-primary mb-3" onclick="event.preventDefault();
-                                                 document.getElementById('reporter-form').submit();">I understand and
+        <a href="#" class="btn btn-primary mb-3"
+            onclick="event.preventDefault();
+                                                 document.getElementById('reporter-form').submit();">I
+            understand and
             accept these rules
         </a>
         <form id="reporter-form" action="/me/apply/reporter" method="POST" style="display: none;">
