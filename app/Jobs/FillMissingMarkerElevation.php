@@ -39,8 +39,8 @@ class FillMissingMarkerElevation implements ShouldQueue
 
             $markers->each(function ($marker) use (&$coordinates) {
                 $coordinates[] = [
-                    'latitude' => $marker->x,
-                    'longitude' => $marker->y,
+                    'latitude' => $marker->y,
+                    'longitude' => $marker->x,
                 ];
             });
 
