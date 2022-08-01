@@ -148,10 +148,6 @@ class WebRouteTest extends TestCase
     {
         $start = $this->microtimeFloat();
 
-        /**
-         * @todo fix weird issue with these lines - first call always returns a 404 while the second works
-         */
-        $response = $this->call('GET', $route->uri());
         $response = $this->call('GET', $route->uri());
 
         $end = $this->microtimeFloat();
