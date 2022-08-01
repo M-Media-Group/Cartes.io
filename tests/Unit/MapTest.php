@@ -6,6 +6,17 @@ use Tests\TestCase;
 
 class MapTest extends TestCase
 {
+
+    protected $map;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $post = \App\Models\Map::firstOrCreate();
+        $this->map = $post;
+    }
+
     /**
      * A basic test example.
      *
@@ -13,11 +24,11 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapTest()
     {
-        $post = \App\Models\Map::firstOrFail();
-        $response = $this->get('/maps/'.$post->uuid.'#2/43.7/7.3');
+        $response = $this->get('/maps/' . $this->map->uuid);
+
         $response->assertStatus(200);
 
-        $response = $this->get('/api/maps/'.$post->uuid);
+        $response = $this->getJson('/api/maps/' . $this->map->uuid);
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
@@ -29,8 +40,7 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapEmbedTest()
     {
-        $post = \App\Models\Map::firstOrFail();
-        $response = $this->get('/embeds/maps/'.$post->uuid.'#2/43.7/7.3');
+        $response = $this->get('/embeds/maps/' . $this->map->uuid . '#2/43.7/7.3');
 
         $response->assertStatus(200);
         $response->assertDontSee('map-token');
@@ -45,9 +55,9 @@ class MapTest extends TestCase
     public function testSeeAllMapsTest()
     {
         $response = $this->get('/maps');
-        $response->assertStatus(200);
+        $response->assertStatus(200, 'Maps index page should return a 200');
 
-        $response = $this->get('/api/maps');
+        $response = $this->getJson('/api/maps');
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
