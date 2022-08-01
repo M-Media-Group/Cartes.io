@@ -27,9 +27,9 @@ Route::get('/apply', function () {
     return view('write');
 })->middleware('auth');
 
-Route::get('/about', function () {
-    return view('about');
-});
+// Route::get('/about', function () {
+//     return view('about');
+// });
 
 Route::middleware(ProtectAgainstSpam::class)->group(function () {
     Auth::routes(['verify' => true]);
@@ -37,10 +37,11 @@ Route::middleware(ProtectAgainstSpam::class)->group(function () {
 
 Route::get('/', 'HomeController@index')->name('home');
 
+Route::resource('maps', 'MapController')->except(['create']);
+
 Route::resources([
     'users' => 'UserController',
     'roles' => 'RoleController',
-    'maps' => 'MapController',
     'categories' => 'CategoryController',
 ]);
 
