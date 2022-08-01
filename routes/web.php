@@ -39,8 +39,9 @@ Route::get('/', 'HomeController@index')->name('home');
 
 Route::resource('maps', 'MapController')->except(['create']);
 
+Route::resource('users', 'UserController')->except(['create']);
+
 Route::resources([
-    'users' => 'UserController',
     'roles' => 'RoleController',
     'categories' => 'CategoryController',
 ]);

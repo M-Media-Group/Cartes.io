@@ -66,7 +66,27 @@ class WebRouteTest extends TestCase
     {
         $this->testNonSkippedUrls(function ($response, $route) {
             // If the route is protected by auth middleware, it should return a 302 since we are not logged in
-            if (in_array('auth:sanctum', $route->computedMiddleware)) {
+            if (in_array('auth:api', $route->computedMiddleware)) {
+                $this->assertEquals(302, $response->getStatusCode(), $route->uri() . 'failed to load');
+                $this->assertStringContainsString('Unauthenticated.', $response->exception->getMessage(), $route->uri() . 'failed to redirect to login');
+                $this->assertStringContainsString('/login', $response->headers->get('Location'), $route->uri() . 'failed to redirect to login');
+            }
+        });
+    }
+
+    /**
+     * Verify that all public GET routes are available and do not throw an error. The ones that require authnetication should throw a 403
+     * Note: this is an example test to show how you can use the testNonSkippedUrls method. Feel free to add your own or replace this one!
+     *
+     * @return void
+     */
+    public function testAllGETRoutesWithoutDynamicParamsLoggedIn()
+    {
+        $this->be($this->user);
+
+        $this->testNonSkippedUrls(function ($response, $route) {
+            // If the route is protected by auth middleware, it should return a 302 since we are not logged in
+            if (in_array('auth:api', $route->computedMiddleware)) {
                 $this->assertEquals(302, $response->getStatusCode(), $route->uri() . 'failed to load');
                 $this->assertStringContainsString('Unauthenticated.', $response->exception->getMessage(), $route->uri() . 'failed to redirect to login');
                 $this->assertStringContainsString('/login', $response->headers->get('Location'), $route->uri() . 'failed to redirect to login');
