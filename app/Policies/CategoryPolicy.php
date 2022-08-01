@@ -12,7 +12,7 @@ class CategoryPolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasPermissionTo('manage categories')) {
+        if ($user->hasPermissionTo('manage categories', 'web')) {
             return true;
         }
     }

@@ -12,7 +12,7 @@ class RolePolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasPermissionTo('manage roles')) {
+        if ($user->hasPermissionTo('manage roles', 'web')) {
             return true;
         }
     }

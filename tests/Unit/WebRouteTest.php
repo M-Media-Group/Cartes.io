@@ -82,14 +82,12 @@ class WebRouteTest extends TestCase
      */
     public function testAllGETRoutesWithoutDynamicParamsLoggedIn()
     {
-        $this->be($this->user);
+        $this->actingAs($this->user, 'api');
 
         $this->testNonSkippedUrls(function ($response, $route) {
             // If the route is protected by auth middleware, it should return a 302 since we are not logged in
             if (in_array('auth:api', $route->computedMiddleware)) {
-                $this->assertEquals(302, $response->getStatusCode(), $route->uri() . 'failed to load');
-                $this->assertStringContainsString('Unauthenticated.', $response->exception->getMessage(), $route->uri() . 'failed to redirect to login');
-                $this->assertStringContainsString('/login', $response->headers->get('Location'), $route->uri() . 'failed to redirect to login');
+                $this->assertEquals(200, $response->getStatusCode(), $route->uri() . 'failed to load when logged in');
             }
         });
     }
@@ -127,7 +125,7 @@ class WebRouteTest extends TestCase
             } catch (\Exception $e) {
                 fwrite(STDERR, print_r("\n" . $e . "\n", true));
                 // Mark the test as failed if the assertion fails
-                $this->fail($route->uri() . ' failed to load with error ' . $e->getMessage());
+                $this->fail($route->uri() . ' failed to load with error ' . $e->getMessage() . ' . ' . $response->exception->getMessage());
             }
         }
         $this->assertIsArray($testedUrls, 'No URLS tested');
