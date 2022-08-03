@@ -173,5 +173,6 @@ class MapController extends Controller
     {
         $this->authorize('forceDelete', $map);
         $map->delete();
+        return response()->json(['success' => true]);
     }
 }

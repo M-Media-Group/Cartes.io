@@ -248,8 +248,8 @@ class MarkerController extends Controller
     public function destroy(Request $request, Map $map, Marker $marker)
     {
         $this->authorize('forceDelete', [$marker, $request->input('map_token')]);
-
-        return $marker->delete();
+        $marker->delete();
+        return response()->json(['success' => true]);
     }
 
     private function validateCreate(Request $request, $marker, Map $map, Point $point)
