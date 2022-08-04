@@ -22,7 +22,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['localhost', config('app.url'), config('app.spa_url')],
+    // Probably need to move the specific urls for the spa to another middleware
+    'allowed_origins' => ['localhost', config('app.url'), config('app.spa_url'), '*'],
 
     'allowed_origins_patterns' => [],
 
