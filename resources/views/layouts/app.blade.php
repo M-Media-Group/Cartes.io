@@ -2,7 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @include('components.head', [ 'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true
+    @include('components.head', [
+        'index_and_googlebots' => isset($index_and_googlebots) ? $index_and_googlebots : true,
     ])
 </head>
 
@@ -27,6 +28,7 @@
                             <hr>
                         @endif
                         <p>{{ config('app.name') }}.</p>
+                        <p>Try the <a href="https://app.cartes.io">next-gen Beta version of Cartes.io</a>!</p>
                         <p>This is an open source project. Feel free to contribute to the development on <a
                                 href="https://github.com/M-Media-Group/Cartes.io">GitHub</a></p>
                         @if (!Auth::check())
