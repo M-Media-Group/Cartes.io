@@ -27,6 +27,10 @@ Route::get('/apply', function () {
     return view('write');
 })->middleware('auth');
 
+Route::get('csrf-token', function () {
+    return csrf_token();
+});
+
 // Route::get('/about', function () {
 //     return view('about');
 // });

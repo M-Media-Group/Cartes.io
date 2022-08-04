@@ -56,6 +56,9 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    // The URL for the frontend SPA
+    'spa_url' => env('SPA_URL', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
