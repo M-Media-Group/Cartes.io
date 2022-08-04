@@ -17,6 +17,10 @@ return [
 
     'paths' => [
         'api/*', 'csrf-token', 'login', 'logout', 'register',
+        /**
+         * @todo verify that exposing only the following paths is safe
+         */
+        'oauth/personal-access-tokens'
         //  'password/email', 'password/reset', 'password/reset/{token}', 'password/reset/{token}/{email}'
     ],
 
