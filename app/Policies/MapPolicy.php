@@ -16,7 +16,7 @@ class MapPolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasPermissionTo('manage maps')) {
+        if ($user->hasPermissionTo('manage maps', 'web')) {
             return true;
         }
     }
