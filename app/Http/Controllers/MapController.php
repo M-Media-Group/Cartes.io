@@ -50,6 +50,14 @@ class MapController extends Controller
                 $q->whereIn('category_id', $category_ids);
             });
         });
+
+        $query->when($request->input('withMine'), function ($query) use ($request) {
+            if (!$request->user()) {
+                return abort(401, 'You need to be authenticated to get your own maps.');
+            };
+            return $query->orWhere('user_id', $request->user()->id);
+        });
+
         $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
 
         return $query->paginate();
