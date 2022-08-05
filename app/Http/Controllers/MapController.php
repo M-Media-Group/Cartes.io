@@ -34,6 +34,7 @@ class MapController extends Controller
         $request->validate([
             'ids' => 'nullable|array|between:1,100',
             'category_ids' => 'nullable|array|between:1,10',
+            'withMine' => 'nullable|boolean',
             'orderBy' => 'nullable|string',
         ]);
 
