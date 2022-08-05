@@ -23,6 +23,9 @@ class MapController extends Controller
     public function index(Request $request)
     {
         if (!$request->wantsJson()) {
+            if (config('app.spa_url')) {
+                return redirect(config('app.spa_url'));
+            }
             return view('publicMaps');
         }
 
@@ -111,6 +114,11 @@ class MapController extends Controller
             return $map;
         }
 
+        // Redirect away to the app.cartes.io version
+        if ($map->shouldUseNewApp) {
+            return redirect(config('app.spa_url') . '/maps/' . $map->slug);
+        }
+
         $data = [
             'token' => $request->session()->get('token'),
             'map' => $map,
@@ -132,6 +140,11 @@ class MapController extends Controller
         $data = [
             'map' => $map->load('categories'),
         ];
+
+        // Redirect away to the app.cartes.io version
+        if ($map->shouldUseNewApp) {
+            return redirect(config('app.spa_url') . '/maps/' . $map->slug . '/embed');
+        }
 
         return View::make('embeds/map', $data);
     }
@@ -157,6 +170,13 @@ class MapController extends Controller
             'options.limit_to_geographical_body_type' => 'nullable|in:land,water,no',
             'options.links' => 'nullable|in:required,optional,disabled',
         ]);
+
+        // If the privacy is set to private, we need to ensure that there is a currently logged in user
+        if (!$map->user_id && $request->input('privacy') === 'private' && !$request->user()) {
+            return response()->json(['error' => 'You must be logged in to make this map private'], 401);
+        } elseif (!$map->user_id && $request->input('privacy') === 'private') {
+            $map->user_id = $request->user()->id;
+        }
 
         $map->update($validatedData);
 

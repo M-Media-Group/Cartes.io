@@ -99,6 +99,16 @@ class Map extends Model
             ->with("categories");
     }
 
+    public function getShouldUseNewAppAttribute()
+    {
+        // If there is no SPA_URL set, return false
+        if (!config('app.spa_url')) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Simple collaborative  filtering.
      *
