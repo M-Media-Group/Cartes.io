@@ -41,9 +41,25 @@ class MapController extends Controller
         $query = Map::with('categories')->withCount('markers');
 
         if ($request->input('ids')) {
-            $query->whereIn('uuid', $request->input('ids'))->where('privacy', '!=', 'private');
+            $query->where(function ($query) use ($request) {
+                $query->whereIn('uuid', $request->input('ids'))->where('privacy', '!=', 'private');
+
+                $query->when($request->input('withMine'), function ($query) use ($request) {
+                    if (!$request->user()) {
+                        return abort(401, 'You need to be authenticated to get your own maps.');
+                    };
+                    return $query->orWhere('user_id', $request->user()->id);
+                });
+            });
         } else {
-            $query->where('privacy', 'public');
+            $query->when($request->input('withMine'), function ($query) use ($request) {
+                if (!$request->user()) {
+                    return abort(401, 'You need to be authenticated to get your own maps.');
+                };
+                return $query->where('user_id', $request->user()->id);
+            }, function ($query) {
+                return $query->where('privacy', 'public');
+            });
         }
 
         $query->when($request->input('category_ids'), function ($query, $category_ids) {
@@ -52,12 +68,6 @@ class MapController extends Controller
             });
         });
 
-        $query->when($request->input('withMine'), function ($query) use ($request) {
-            if (!$request->user()) {
-                return abort(401, 'You need to be authenticated to get your own maps.');
-            };
-            return $query->orWhere('user_id', $request->user()->id);
-        });
 
         $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
 
