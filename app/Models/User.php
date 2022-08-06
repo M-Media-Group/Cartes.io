@@ -51,6 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\Map::class);
     }
 
+    public function publicMaps()
+    {
+        return $this->maps()->public();
+    }
+
     public function markers()
     {
         return $this->hasMany(\App\Models\Marker::class);

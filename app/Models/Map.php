@@ -34,6 +34,9 @@ class Map extends Model
         'created_at' => 'datetime:c',
         'updated_at' => 'datetime:c',
     ];
+    protected $appends = [
+        'is_linked_to_user'
+    ];
     // protected $dateFormat = 'c';
 
     //
@@ -78,6 +81,11 @@ class Map extends Model
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    public function contributors()
+    {
+        return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class);
+    }
+
     // public function expired_markers()
     // {
     //     return $this->hasMany(\App\Models\Marker::class);
@@ -109,6 +117,11 @@ class Map extends Model
         return true;
     }
 
+    public function getIsLinkedToUserAttribute()
+    {
+        return !!$this->user_id;
+    }
+
     /**
      * Simple collaborative  filtering.
      *
@@ -123,5 +136,10 @@ class Map extends Model
                 ->where($this->getTable() . ".privacy", "=", "public")
                 ->with("categories");
         });
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where("privacy", "=", "public");
     }
 }

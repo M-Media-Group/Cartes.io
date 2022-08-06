@@ -26,11 +26,28 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
         $this->authorize('view', $user);
 
-        return view('users.show', ['user' => $user]);
+        if (!$request->wantsJson()) {
+            return view('users.show', ['user' => $user]);
+        }
+
+        $request->validate([
+            'with' => 'nullable|array',
+            'with.*' => 'nullable|string',
+        ]);
+
+        if (in_array('maps', $request->input('with'))) {
+            $user->load('publicMaps');
+        }
+
+        if (!$request->user() || $request->user()->id !== $user->id) {
+            $user->makeHidden(['email', 'name', 'surname', 'id', 'updated_at', 'is_public']);
+        }
+
+        return $user;
     }
 
     /**

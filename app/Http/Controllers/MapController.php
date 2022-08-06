@@ -58,7 +58,7 @@ class MapController extends Controller
                 };
                 return $query->where('user_id', $request->user()->id);
             }, function ($query) {
-                return $query->where('privacy', 'public');
+                return $query->public();
             });
         }
 
