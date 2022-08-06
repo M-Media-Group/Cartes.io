@@ -86,6 +86,11 @@ class Map extends Model
         return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class);
     }
 
+    public function publicContributors()
+    {
+        return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class)->where('is_public', true);
+    }
+
     // public function expired_markers()
     // {
     //     return $this->hasMany(\App\Models\Marker::class);

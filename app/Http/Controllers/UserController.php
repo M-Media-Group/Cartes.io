@@ -39,8 +39,15 @@ class UserController extends Controller
             'with.*' => 'nullable|string',
         ]);
 
-        if (in_array('maps', $request->input('with'))) {
-            $user->load('publicMaps');
+        if ($request->input('with')) {
+            $load = [];
+            if (in_array('maps', $request->input('with'))) {
+                $load[] = 'publicMaps';
+            }
+            if (in_array('contributions', $request->input('with'))) {
+                $load[] = 'publicMapsContributedTo';
+            }
+            $user->load($load);
         }
 
         if (!$request->user() || $request->user()->id !== $user->id) {
