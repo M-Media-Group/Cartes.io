@@ -31,6 +31,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token',
     ];
 
+    protected $casts = [
+        'is_public' => 'boolean',
+    ];
+
     /**
      * Get the route key for the model.
      *
