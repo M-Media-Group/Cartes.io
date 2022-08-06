@@ -25,6 +25,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('index');
+
         return User::get();
     }
 
@@ -36,7 +38,11 @@ class UserController extends Controller
      */
     public function show($username)
     {
-        return view('users.show', ['user' => User::where('username', $username)->firstOrFail()]);
+        $user = User::where('username', $username)->firstOrFail();
+
+        $this->authorize('view', $user);
+
+        return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -48,7 +54,9 @@ class UserController extends Controller
     public function edit($username)
     {
         $user = User::where('username', urldecode($username))->firstOrFail();
+
         $this->authorize('update', $user);
+
         $roles = Role::get();
 
         return view('users.edit', compact('user', 'roles'));
@@ -120,6 +128,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $this->authorize('forceDelete', $user);
     }
 }
