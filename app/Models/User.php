@@ -19,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'surname', 'email', 'password', 'avatar',
+        'username', 'name', 'surname', 'email', 'password', 'avatar', 'is_public', 'description'
     ];
 
     /**
@@ -63,7 +63,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function scopePublic($query)
     {
-        return $query;
-        // return $query->where('is_public', true);
+        return $query->where('is_public', true);
     }
 }

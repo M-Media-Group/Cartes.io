@@ -23,7 +23,7 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function index(User $user)
+    public function index(?User $user)
     {
         return true;
     }
@@ -35,12 +35,12 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(?User $user, User $model)
     {
         if ($model->is_public) {
             return true;
         }
-        if ($user->id === $model->id) {
+        if ($user && $user->id === $model->id) {
             return true;
         }
         return false;

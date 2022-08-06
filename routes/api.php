@@ -25,6 +25,8 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
 
     Route::apiResource('maps', 'MapController');
 
+    Route::apiResource('users', 'UserController')->only(['index', 'show']);
+
     Route::middleware('throttle:markers')->group(function () {
         Route::get('markers', 'MarkerController@indexAll');
         Route::apiResource('maps.markers', 'MarkerController');
@@ -41,5 +43,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('maps/{map}/claim', 'MapController@claim');
     Route::delete('maps/{map}/claim', 'MapController@unclaim');
 
-    Route::apiResource('users', 'UserController')->except(['create']);
+    Route::apiResource('users', 'UserController')->except(['create', 'index', 'show']);
 });

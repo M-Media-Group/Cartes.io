@@ -9,25 +9,15 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     /**
-     * Instantiate a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('verified')->except(['index', 'show', 'applyForReporter']);
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $this->authorize('index');
+        $this->authorize('index', [User::class]);
 
-        return User::public()->paginate();
+        return User::public()->paginate()->makeHidden(['email', 'name', 'surname', 'id', 'updated_at']);
     }
 
     /**
@@ -68,21 +58,17 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $this->authorize('update', $user);
+
         $validatedData = $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
+            'description' => 'nullable|string|max:191',
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'is_public' => ['nullable', 'boolean'],
         ]);
 
-        $user->update(
-            [
-                'username' => $request->input('username'),
-                'name' => $request->input('name'),
-                'surname' => $request->input('surname'),
-                'email' => $request->input('email'),
-            ]
-        );
+        $user->update($validatedData);
 
         if ($request->user()->can('manage user roles')) {
             $roles = $request->input('roles');
