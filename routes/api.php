@@ -36,9 +36,12 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
 
 // Authenticated routes
 Route::middleware('auth:api')->group(function () {
+
     Route::get('/user', function (Request $request) {
         return $request->user();
     })->name('user');
+
+    Route::put('/user', 'UserController@updateSelf');
 
     Route::post('maps/{map}/claim', 'MapController@claim');
     Route::delete('maps/{map}/claim', 'MapController@unclaim');

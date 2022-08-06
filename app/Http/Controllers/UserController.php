@@ -62,8 +62,8 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
             'description' => 'nullable|string|max:191',
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'surname' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'is_public' => ['nullable', 'boolean'],
         ]);
@@ -79,7 +79,17 @@ class UserController extends Controller
             }
         }
 
+        if ($request->wantsJson()) {
+            return $user;
+        }
+
         return redirect('/users/' . urlencode($request->input('username')));
+    }
+
+    public function updateSelf(Request $request)
+    {
+        $user = $request->user();
+        return $this->update($request, $user);
     }
 
     /**
