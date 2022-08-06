@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-})->name('user');
-
+//  Optionally authenticated routes
 Route::middleware(SetAuthDriverToApi::class)->group(function () {
     Route::get('categories', 'CategoryController@index');
 
@@ -33,4 +30,14 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
         Route::apiResource('maps.markers', 'MarkerController');
         Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk')->middleware('auth:api');
     });
+});
+
+// Authenticated routes
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->name('user');
+
+    Route::post('maps/{map}/claim', 'MapController@claim');
+    Route::delete('maps/{map}/claim', 'MapController@unclaim');
 });

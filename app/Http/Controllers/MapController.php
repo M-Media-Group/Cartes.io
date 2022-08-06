@@ -203,6 +203,36 @@ class MapController extends Controller
     }
 
     /**
+     * Attach the map to the current user
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Map $map
+     * @return \Illuminate\Http\Response
+     */
+    public function claim(Request $request, Map $map)
+    {
+        $this->authorize('update', $map);
+        $map->user_id = $request->user()->id;
+        $map->save();
+        return $map;
+    }
+
+    /**
+     * Detach the user associated with the map
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Map $map
+     * @return \Illuminate\Http\Response
+     */
+    public function unClaim(Map $map)
+    {
+        $this->authorize('update', $map);
+        $map->user_id = null;
+        $map->save();
+        return $map;
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Map  $map
