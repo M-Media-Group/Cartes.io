@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $this->authorize('index', [User::class]);
 
-        return User::public()->paginate()->makeHidden(['email', 'name', 'surname', 'id', 'updated_at']);
+        return User::public()->paginate()->makeHidden(['email', 'name', 'surname', 'id', 'updated_at', 'is_public']);
     }
 
     /**
