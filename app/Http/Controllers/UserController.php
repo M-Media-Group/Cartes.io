@@ -27,7 +27,7 @@ class UserController extends Controller
     {
         $this->authorize('index');
 
-        return User::get();
+        return User::public()->paginate();
     }
 
     /**
@@ -36,10 +36,8 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($username)
+    public function show(User $user)
     {
-        $user = User::where('username', $username)->firstOrFail();
-
         $this->authorize('view', $user);
 
         return view('users.show', ['user' => $user]);
@@ -51,10 +49,8 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($username)
+    public function edit(User $user)
     {
-        $user = User::where('username', urldecode($username))->firstOrFail();
-
         $this->authorize('update', $user);
 
         $roles = Role::get();

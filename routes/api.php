@@ -40,4 +40,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('maps/{map}/claim', 'MapController@claim');
     Route::delete('maps/{map}/claim', 'MapController@unclaim');
+
+    Route::apiResource('users', 'UserController')->except(['create']);
 });

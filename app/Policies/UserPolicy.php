@@ -25,7 +25,7 @@ class UserPolicy
      */
     public function index(User $user)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,13 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return true;
+        if ($model->is_public) {
+            return true;
+        }
+        if ($user->id === $model->id) {
+            return true;
+        }
+        return false;
     }
 
     /**

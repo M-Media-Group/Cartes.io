@@ -31,6 +31,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token',
     ];
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'username';
+    }
+
     public function seenCategories()
     {
         return $this->belongsToMany(\App\Models\Category::class, 'category_views');
@@ -49,5 +59,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isSuperAdmin()
     {
         return $this->id == config('blog.super_admin_id');
+    }
+
+    public function scopePublic($query)
+    {
+        return $query;
+        // return $query->where('is_public', true);
     }
 }
