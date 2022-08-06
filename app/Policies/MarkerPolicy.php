@@ -48,9 +48,6 @@ class MarkerPolicy
      */
     public function create(?User $user, Map $map, $token = null)
     {
-        if (request()->wantsJson()) {
-            $user = request()->user('api');
-        }
         if ($token == $map->token) {
             return true;
         }
