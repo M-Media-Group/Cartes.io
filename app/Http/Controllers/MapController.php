@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MapResource;
 use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -38,7 +39,7 @@ class MapController extends Controller
             'orderBy' => 'nullable|string',
         ]);
 
-        $query = Map::with('categories')->withCount('markers');
+        $query = Map::with(['categories', 'publicContributors', 'user'])->withCount('markers');
 
         if ($request->input('ids')) {
             $query->where(function ($query) use ($request) {
@@ -70,7 +71,7 @@ class MapController extends Controller
 
         $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
 
-        return $query->paginate();
+        return MapResource::collection($query->paginate());
     }
 
     public function related(Request $request, Map $map)
@@ -103,7 +104,7 @@ class MapController extends Controller
         $result->makeVisible(['token']);
 
         if ($request->wantsJson()) {
-            return response()->json($result);
+            return new MapResource($result);
         } else {
             return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
@@ -119,10 +120,10 @@ class MapController extends Controller
     {
         $this->authorize('view', $map);
 
-        $map->load(['categories', 'publicContributors']);
+        $map->load(['categories', 'publicContributors', 'user']);
 
         if ($request->wantsJson()) {
-            return $map;
+            return new MapResource($map);
         }
 
         // Redirect away to the app.cartes.io version
