@@ -51,6 +51,10 @@ class Marker extends Pivot
         'is_spam' => 'boolean',
     ];
 
+    protected $with = [
+        'category'
+    ];
+
     /**
      * The "booting" method of the model.
      *
