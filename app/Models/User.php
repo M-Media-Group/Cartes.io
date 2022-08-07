@@ -67,7 +67,23 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function mapsContributedTo()
     {
-        return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class, 'user_id', 'id', 'id', 'map_id');
+        return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class, 'user_id', 'id', 'id', 'map_id')->groupBy([
+            'map_id',
+            'user_id',
+            'maps.user_id',
+            'markers.user_id',
+            'maps.id',
+            'maps.uuid',
+            'maps.slug',
+            'maps.title',
+            'maps.description',
+            'maps.privacy',
+            'maps.users_can_create_markers',
+            'maps.options',
+            'maps.created_at',
+            'maps.updated_at',
+            'maps.token',
+        ]);
     }
 
     public function publicMapsContributedTo()
