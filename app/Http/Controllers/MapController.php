@@ -68,7 +68,6 @@ class MapController extends Controller
             });
         });
 
-
         $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
 
         return $query->paginate();
@@ -97,17 +96,10 @@ class MapController extends Controller
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
         ]);
 
-        $result = new Map(
-            [
-                'title' => $request->input('title'),
-                'description' => $request->input('description'),
-                'slug' => $request->input('slug'),
-                'privacy' => $request->input('privacy'),
-                'users_can_create_markers' => $request->input('users_can_create_markers'),
-            ]
-        );
+        $result = new Map($validatedData);
 
         $result->save();
+
         $result->makeVisible(['token']);
 
         if ($request->wantsJson()) {
@@ -127,7 +119,7 @@ class MapController extends Controller
     {
         $this->authorize('view', $map);
 
-        $map->load('categories');
+        $map->load(['categories', 'publicContributors']);
 
         if ($request->wantsJson()) {
             return $map;
