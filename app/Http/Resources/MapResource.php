@@ -30,6 +30,9 @@ class MapResource extends JsonResource
             'user' => $this->when($this->user && $this->user->is_public, $this->user),
             // Show the token only if the model was just created
             'token' => $this->when($this->wasRecentlyCreated, $this->token),
+            'public_contributors' => $this->when($this->public_contributors, $this->public_contributors),
+            'related' => $this->when($this->related, $this->related),
+            'markers' => $this->when($this->markers, $this->markers),
         ];
     }
 }
