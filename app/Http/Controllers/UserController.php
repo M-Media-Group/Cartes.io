@@ -13,11 +13,11 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
         $this->authorize('index', [User::class]);
 
-        return User::public()->paginate()->makeHidden(['email', 'name', 'surname', 'id', 'updated_at', 'is_public']);
+        return $user->public()->selectOnlyPublicAttributes()->paginate();
     }
 
     /**
