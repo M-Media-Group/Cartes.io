@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $this->authorize('index', [User::class]);
 
-        return $user->public()->selectOnlyPublicAttributes()->paginate();
+        return $user->public()->selectOnlyPublicAttributes()->withCount('publicMaps')->paginate();
     }
 
     /**
