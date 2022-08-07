@@ -17,8 +17,6 @@ class ExampleTest extends TestCase
     public function testSeeHomepageTest()
     {
         $response = $this->actingAs(\App\Models\User::firstOrFail())->get('/');
-
-        $response->assertStatus(200);
-        $response->assertSeeText(config('app.name'));
+        $response->assertStatus(301);
     }
 }

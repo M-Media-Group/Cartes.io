@@ -39,12 +39,6 @@ Route::middleware(ProtectAgainstSpam::class)->group(function () {
     Auth::routes(['verify' => true]);
 });
 
-Route::get('/', 'HomeController@index')->name('home');
-
-Route::resource('maps', 'MapController')->except(['create']);
-
-Route::resource('users', 'UserController')->except(['create']);
-
 Route::resources([
     'roles' => 'RoleController',
     'categories' => 'CategoryController',
@@ -53,3 +47,10 @@ Route::resources([
 Route::post('me/apply/reporter', 'UserController@applyForReporter');
 
 Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
+
+if (config('app.spa_url')) {
+    // Catch all and redirect to web-app
+    Route::get('{any}', function () {
+        return redirect(config('app.spa_url'), 301);
+    })->where('any', '.*');
+}

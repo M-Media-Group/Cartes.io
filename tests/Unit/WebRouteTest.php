@@ -101,7 +101,7 @@ class WebRouteTest extends TestCase
     {
         $response = $this->get('/404');
 
-        $response->assertNotFound();
+        $response->assertStatus(301);
     }
 
     /**

@@ -155,7 +155,7 @@ class MapController extends Controller
 
         // Redirect away to the app.cartes.io version
         if ($map->shouldUseNewApp) {
-            return redirect(config('app.spa_url') . '/maps/' . $map->slug . '/embed');
+            return redirect(config('app.spa_url') . '/maps/' . $map->slug . '/embed', 301);
         }
 
         return View::make('embeds/map', $data);

@@ -14,6 +14,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        if (config('app.spa_url') && !$request->user()) {
+            return redirect(config('app.spa_url'));
+        }
         return view('home');
     }
 }

@@ -37,6 +37,11 @@ class Map extends Model
     protected $appends = [
         'is_linked_to_user'
     ];
+
+    protected $withCount = [
+        'markers'
+    ];
+
     // protected $dateFormat = 'c';
 
     //
@@ -102,7 +107,6 @@ class Map extends Model
             'users.remember_token',
         ]);
     }
-
 
     public function publicContributors()
     {

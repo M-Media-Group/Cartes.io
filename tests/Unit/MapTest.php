@@ -26,7 +26,7 @@ class MapTest extends TestCase
     {
         $response = $this->get('/maps/' . $this->map->uuid);
 
-        $response->assertStatus(200);
+        $response->assertStatus(301);
 
         $response = $this->getJson('/api/maps/' . $this->map->uuid);
         $response->assertStatus(200);
@@ -42,7 +42,7 @@ class MapTest extends TestCase
     {
         $response = $this->get('/embeds/maps/' . $this->map->uuid . '#2/43.7/7.3');
 
-        $response->assertStatus(200);
+        $response->assertStatus(301);
         $response->assertDontSee('map-token');
         $response->assertDontSee('map_token');
     }
@@ -55,7 +55,7 @@ class MapTest extends TestCase
     public function testSeeAllMapsTest()
     {
         $response = $this->get('/maps');
-        $response->assertStatus(200, 'Maps index page should return a 200');
+        $response->assertStatus(301);
 
         $response = $this->getJson('/api/maps');
         $response->assertStatus(200);
