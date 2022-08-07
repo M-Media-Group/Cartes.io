@@ -83,12 +83,30 @@ class Map extends Model
 
     public function contributors()
     {
-        return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class, 'map_id', 'id', 'id', 'user_id');
+        return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class, 'map_id', 'id', 'id', 'user_id')->groupBy([
+            'user_id',
+            'map_id',
+            'users.id',
+            'users.username',
+            'users.name',
+            'users.surname',
+            'users.email',
+            'users.avatar',
+            'users.description',
+            'users.is_public',
+            'users.created_at',
+            'users.updated_at',
+            'users.email_verified_at',
+            'users.password',
+            'users.seen_at',
+            'users.remember_token',
+        ]);
     }
+
 
     public function publicContributors()
     {
-        return $this->contributors()->where('is_public', true);
+        return $this->contributors()->where('is_public', true)->selectOnlyPublicAttributes();
     }
 
     // public function expired_markers()

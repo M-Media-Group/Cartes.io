@@ -87,6 +87,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function scopeSelectOnlyPublicAttributes($query)
     {
-        return $query->select(['username', 'avatar', 'is_public', 'description', 'created_at', 'email_verified_at']);
+        return $query->select([
+            $this->getTable() . '.' . 'username',
+            $this->getTable() . '.' . 'avatar',
+            $this->getTable() . '.' . 'is_public',
+            $this->getTable() . '.' . 'description',
+            $this->getTable() . '.' . 'created_at',
+            $this->getTable() . '.' . 'email_verified_at'
+        ]);
     }
 }
