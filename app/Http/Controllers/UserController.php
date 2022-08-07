@@ -84,7 +84,7 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $validatedData = $request->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3', 'alpha_dash'],
             'description' => 'nullable|string|max:191',
             'name' => ['nullable', 'string', 'max:255'],
             'surname' => ['nullable', 'string', 'max:255'],
