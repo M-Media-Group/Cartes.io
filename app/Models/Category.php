@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 
 class Category extends Model
 {
-    use HasCollaborativeFiltering, HasFactory;
+    use HasCollaborativeFiltering, HasFactory, Searchable;
     /**
      * The attributes that are mass assignable.
      *
@@ -63,5 +64,18 @@ class Category extends Model
     public function related()
     {
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'map_id');
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'slug' => $this->slug,
+        ];
     }
 }

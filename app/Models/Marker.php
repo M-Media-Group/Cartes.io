@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Marker extends Pivot
 {
-    use SpatialTrait, HasFactory;
+    use SpatialTrait, HasFactory, Searchable;
     /**
      * The attributes that are mass assignable.
      *
@@ -136,5 +137,28 @@ class Marker extends Pivot
     public function getYAttribute()
     {
         return $this->location->getLat();
+    }
+
+    /**
+     * Determine if the model should be searchable.
+     *
+     * @return bool
+     */
+    public function shouldBeSearchable()
+    {
+        return $this->map->privacy === 'public';
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        return [
+            'link' => $this->link,
+            'description' => $this->description,
+        ];
     }
 }

@@ -170,4 +170,31 @@ class Map extends Model
     {
         return $query->where("privacy", "=", "public");
     }
+
+    /**
+     * Determine if the model should be searchable.
+     *
+     * @return bool
+     */
+    public function shouldBeSearchable()
+    {
+        return $this->privacy === 'public';
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+
+
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'slug' => $this->slug,
+            'uuid' => $this->uuid,
+        ];
+    }
 }
