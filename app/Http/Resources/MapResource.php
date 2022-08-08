@@ -27,7 +27,13 @@ class MapResource extends JsonResource
             'markers_count' => $this->when($this->markers_count, $this->markers_count),
             'categories' => $this->whenLoaded('categories'),
             'is_linked_to_user' => $this->is_linked_to_user,
-            'user' => $this->when($this->user && $this->user->is_public, $this->user),
+            'user' => $this->whenLoaded(
+                'user',
+                $this->when(
+                    $this->user && $this->user->is_public,
+                    new UserResource($this->user)
+                )
+            ),
             // Show the token only if the model was just created
             'token' => $this->when($this->wasRecentlyCreated, $this->token),
             'public_contributors' => $this->whenLoaded('publicContributors'),
