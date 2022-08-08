@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Webpatser\Uuid\Uuid;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
+use Laravel\Scout\Searchable;
 
 class Map extends Model
 {
-    use HasCollaborativeFiltering, HasFactory;
+    use HasCollaborativeFiltering, HasFactory, Searchable;
     /**
      * The attributes that are mass assignable.
      *
