@@ -16,11 +16,15 @@ class UserResource extends JsonResource
     {
         // return parent::toArray($request);
         $userBelongsToAuthenticatedUser = $request->user() && $request->user()->id === $this->id;
+
+        // $publicOrOwned = $this->is_public || $userBelongsToAuthenticatedUser;
         return [
             'username' => $this->username,
             'description' => $this->description,
             'avatar' => $this->avatar,
             'email' => $this->when($userBelongsToAuthenticatedUser, $this->email),
+            'name' => $this->when($userBelongsToAuthenticatedUser, $this->name),
+            'surname' => $this->when($userBelongsToAuthenticatedUser, $this->surname),
             'is_public' => $this->is_public,
             'created_at' => $this->created_at,
             'updated_at' => $this->when($userBelongsToAuthenticatedUser, $this->updated_at),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -17,7 +18,7 @@ class UserController extends Controller
     {
         $this->authorize('index', [User::class]);
 
-        return $user->public()->selectOnlyPublicAttributes()->withCount('publicMaps')->paginate();
+        return UserResource::collection($user->public()->selectOnlyPublicAttributes()->withCount('publicMaps')->paginate());
     }
 
     /**
