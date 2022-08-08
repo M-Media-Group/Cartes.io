@@ -20,8 +20,9 @@ return [
         /**
          * @todo verify that exposing only the following paths is safe
          */
-        'oauth/personal-access-tokens'
-        //  'password/email', 'password/reset', 'password/reset/{token}', 'password/reset/{token}/{email}'
+        'oauth/personal-access-tokens',
+        'password/email',
+        // 'password/reset', 'password/reset/{token}', 'password/reset/{token}/{email}'
     ],
 
     'allowed_methods' => ['*'],
