@@ -17,12 +17,20 @@ use Illuminate\Support\Facades\Route;
 
 //  Optionally authenticated routes
 Route::middleware(SetAuthDriverToApi::class)->group(function () {
+
+    Route::get('categories/search', 'CategoryController@search');
     Route::get('categories', 'CategoryController@index');
+
+    // If we use the CRUD controller, we need to set the parameter name to model
+    // Route::apiResource('categories', 'CategoryController')->parameters([
+    //     'categories' => 'model'
+    // ]);
 
     Route::get('categories/{category}/related', 'CategoryController@related');
 
     Route::get('maps/{map}/related', 'MapController@related');
 
+    Route::get('maps/search', 'MapController@search');
     Route::apiResource('maps', 'MapController');
 
     Route::apiResource('users', 'UserController')->only(['index', 'show']);

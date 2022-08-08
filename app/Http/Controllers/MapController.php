@@ -74,6 +74,14 @@ class MapController extends Controller
         return MapResource::collection($query->paginate());
     }
 
+    public function search(Request $request)
+    {
+        $request->validate([
+            'q' => 'required|string|min:3|max:255',
+        ]);
+        return MapResource::collection(Map::search($request->input('q'))->where('privacy', 'public')->paginate());
+    }
+
     public function related(Request $request, Map $map)
     {
         $this->authorize('view', $map);

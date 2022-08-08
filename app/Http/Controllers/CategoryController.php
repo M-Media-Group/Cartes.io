@@ -18,15 +18,23 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $search_query = $request->input('query');
+        if ($search_query) {
+            $request->merge(['q' => $search_query]);
+            return $this->search($request);
+        }
         if ($request->wantsJson()) {
-            return Category::when($search_query, function ($query, $search_query) {
-                return $query->where('name', 'like', "%{$search_query}%");
-            })
-                ->orderBy($request->input('orderBy', 'created_at'), 'desc')
-                ->get();
+            return Category::orderBy($request->input('orderBy', 'created_at'), 'desc')->get();
         } else {
             return view('categories.index', ['categories' => Category::simplePaginate(7)]);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'q' => 'required|string|min:3|max:255',
+        ]);
+        return Category::search($request->input('q'))->get();
     }
 
     public function related(Request $request, Category $category)
