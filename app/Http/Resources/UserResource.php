@@ -14,10 +14,8 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
-        $userBelongsToAuthenticatedUser = $request->user() && $request->user()->id === $this->id;
+        $userBelongsToAuthenticatedUser = optional($request->user())->can('update', $this);
 
-        // $publicOrOwned = $this->is_public || $userBelongsToAuthenticatedUser;
         return [
             'username' => $this->username,
             'description' => $this->description,
