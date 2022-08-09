@@ -39,7 +39,7 @@ class MapController extends Controller
             'orderBy' => 'nullable|string',
         ]);
 
-        $query = Map::with(['categories', 'publicContributors', 'user'])->withCount('markers');
+        $query = Map::with(['categories', 'publicContributors', 'user']);
 
         if ($request->input('ids')) {
             $query->where(function ($query) use ($request) {
@@ -71,7 +71,7 @@ class MapController extends Controller
 
         $query->orderBy($request->input('orderBy', 'created_at'), 'desc');
 
-        return MapResource::collection($query->paginate());
+        return MapResource::collection($query->filterAndExpand()->parseQuery()->paginate());
     }
 
     public function search(Request $request)

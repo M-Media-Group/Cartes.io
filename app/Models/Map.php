@@ -2,17 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Expandable;
+use App\Models\Traits\Queryable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 use Webpatser\Uuid\Uuid;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
+use MMedia\LaravelCollaborativeFiltering\HasManyRelatedThrough;
 
 class Map extends Model
 {
-    use HasCollaborativeFiltering, HasFactory, Searchable;
+    use HasCollaborativeFiltering, HasFactory, Searchable, Expandable, Queryable;
     /**
      * The attributes that are mass assignable.
      *
@@ -77,17 +84,17 @@ class Map extends Model
         return 'uuid';
     }
 
-    public function markers()
+    public function markers(): HasMany
     {
         return $this->hasMany(\App\Models\Marker::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
-    public function contributors()
+    public function contributors(): HasManyThrough
     {
         return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class, 'map_id', 'id', 'id', 'user_id')->groupBy([
             'user_id',
@@ -109,7 +116,7 @@ class Map extends Model
         ]);
     }
 
-    public function publicContributors()
+    public function publicContributors(): HasManyThrough
     {
         return $this->contributors()->where('is_public', true)->selectOnlyPublicAttributes();
     }
@@ -119,7 +126,7 @@ class Map extends Model
     //     return $this->hasMany(\App\Models\Marker::class);
     // }
 
-    public function categories()
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class)
             ->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())
@@ -128,7 +135,7 @@ class Map extends Model
             ->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
     }
 
-    public function related()
+    public function related(): HasManyRelatedThrough
     {
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'category_id')
             ->where($this->getTable() . ".privacy", "=", "public")
@@ -188,13 +195,21 @@ class Map extends Model
      */
     public function toSearchableArray()
     {
-
-
         return [
             'title' => $this->title,
             'description' => $this->description,
             'slug' => $this->slug,
             'uuid' => $this->uuid,
+        ];
+    }
+
+    public function getExpandableFields()
+    {
+        return [
+            'markers',
+            'publicContributors',
+            'categories',
+            'related'
         ];
     }
 }
