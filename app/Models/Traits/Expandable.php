@@ -51,32 +51,6 @@ trait Expandable
     protected \ReflectionClass $reflection;
 
     /**
-     * The allowed operators in a given query
-     *
-     * @var array
-     */
-    private $allowedOperators = [
-        '>=',
-        '<=',
-        '!=',
-        '>',
-        '<',
-        ':',
-        '~',
-        '='
-    ];
-
-    /**
-     * The mapping between query operators and their respective where() operators
-     *
-     * @var array
-     */
-    private $operatorsToLaravelWhere = [
-        '~' => 'like',
-        ':' => '='
-    ];
-
-    /**
      * Constructor
      */
     public function __construct()

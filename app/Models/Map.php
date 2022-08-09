@@ -178,6 +178,28 @@ class Map extends Model
         return $query->where("privacy", "=", "public");
     }
 
+    public function scopePublicOrOwn($query)
+    {
+        return $query->where(function ($query) {
+            $query->public();
+            if (request()->user()) {
+                $query->orWhere("user_id", "=", request()->user()->id);
+            }
+            return $query;
+        });
+    }
+
+    public function scopeOwnOrRequestByIds($query, $ids)
+    {
+        return $query->where(function ($query) use ($ids) {
+            $query->whereIn("uuid", $ids);
+            if (request()->user()) {
+                $query->orWhere("user_id", "=", request()->user()->id);
+            }
+            return $query;
+        });
+    }
+
     /**
      * Determine if the model should be searchable.
      *

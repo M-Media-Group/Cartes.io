@@ -7,6 +7,32 @@ use Illuminate\Database\Eloquent\Builder;
 trait Queryable
 {
     /**
+     * The allowed operators in a given query
+     *
+     * @var array
+     */
+    private $allowedOperators = [
+        '>=',
+        '<=',
+        '!=',
+        '>',
+        '<',
+        ':',
+        '~',
+        '='
+    ];
+
+    /**
+     * The mapping between query operators and their respective where() operators
+     *
+     * @var array
+     */
+    private $operatorsToLaravelWhere = [
+        '~' => 'like',
+        ':' => '='
+    ];
+
+    /**
      * Allow and parse a query parameter in the request
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
