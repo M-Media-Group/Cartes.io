@@ -40,7 +40,9 @@ trait Queryable
      */
     public function scopeParseQuery(Builder $query)
     {
-        $queries = explode('AND', request()->input('query'));
+        // request()->input('query') trimmed to max 50 chars
+        $queryString = substr(request()->input('query'), 0, 50);
+        $queries = explode('AND', $queryString);
         foreach ($queries as $q) {
             // If the query contains "OR", skip it
             if (str_contains($q, 'OR')) {
@@ -50,7 +52,7 @@ trait Queryable
             $query = $this->addWhereOrHavingClause($query, $parsedQuery);
         }
 
-        $queries = explode('OR', request()->input('query'));
+        $queries = explode('OR', $queryString);
         foreach ($queries as $q) {
             if (str_contains($q, 'AND')) {
                 continue;
