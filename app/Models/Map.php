@@ -209,7 +209,8 @@ class Map extends Model
             'markers',
             'publicContributors',
             'categories',
-            'related'
+            'related',
+            'user'
         ];
     }
 }

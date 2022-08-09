@@ -39,7 +39,7 @@ class MapController extends Controller
             'orderBy' => 'nullable|string',
         ]);
 
-        $query = Map::with(['categories', 'publicContributors', 'user']);
+        $query = Map::query();
 
         if ($request->input('ids')) {
             $query->where(function ($query) use ($request) {
