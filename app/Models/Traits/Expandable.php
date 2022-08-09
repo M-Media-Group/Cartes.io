@@ -48,7 +48,7 @@ trait Expandable
      *
      * @var \ReflectionClass
      */
-    protected \ReflectionClass $reflection;
+    private \ReflectionClass $reflection;
 
     /**
      * Constructor
@@ -221,5 +221,12 @@ trait Expandable
         $query->filter($query);
         $query->expand($query);
         return $query;
+    }
+
+    public function expandablePaginate(Builder $query)
+    {
+        return $query
+            ->orderBy($this->parameters['sort'], $this->parameters['order'])
+            ->paginate($this->parameters['per_page']);
     }
 }

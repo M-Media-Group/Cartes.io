@@ -124,8 +124,10 @@ class MapController extends Controller
      * @param  \App\Models\Map  $map
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Map $map)
+    public function show(Request $request, $uuid)
     {
+        $map = Map::where('uuid', $uuid)->expand()->firstOrFail();
+
         $this->authorize('view', $map);
 
         $map->load(['categories', 'publicContributors', 'user']);
