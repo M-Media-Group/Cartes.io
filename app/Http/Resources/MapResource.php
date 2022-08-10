@@ -33,7 +33,7 @@ class MapResource extends JsonResource
             'user' => $this->whenLoaded(
                 'user',
                 $this->when(
-                    $this->user && $this->user->is_public,
+                    $this->user && ($this->user->is_public || optional($request->user())->can('view', $this->user)),
                     new UserResource($this->user)
                 )
             ),
