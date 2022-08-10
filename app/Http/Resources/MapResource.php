@@ -26,6 +26,7 @@ class MapResource extends JsonResource
             'updated_at' => $this->updated_at,
             'markers' => $this->whenLoaded('markers'),
             'markers_count' => $this->when(isset($this->markers_count), $this->markers_count),
+            'active_markers_count' => $this->when(isset($this->active_markers_count), $this->active_markers_count),
             'categories' => $this->whenLoaded('categories'),
             'categories_count' => $this->when(isset($this->categories_count), $this->categories_count),
             'is_linked_to_user' => $this->is_linked_to_user,
