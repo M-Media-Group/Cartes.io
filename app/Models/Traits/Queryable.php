@@ -216,9 +216,20 @@ trait Queryable
         if (strtoupper($value) == 'NULL') {
             return null;
         }
+
         // if the operator is 'like', then we need to add '%' to the value
-        if ($operator == 'like') {
-            $value = '%' . $value . '%';
+        if (strtolower($operator) == 'like') {
+            return '%' . $value . '%';
+        }
+
+        // If the operator is 'true'
+        if (strtolower($operator) == 'true') {
+            return true;
+        }
+
+        // If the operator is 'false'
+        if (strtolower($operator) == 'false') {
+            return false;
         }
         return $value;
     }
