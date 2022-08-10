@@ -152,12 +152,13 @@ trait Expandable
 
         $this->validateScopeExpand($request);
 
-        $query->when($request->input('withCount'), function ($q) use ($request) {
-            $q->withCount($request->input('withCount'));
-        });
-        return $query->when($request->input('with'), function ($q) use ($request) {
-            $q->with($request->input('with'));
-        });
+        return $query
+            ->when($request->input('withCount'), function ($q) use ($request) {
+                $q->withCount($request->input('withCount'));
+            })
+            ->when($request->input('with'), function ($q) use ($request) {
+                $q->with($request->input('with'));
+            });
     }
 
     /**
