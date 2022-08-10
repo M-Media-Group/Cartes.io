@@ -48,13 +48,14 @@ trait Expandable
      *
      * @var \ReflectionClass
      */
-    private \ReflectionClass $reflection;
+    protected \ReflectionClass $reflection;
 
     /**
      * Constructor
      */
     public function __construct()
     {
+        parent::__construct();
         $this->reflection = $this->getReflectionInstance();
         $this->expandableFields = $this->getAllRelationships();
         $this->expandableFieldCounts = $this->getAllRelationships();
