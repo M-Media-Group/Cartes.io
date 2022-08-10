@@ -102,16 +102,6 @@ class Marker extends Pivot
         self::deleting(function ($model) {
             broadcast(new \App\Events\MarkerDeleted($model))->toOthers();
         });
-
-        static::addGlobalScope('active', function (Builder $builder) {
-            $builder
-                ->where(
-                    'expires_at',
-                    '>',
-                    Carbon::now()->toDateTimeString()
-                )
-                ->orWhere('expires_at', null);
-        });
     }
 
     public function category()
@@ -137,6 +127,16 @@ class Marker extends Pivot
     public function getYAttribute()
     {
         return $this->location->getLat();
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where(
+            'expires_at',
+            '>',
+            Carbon::now()->toDateTimeString()
+        )
+            ->orWhere('expires_at', null);
     }
 
     /**

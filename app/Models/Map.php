@@ -89,6 +89,11 @@ class Map extends Model
         return $this->hasMany(\App\Models\Marker::class);
     }
 
+    public function activeMarkers(): HasMany
+    {
+        return $this->hasMany(\App\Models\Marker::class)->active();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
@@ -229,10 +234,13 @@ class Map extends Model
     {
         return [
             'markers',
+            'markers.category',
             'publicContributors',
             'categories',
             'related',
-            'user'
+            'user',
+            'activeMarkers',
+            'activeMarkers.category'
         ];
     }
 }

@@ -45,6 +45,11 @@ class Category extends Model
         return $this->hasMany(\App\Models\Marker::class);
     }
 
+    public function activeMarkers()
+    {
+        return $this->hasMany(\App\Models\Marker::class)->active();
+    }
+
     // public function maps()
     // {
     //     return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class);

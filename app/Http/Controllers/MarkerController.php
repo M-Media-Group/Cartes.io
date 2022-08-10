@@ -36,7 +36,9 @@ class MarkerController extends Controller
                 });
             })
             ->when($request->input('show_expired') == 'true', function ($query) {
-                return $query->withoutGlobalScope('active');
+                return $query;
+            }, function ($query) {
+                return $query->active();
             })
             ->paginate();
     }
@@ -51,8 +53,8 @@ class MarkerController extends Controller
         $this->authorize('index', [Marker::class, $map, $request->input('map_token')]);
 
         $data = $map->markers();
-        if ($request->input('show_expired') == 'true') {
-            $data = $data->withoutGlobalScope('active');
+        if ($request->input('show_expired') !== 'true') {
+            $data = $data->active();
         }
         $data = $data->with('category')->get();
 

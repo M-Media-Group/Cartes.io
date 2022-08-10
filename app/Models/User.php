@@ -66,6 +66,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\Marker::class);
     }
 
+    public function activeMarkers()
+    {
+        return $this->hasMany(\App\Models\Marker::class)->active();
+    }
+
     public function mapsContributedTo()
     {
         return $this->hasManyThrough(\App\Models\Map::class, \App\Models\Marker::class, 'user_id', 'id', 'id', 'map_id')->groupBy([
