@@ -131,9 +131,14 @@ class Map extends Model
     //     return $this->hasMany(\App\Models\Marker::class);
     // }
 
-    public function categories(): BelongsToMany
+    public function categories(): belongsToMany
     {
-        return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class)
+        return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class);
+    }
+
+    public function activeCategories(): belongsToMany
+    {
+        return $this->categories()
             ->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())
             ->orWherePivot('expires_at', null)
             ->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')
@@ -237,6 +242,7 @@ class Map extends Model
             'markers.category',
             'publicContributors',
             'categories',
+            'activeCategories',
             'related',
             'user',
             'activeMarkers',

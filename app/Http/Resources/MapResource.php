@@ -24,8 +24,10 @@ class MapResource extends JsonResource
             'uuid' => $this->uuid,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'markers_count' => $this->when($this->markers_count, $this->markers_count),
+            'markers' => $this->whenLoaded('markers'),
+            'markers_count' => $this->when(isset($this->markers_count), $this->markers_count),
             'categories' => $this->whenLoaded('categories'),
+            'categories_count' => $this->when(isset($this->categories_count), $this->categories_count),
             'is_linked_to_user' => $this->is_linked_to_user,
             'user' => $this->whenLoaded(
                 'user',
@@ -37,8 +39,9 @@ class MapResource extends JsonResource
             // Show the token only if the model was just created
             'token' => $this->when($this->wasRecentlyCreated, $this->token),
             'public_contributors' => $this->whenLoaded('publicContributors'),
+            'public_contributors_count' => $this->when(isset($this->public_contributors_count), $this->public_contributors_count),
             'related' => $this->whenLoaded('related'),
-            'markers' => $this->whenLoaded('markers'),
+            'related_count' => $this->when(isset($this->related_count), $this->related_count),
         ];
     }
 }
