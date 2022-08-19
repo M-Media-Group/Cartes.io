@@ -6,10 +6,11 @@ use App\Models\Marker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Queue\SerializesModels;
 
 class MarkerDeleted implements ShouldBroadcast
 {
-    use InteractsWithSockets;
+    use SerializesModels, InteractsWithSockets;
 
     public $marker;
 
@@ -41,6 +42,6 @@ class MarkerDeleted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('maps.'.$this->marker->map->uuid);
+        return new Channel('maps.' . $this->marker->map->uuid);
     }
 }

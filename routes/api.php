@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\SetAuthDriverToApi;
+use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
+
+Route::get('/test', function (Map $map) {
+    return $map->public()->filterAndExpand()->get();
+});
 
 //  Optionally authenticated routes
 Route::middleware(SetAuthDriverToApi::class)->group(function () {
