@@ -176,4 +176,17 @@ class MarkerTest extends TestCase
         $response->assertStatus(201);
         $response->assertSee('token');
     }
+
+    /**
+     * Test delete marker.
+     *
+     * @return void
+     */
+    public function testDeleteMarker()
+    {
+        $marker = $this->map->markers()->firstOrFail();
+
+        $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token);
+        $response->assertStatus(200);
+    }
 }
