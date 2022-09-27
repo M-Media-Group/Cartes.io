@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {
-
     protected $category;
 
     protected function setUp(): void
@@ -24,20 +23,20 @@ class CategoryTest extends TestCase
      */
     public function testSeeSingleCategoryTest()
     {
-        $response = $this->getJson('/api/categories/' . $this->category->id);
+        $response = $this->getJson('/api/categories/'.$this->category->id);
 
         // Assert status is 405
         $response->assertStatus(404);
     }
 
     /**
-     * Test see related categories for a given category
+     * Test see related categories for a given category.
      *
      * @return void
      */
     public function testSeeRelatedCategoriesTest()
     {
-        $response = $this->getJson('/api/categories/' . $this->category->id . '/related');
+        $response = $this->getJson('/api/categories/'.$this->category->id.'/related');
         $response->assertStatus(200);
     }
 
@@ -51,6 +50,7 @@ class CategoryTest extends TestCase
         $response = $this->getJson('/api/categories');
         $response->assertStatus(200);
     }
+
     /**
      * Test created a category.
      *
@@ -71,7 +71,7 @@ class CategoryTest extends TestCase
      */
     public function testDeletecategoryTest()
     {
-        $response = $this->deleteJson('/api/categories/' . $this->category->id, [
+        $response = $this->deleteJson('/api/categories/'.$this->category->id, [
             'token' => $this->category->token,
         ]);
 

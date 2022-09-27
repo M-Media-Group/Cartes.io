@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 
 class MapController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('throttle:maps')->only('store');
@@ -23,10 +22,11 @@ class MapController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->wantsJson()) {
+        if (! $request->wantsJson()) {
             if (config('app.spa_url')) {
                 return redirect(config('app.spa_url'));
             }
+
             return view('publicMaps');
         }
 
@@ -46,17 +46,19 @@ class MapController extends Controller
                 $query->whereIn('uuid', $request->input('ids'))->where('privacy', '!=', 'private');
 
                 $query->when($request->input('withMine'), function ($query) use ($request) {
-                    if (!$request->user()) {
+                    if (! $request->user()) {
                         return abort(401, 'You need to be authenticated to get your own maps.');
-                    };
+                    }
+
                     return $query->orWhere('user_id', $request->user()->id);
                 });
             });
         } else {
             $query->when($request->input('withMine'), function ($query) use ($request) {
-                if (!$request->user()) {
+                if (! $request->user()) {
                     return abort(401, 'You need to be authenticated to get your own maps.');
-                };
+                }
+
                 return $query->where('user_id', $request->user()->id);
             }, function ($query) {
                 return $query->public();
@@ -75,9 +77,9 @@ class MapController extends Controller
     }
 
     /**
-     * Search for maps
+     * Search for maps.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request)
@@ -85,18 +87,20 @@ class MapController extends Controller
         $request->validate([
             'q' => 'required|string|min:3|max:255',
         ]);
+
         return MapResource::collection(Map::search($request->input('q'))->where('privacy', 'public')->paginate());
     }
 
     /**
-     * Return related maps for a given map
+     * Return related maps for a given map.
      *
-     * @param \App\Models\Map $map
+     * @param  \App\Models\Map  $map
      * @return \Illuminate\Http\Response
      */
     public function related(Map $map)
     {
         $this->authorize('view', $map);
+
         return $map->related;
     }
 
@@ -127,7 +131,7 @@ class MapController extends Controller
         if ($request->wantsJson()) {
             return new MapResource($result);
         } else {
-            return redirect('/maps/' . $result->slug)->with('token', $result->token);
+            return redirect('/maps/'.$result->slug)->with('token', $result->token);
         }
     }
 
@@ -151,7 +155,7 @@ class MapController extends Controller
 
         // Redirect away to the app.cartes.io version
         if ($map->shouldUseNewApp) {
-            return redirect(config('app.spa_url') . '/maps/' . $map->slug);
+            return redirect(config('app.spa_url').'/maps/'.$map->slug);
         }
 
         $data = [
@@ -178,7 +182,7 @@ class MapController extends Controller
 
         // Redirect away to the app.cartes.io version
         if ($map->shouldUseNewApp) {
-            return redirect(config('app.spa_url') . '/maps/' . $map->slug . '/embed', 301);
+            return redirect(config('app.spa_url').'/maps/'.$map->slug.'/embed', 301);
         }
 
         return View::make('embeds/map', $data);
@@ -197,7 +201,7 @@ class MapController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
-            'slug' => 'nullable|string|max:255|unique:maps,slug,' . $map->id,
+            'slug' => 'nullable|string|max:255|unique:maps,slug,'.$map->id,
             'description' => 'nullable|string',
             'privacy' => 'nullable|in:public,unlisted,private',
             'users_can_create_markers' => 'nullable|in:yes,only_logged_in,no',
@@ -207,9 +211,9 @@ class MapController extends Controller
         ]);
 
         // If the privacy is set to private, we need to ensure that there is a currently logged in user
-        if (!$map->user_id && $request->input('privacy') === 'private' && !$request->user()) {
+        if (! $map->user_id && $request->input('privacy') === 'private' && ! $request->user()) {
             return response()->json(['error' => 'You must be logged in to make this map private'], 401);
-        } elseif (!$map->user_id && $request->input('privacy') === 'private') {
+        } elseif (! $map->user_id && $request->input('privacy') === 'private') {
             $map->user_id = $request->user()->id;
         }
 
@@ -219,10 +223,10 @@ class MapController extends Controller
     }
 
     /**
-     * Attach the map to the current user
+     * Attach the map to the current user.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Map $map
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Map  $map
      * @return \Illuminate\Http\Response
      */
     public function claim(Request $request, Map $map)
@@ -230,14 +234,15 @@ class MapController extends Controller
         $this->authorize('update', $map);
         $map->user_id = $request->user()->id;
         $map->save();
+
         return $map;
     }
 
     /**
-     * Detach the user associated with the map
+     * Detach the user associated with the map.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Map $map
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Map  $map
      * @return \Illuminate\Http\Response
      */
     public function unClaim(Map $map)
@@ -245,6 +250,7 @@ class MapController extends Controller
         $this->authorize('update', $map);
         $map->user_id = null;
         $map->save();
+
         return $map;
     }
 
@@ -258,6 +264,7 @@ class MapController extends Controller
     {
         $this->authorize('forceDelete', $map);
         $map->delete();
+
         return response()->json(['success' => true]);
     }
 }

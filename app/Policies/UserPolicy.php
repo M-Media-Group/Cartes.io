@@ -43,6 +43,7 @@ class UserPolicy
         if ($user && $user->id === $model->id) {
             return true;
         }
+
         return false;
     }
 

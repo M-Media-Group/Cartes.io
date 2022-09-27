@@ -4,11 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Map;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator as Faker;
 
 class MapFactory extends Factory
 {
-
     /**
      * The name of the factory's corresponding model.
      *
@@ -24,6 +22,7 @@ class MapFactory extends Factory
     public function definition()
     {
         $faker = \Faker\Factory::create();
+
         return [
             'title' => $faker->userName,
             'slug' => $faker->slug,

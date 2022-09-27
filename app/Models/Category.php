@@ -56,9 +56,10 @@ class Category extends Model
     // }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @deprecated use the relationship related() instead
+     *
      * @return void
      */
     public function getRelatedCategoriesAttribute()

@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
-use Webpatser\Uuid\Uuid;
-use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
+use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use MMedia\LaravelCollaborativeFiltering\HasManyRelatedThrough;
+use Webpatser\Uuid\Uuid;
 
 class Map extends Model
 {
@@ -43,11 +43,11 @@ class Map extends Model
         'updated_at' => 'datetime:c',
     ];
     protected $appends = [
-        'is_linked_to_user'
+        'is_linked_to_user',
     ];
 
     protected $withCount = [
-        'markers'
+        'markers',
     ];
 
     // protected $dateFormat = 'c';
@@ -148,14 +148,14 @@ class Map extends Model
     public function related(): HasManyRelatedThrough
     {
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'category_id')
-            ->where($this->getTable() . ".privacy", "=", "public")
-            ->with("categories");
+            ->where($this->getTable().'.privacy', '=', 'public')
+            ->with('categories');
     }
 
     public function getShouldUseNewAppAttribute()
     {
         // If there is no SPA_URL set, return false
-        if (!config('app.spa_url')) {
+        if (! config('app.spa_url')) {
             return false;
         }
 
@@ -164,7 +164,7 @@ class Map extends Model
 
     public function getIsLinkedToUserAttribute()
     {
-        return !!$this->user_id;
+        return (bool) $this->user_id;
     }
 
     /**
@@ -172,20 +172,21 @@ class Map extends Model
      *
      * @deprecated use the related() relationship instead
      * @see https://arctype.com/blog/collaborative-filtering-tutorial/ - Thanks arctype!
+     *
      * @return Collection
      */
     public function getRelatedMapsAttribute()
     {
         return $this->getRelatedModels(\App\Models\Marker::class, 'category_id', function ($query) {
             return $query
-                ->where($this->getTable() . ".privacy", "=", "public")
-                ->with("categories");
+                ->where($this->getTable().'.privacy', '=', 'public')
+                ->with('categories');
         });
     }
 
     public function scopePublic($query)
     {
-        return $query->where("privacy", "=", "public");
+        return $query->where('privacy', '=', 'public');
     }
 
     public function scopePublicOrOwn($query)
@@ -193,8 +194,9 @@ class Map extends Model
         return $query->where(function ($query) {
             $query->public();
             if (request()->user()) {
-                $query->orWhere("user_id", "=", request()->user()->id);
+                $query->orWhere('user_id', '=', request()->user()->id);
             }
+
             return $query;
         });
     }
@@ -202,10 +204,11 @@ class Map extends Model
     public function scopeOwnOrRequestByIds($query, $ids)
     {
         return $query->where(function ($query) use ($ids) {
-            $query->whereIn("uuid", $ids);
+            $query->whereIn('uuid', $ids);
             if (request()->user()) {
-                $query->orWhere("user_id", "=", request()->user()->id);
+                $query->orWhere('user_id', '=', request()->user()->id);
             }
+
             return $query;
         });
     }
@@ -246,7 +249,7 @@ class Map extends Model
             'related',
             'user',
             'activeMarkers',
-            'activeMarkers.category'
+            'activeMarkers.category',
         ];
     }
 }

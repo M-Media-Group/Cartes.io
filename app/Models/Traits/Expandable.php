@@ -5,20 +5,18 @@ namespace App\Models\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 trait Expandable
 {
-
     /**
-     * The relationships to expand
+     * The relationships to expand.
      *
      * @var array
      */
     protected $expandableFields = [];
 
     /**
-     * The count of relationships to retrieve
+     * The count of relationships to retrieve.
      *
      * @var array
      */
@@ -44,14 +42,14 @@ trait Expandable
     ];
 
     /**
-     * An instance of the reflection class for the current model
+     * An instance of the reflection class for the current model.
      *
      * @var \ReflectionClass
      */
     protected \ReflectionClass $reflection;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -69,7 +67,7 @@ trait Expandable
      */
     private function getReflectionInstance()
     {
-        return new \ReflectionClass(Self::class);
+        return new \ReflectionClass(self::class);
     }
 
     /**
@@ -85,11 +83,12 @@ trait Expandable
                 $scopes[] = lcfirst(substr($reflectionMethod->name, 5));
             }
         }
+
         return $scopes;
     }
 
     /**
-     * Get all of the models relationships
+     * Get all of the models relationships.
      *
      * @return void
      */
@@ -97,7 +96,7 @@ trait Expandable
     {
         return collect($this->reflection->getMethods())
             ->filter(
-                fn ($method) => !empty($method->getReturnType()) &&
+                fn ($method) => ! empty($method->getReturnType()) &&
                     str_contains(
                         $method->getReturnType(),
                         'Illuminate\Database\Eloquent\Relations'
@@ -108,7 +107,7 @@ trait Expandable
     }
 
     /**
-     * Get all of the models expandable fields
+     * Get all of the models expandable fields.
      *
      * @return void
      */
@@ -118,9 +117,9 @@ trait Expandable
     }
 
     /**
-     * Validate the expansion scopes
+     * Validate the expansion scopes.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     private function validateScopeExpand(Request $request)
@@ -140,10 +139,10 @@ trait Expandable
     }
 
     /**
-     * Expand the request
+     * Expand the request.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     public function scopeExpand(Builder $query)
@@ -162,9 +161,9 @@ trait Expandable
     }
 
     /**
-     * Validate the filter scopes
+     * Validate the filter scopes.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     private function validateScopeFilter(Request $request)
@@ -180,10 +179,10 @@ trait Expandable
     }
 
     /**
-     * Filter the request
+     * Filter the request.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     public function scopeFilter(Builder $query)
@@ -192,7 +191,7 @@ trait Expandable
 
         $this->validateScopeFilter($request);
 
-        foreach (Self::getFillable() as $prop) {
+        foreach (self::getFillable() as $prop) {
             $query->when($request->input($prop), function ($q) use ($request, $prop) {
                 $q->where($prop, $request->input($prop));
             });
@@ -213,15 +212,16 @@ trait Expandable
     }
 
     /**
-     * Apply all scopes
+     * Apply all scopes.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
     public function scopeFilterAndExpand(Builder $query)
     {
         $query->filter($query);
         $query->expand($query);
+
         return $query;
     }
 
