@@ -64,6 +64,18 @@ class MapTest extends TestCase
     }
 
     /**
+     * Test searching for a map
+     *
+     * @return void
+     */
+    public function testSearchMapsTest()
+    {
+        $response = $this->getJson('/api/maps/search?q=map');
+        $response->assertStatus(200);
+        $response->assertDontSee('token');
+    }
+
+    /**
      * A basic test example.
      *
      * @return void
@@ -77,6 +89,7 @@ class MapTest extends TestCase
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
+
     /**
      * Test created a map.
      *
@@ -98,6 +111,62 @@ class MapTest extends TestCase
         $response->assertJsonStructure([
             'uuid',
             'token',
+        ]);
+    }
+
+    /**
+     * Test claiming a map
+     *
+     * @return void
+     */
+    public function testClaimMapTest()
+    {
+        // Act as a user
+        $user = \App\Models\User::firstOrCreate();
+        $this->actingAs($user, 'api');
+
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/claim');
+
+        // Assert returns 200
+        $response->assertStatus(200);
+
+        // Assert that the response contains the map token
+        $response->assertJsonStructure([
+            'uuid',
+        ]);
+
+        // Assert that in the database the map has been claimed by having user_id set
+        $this->assertDatabaseHas('maps', [
+            'uuid' => $this->map->uuid,
+            'user_id' => $user->id,
+        ]);
+    }
+
+    /**
+     * Test un-claiming a map
+     *
+     * @return void
+     */
+    public function testUnclaimMapTest()
+    {
+        // Act as a user
+        $user = \App\Models\User::firstOrCreate();
+        $this->actingAs($user, 'api');
+
+        $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/claim');
+
+        // Assert returns 200
+        $response->assertStatus(200);
+
+        // Assert that the response contains the map token
+        $response->assertJsonStructure([
+            'uuid',
+        ]);
+
+        // Assert that in the database the map has been claimed by having user_id set
+        $this->assertDatabaseHas('maps', [
+            'uuid' => $this->map->uuid,
+            'user_id' => null,
         ]);
     }
 
