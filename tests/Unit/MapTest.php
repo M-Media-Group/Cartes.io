@@ -171,6 +171,36 @@ class MapTest extends TestCase
     }
 
     /**
+     * Test updating a map
+     *
+     * @return void
+     */
+    public function testUpdateMapTest()
+    {
+        // Act as a user
+        $user = \App\Models\User::firstOrCreate();
+        $this->actingAs($user, 'api');
+
+        $response = $this->putJson('/api/maps/' . $this->map->uuid, [
+            'title' => 'Test Map',
+        ]);
+
+        // Assert returns 200
+        $response->assertStatus(200);
+
+        // Assert that the response contains the map token
+        $response->assertJsonStructure([
+            'uuid',
+        ]);
+
+        // Assert that in the database the map has been claimed by having user_id set
+        $this->assertDatabaseHas('maps', [
+            'uuid' => $this->map->uuid,
+            'title' => 'Test Map',
+        ]);
+    }
+
+    /**
      * Test deleting a map.
      *
      * @return void
