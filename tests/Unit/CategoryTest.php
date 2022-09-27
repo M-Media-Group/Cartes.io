@@ -51,6 +51,18 @@ class CategoryTest extends TestCase
         $response = $this->getJson('/api/categories');
         $response->assertStatus(200);
     }
+
+    /**
+     * Test search categories
+     *
+     * @return void
+     */
+    public function testSearchCategoriesTest()
+    {
+        $response = $this->getJson('/api/categories/search?q=food');
+        $response->assertStatus(200);
+    }
+
     /**
      * Test created a category.
      *
