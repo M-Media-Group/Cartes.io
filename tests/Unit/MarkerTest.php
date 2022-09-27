@@ -195,6 +195,39 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test update a marker by setting is_spam fails when the user themselves is the owner
+     *
+     * @return void
+     */
+    public function testUpdateMarkerIsSpamNotAllowedByMarkerAuthor()
+    {
+        $marker = $this->map->markers()->firstOrFail();
+
+        $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token, [
+            'is_spam' => true,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Test update a marker by setting is_spam to true
+     *
+     * @return void
+     */
+    public function testUpdateMarkerIsSpam()
+    {
+        $marker = $this->map->markers()->firstOrFail();
+
+        $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?map_token=' . $this->map->token, [
+            'is_spam' => true,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertSee('is_spam');
+    }
+
+    /**
      * Test delete marker.
      *
      * @return void
