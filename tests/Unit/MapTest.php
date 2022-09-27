@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 class MapTest extends TestCase
 {
-
     protected $map;
 
     protected function setUp(): void
@@ -24,11 +23,11 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapTest()
     {
-        $response = $this->get('/maps/' . $this->map->uuid);
+        $response = $this->get('/maps/'.$this->map->uuid);
 
         $response->assertStatus(301);
 
-        $response = $this->getJson('/api/maps/' . $this->map->uuid);
+        $response = $this->getJson('/api/maps/'.$this->map->uuid);
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
@@ -40,7 +39,7 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapEmbedTest()
     {
-        $response = $this->get('/embeds/maps/' . $this->map->uuid . '#2/43.7/7.3');
+        $response = $this->get('/embeds/maps/'.$this->map->uuid.'#2/43.7/7.3');
 
         $response->assertStatus(301);
         $response->assertDontSee('map-token');
@@ -48,17 +47,17 @@ class MapTest extends TestCase
     }
 
     /**
-     * Test see related maps for a given map
+     * Test see related maps for a given map.
      *
      * @return void
      */
     public function testSeeRelatedMapsTest()
     {
-        $response = $this->get('/maps/' . $this->map->uuid . '/related');
+        $response = $this->get('/maps/'.$this->map->uuid.'/related');
 
         $response->assertStatus(301);
 
-        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/related');
+        $response = $this->getJson('/api/maps/'.$this->map->uuid.'/related');
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
@@ -77,6 +76,7 @@ class MapTest extends TestCase
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
+
     /**
      * Test created a map.
      *
@@ -108,7 +108,7 @@ class MapTest extends TestCase
      */
     public function testDeleteMapTest()
     {
-        $response = $this->deleteJson('/api/maps/' . $this->map->uuid, [
+        $response = $this->deleteJson('/api/maps/'.$this->map->uuid, [
             'token' => $this->map->token,
         ]);
 

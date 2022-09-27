@@ -18,6 +18,7 @@ class SetAuthDriverToApi
     public function handle(Request $request, Closure $next)
     {
         Auth::setDefaultDriver('api');
+
         return $next($request);
     }
 }

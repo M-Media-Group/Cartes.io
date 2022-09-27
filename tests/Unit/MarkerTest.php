@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class MarkerTest extends TestCase
 {
-
     protected $map;
 
     // The setup
@@ -18,7 +17,7 @@ class MarkerTest extends TestCase
         parent::setUp();
         $this->withoutEvents();
         $this->map = \App\Models\Map::create([
-            'users_can_create_markers' => 'yes'
+            'users_can_create_markers' => 'yes',
         ]);
         // "lat": 45,
         // "lng": 45,
@@ -40,10 +39,10 @@ class MarkerTest extends TestCase
     {
         $post = $this->map;
 
-        $response = $this->getJson('/api/maps/' . $post->uuid);
+        $response = $this->getJson('/api/maps/'.$post->uuid);
         $response->assertOk();
 
-        $response = $this->getJson('/api/maps/' . $post->uuid . '/markers');
+        $response = $this->getJson('/api/maps/'.$post->uuid.'/markers');
         $response->assertOk();
         $response->assertSee('location');
         $response->assertDontSee('token');
@@ -57,7 +56,7 @@ class MarkerTest extends TestCase
     public function testFailToCreateMarker()
     {
         $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', []);
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers', []);
         $response->assertStatus(422);
     }
 
@@ -75,7 +74,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', $marker->toArray());
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
     }
@@ -94,7 +93,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(401);
     }
 
@@ -119,7 +118,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(403);
     }
 
@@ -152,7 +151,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', $markers);
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers/bulk', $markers);
         $response->assertStatus(200);
     }
 
@@ -172,7 +171,7 @@ class MarkerTest extends TestCase
         $marker['category_name'] = $category->name;
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', $marker->toArray());
+        $response = $this->postJson('/api/maps/'.$post->uuid.'/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
     }

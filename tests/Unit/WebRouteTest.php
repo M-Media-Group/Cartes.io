@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class WebRouteTest extends TestCase
 {
-
     /**
      * Blacklist routes that should not be tested.
      *
@@ -25,23 +24,24 @@ class WebRouteTest extends TestCase
     ];
 
     /**
-     * The routes in the app
+     * The routes in the app.
      *
      * @var \Illuminate\Routing\RouteCollectionInterface
      */
     private $routes;
 
     /**
-     * The user
+     * The user.
      *
      * @var User
      */
     private $user;
 
     /**
-     * Used for omitting dynamic urls that have {} in uri
+     * Used for omitting dynamic urls that have {} in uri.
      *
      * @see http://laravel-tricks.com/tricks/adding-a-sitemap-to-your-laravel-application#comment-1830836789
+     *
      * @var string
      */
     private $dynamicRegex = '/{\\S*}/';
@@ -67,9 +67,9 @@ class WebRouteTest extends TestCase
         $this->testNonSkippedUrls(function ($response, $route) {
             // If the route is protected by auth middleware, it should return a 302 since we are not logged in
             if (in_array('auth:api', $route->computedMiddleware)) {
-                $this->assertEquals(302, $response->getStatusCode(), $route->uri() . 'failed to load');
-                $this->assertStringContainsString('Unauthenticated.', $response->exception->getMessage(), $route->uri() . 'failed to redirect to login');
-                $this->assertStringContainsString('/login', $response->headers->get('Location'), $route->uri() . 'failed to redirect to login');
+                $this->assertEquals(302, $response->getStatusCode(), $route->uri().'failed to load');
+                $this->assertStringContainsString('Unauthenticated.', $response->exception->getMessage(), $route->uri().'failed to redirect to login');
+                $this->assertStringContainsString('/login', $response->headers->get('Location'), $route->uri().'failed to redirect to login');
             }
         });
     }
@@ -87,13 +87,13 @@ class WebRouteTest extends TestCase
         $this->testNonSkippedUrls(function ($response, $route) {
             // If the route is protected by auth middleware, it should return a 302 since we are not logged in
             if (in_array('auth:api', $route->computedMiddleware)) {
-                $this->assertEquals(200, $response->getStatusCode(), $route->uri() . 'failed to load when logged in');
+                $this->assertEquals(200, $response->getStatusCode(), $route->uri().'failed to load when logged in');
             }
         });
     }
 
     /**
-     *Verify that a 404 page is not found (e.g. actually loads a 404)
+     *Verify that a 404 page is not found (e.g. actually loads a 404).
      *
      * @return void
      */
@@ -107,7 +107,7 @@ class WebRouteTest extends TestCase
     /**
      * Function to test nonSkippedUrls that accepts a callback of the assertions to run on the response of each route.
      *
-     * @param Closure $assertions
+     * @param  Closure  $assertions
      * @return void
      */
     private function testNonSkippedUrls($assertions = null)
@@ -116,31 +116,32 @@ class WebRouteTest extends TestCase
         foreach ($this->nonSkippedRoutes() as $route) {
             $response = $this->callRoute($route)['response'];
             try {
-                $this->assertNotEquals(500, $response->getStatusCode(), $route->uri() . ' failed to load');
-                $this->assertNotEquals(404, $response->getStatusCode(), $route->uri() . ' failed to load');
+                $this->assertNotEquals(500, $response->getStatusCode(), $route->uri().' failed to load');
+                $this->assertNotEquals(404, $response->getStatusCode(), $route->uri().' failed to load');
                 $assertions($response, $route);
                 $testedUrls[] = $route->uri();
             } catch (\Exception $e) {
-                fwrite(STDERR, print_r("\n" . $e . "\n", true));
+                fwrite(STDERR, print_r("\n".$e."\n", true));
                 // Mark the test as failed if the assertion fails
-                $this->fail($route->uri() . ' failed to load with error ' . $e->getMessage() . ' . ' . $response->exception->getMessage());
+                $this->fail($route->uri().' failed to load with error '.$e->getMessage().' . '.$response->exception->getMessage());
             }
         }
         $this->assertIsArray($testedUrls, 'No URLS tested');
         $this->assertNotEmpty($testedUrls, 'No URLS tested');
-        fwrite(STDERR, print_r('tested urls: ' . implode(', ', $testedUrls) . "\n", true));
+        fwrite(STDERR, print_r('tested urls: '.implode(', ', $testedUrls)."\n", true));
     }
 
     private function microtimeFloat()
     {
         [$usec, $asec] = explode(' ', microtime());
+
         return (float) $usec + (float) $asec;
     }
 
     private function shouldSkip(\Illuminate\Routing\Route $route): bool
     {
         return preg_match($this->dynamicRegex, $route->uri()) ||
-            !in_array('GET', $route->methods()) ||
+            ! in_array('GET', $route->methods()) ||
             in_array($route->uri(), $this->blacklistedRoutes);
     }
 
@@ -152,10 +153,11 @@ class WebRouteTest extends TestCase
 
         $end = $this->microtimeFloat();
         $time = round($end - $start, 3);
-        $this->assertLessThan(15, $time, 'too long time for ' . $route->uri());
+        $this->assertLessThan(15, $time, 'too long time for '.$route->uri());
+
         return [
             'response' => $response,
-            'time' => $time
+            'time' => $time,
         ];
     }
 
@@ -163,10 +165,11 @@ class WebRouteTest extends TestCase
     {
         $routes = [];
         foreach ($this->routes as &$route) {
-            if (!$this->shouldSkip($route)) {
+            if (! $this->shouldSkip($route)) {
                 $routes[] = $route;
             }
         }
+
         return $routes;
     }
 }

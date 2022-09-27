@@ -42,6 +42,6 @@ class MarkerDeleted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('maps.' . $this->marker->map->uuid);
+        return new Channel('maps.'.$this->marker->map->uuid);
     }
 }
