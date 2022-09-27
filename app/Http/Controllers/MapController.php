@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\View;
 class MapController extends Controller
 {
 
-    // Constructor with middlewares
     public function __construct()
     {
         $this->middleware('throttle:maps')->only('store');
         $this->middleware('throttle:maps')->only(['update', 'destroy']);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +74,12 @@ class MapController extends Controller
         return MapResource::collection($query->filterAndExpand()->parseQuery()->paginate());
     }
 
+    /**
+     * Search for maps
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $request)
     {
         $request->validate([
@@ -82,7 +88,13 @@ class MapController extends Controller
         return MapResource::collection(Map::search($request->input('q'))->where('privacy', 'public')->paginate());
     }
 
-    public function related(Request $request, Map $map)
+    /**
+     * Return related maps for a given map
+     *
+     * @param \App\Models\Map $map
+     * @return \Illuminate\Http\Response
+     */
+    public function related(Map $map)
     {
         $this->authorize('view', $map);
         return $map->related;
@@ -97,6 +109,7 @@ class MapController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Map::class);
+
         $validatedData = $request->validate([
             'title' => 'nullable|string|max:191',
             'slug' => 'nullable|string|max:255|unique:maps,slug',

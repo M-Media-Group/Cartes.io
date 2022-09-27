@@ -29,6 +29,12 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * Search for a given category
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $request)
     {
         $request->validate([
@@ -37,7 +43,13 @@ class CategoryController extends Controller
         return Category::search($request->input('q'))->get();
     }
 
-    public function related(Request $request, Category $category)
+    /**
+     * Get the related categories for a given category
+     *
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Http\Response
+     */
+    public function related(Category $category)
     {
         return $category->related;
     }
