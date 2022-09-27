@@ -36,12 +36,15 @@ class Map extends Model
         'options',
         'uuid',
     ];
+
     protected $hidden = ['id', 'token', 'user_id'];
+
     protected $casts = [
         'options' => 'array',
         'created_at' => 'datetime:c',
         'updated_at' => 'datetime:c',
     ];
+
     protected $appends = [
         'is_linked_to_user'
     ];
