@@ -30,8 +30,13 @@ class OnGeographicalBodyType implements Rule
         $lat = $value->getLat();
         $lon = $value->getLng();
 
-        $api_url = 'https://api.onwater.io/api/v1/results/'.$lon.','.$lat;
+        $api_url = 'https://api.onwater.io/api/v1/results/' . $lon . ',' . $lat;
         $json = json_decode(file_get_contents($api_url), true);
+
+        // If the API is down, we'll just let it pass
+        if (!isset($json['water'])) {
+            return true;
+        }
 
         if ($this->body_type == 'land' && $json['water'] == false) {
             return true;
@@ -49,6 +54,6 @@ class OnGeographicalBodyType implements Rule
      */
     public function message()
     {
-        return 'Markers on this map must be placed on '.$this->body_type.'.';
+        return 'Markers on this map must be placed on ' . $this->body_type . '.';
     }
 }
