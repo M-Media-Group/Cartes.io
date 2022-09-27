@@ -2,6 +2,11 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -75,6 +80,8 @@ class AuthenticationTest extends TestCase
      */
     public function testRegisterNewUser()
     {
+        Notification::fake();
+
         $passAndEmail = 'asdad' . time() . '@test.com';
         $this->withoutExceptionHandling();
         $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class, \Spatie\Honeypot\ProtectAgainstSpam::class)->post('/register', [
@@ -90,6 +97,10 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => $passAndEmail,
         ]);
+
+        // Assert notification was sent
+        $user = \App\Models\User::where('email', $passAndEmail)->firstOrFail();
+        Notification::assertSentTo($user, VerifyEmail::class);
 
         return $passAndEmail;
     }
@@ -118,11 +129,16 @@ class AuthenticationTest extends TestCase
      */
     public function testResetPassword()
     {
+        Notification::fake();
+
         $user = \App\Models\User::firstOrFail();
         $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/password/email', [
             'email' => $user->email,
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
+
+        // Assert notification was sent
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 }
