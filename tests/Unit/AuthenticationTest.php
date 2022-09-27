@@ -67,4 +67,23 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasErrors('password');
     }
+
+    /**
+     * Test registering a new user
+     *
+     * @return void
+     */
+    public function testRegisterNewUser()
+    {
+        $passAndEmail = 'asdad' . time() . '@test.com';
+        $this->withoutExceptionHandling();
+        $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class, \Spatie\Honeypot\ProtectAgainstSpam::class)->post('/register', [
+            'username' => 'TestUser' . rand(1, 1000),
+            'email' => $passAndEmail,
+            'password' => $passAndEmail,
+            'password_confirmation' => $passAndEmail,
+        ]);
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+    }
 }
