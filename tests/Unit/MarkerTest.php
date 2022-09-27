@@ -17,9 +17,9 @@ class MarkerTest extends TestCase
     {
         parent::setUp();
         $this->withoutEvents();
-        $this->map = \App\Models\Map::create([
-            'users_can_create_markers' => 'yes'
-        ]);
+        $this->map = new \App\Models\Map();
+        $this->map->users_can_create_markers = 'yes';
+        $this->map->save();
         // "lat": 45,
         // "lng": 45,
         // "description": "Hungry Pete",
