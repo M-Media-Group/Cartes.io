@@ -6,6 +6,8 @@
     </exclude>
     <include>
       <directory suffix=".php">./app</directory>
+      <directory suffix="api.php">./routes</directory>
+      <directory suffix="web.php">./routes</directory>
     </include>
   </coverage>
   <testsuites>
