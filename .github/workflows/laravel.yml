@@ -29,7 +29,7 @@ jobs:
     - name: Generate key
       run: php artisan key:generate
     - name: Run migrations
-      run: php artisan migrate --force
+      run: php artisan migrate:fresh --force
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
