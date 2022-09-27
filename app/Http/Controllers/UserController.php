@@ -111,6 +111,12 @@ class UserController extends Controller
         return redirect('/users/' . urlencode($request->input('username')));
     }
 
+    /**
+     * Update the currently authenticated user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function updateSelf(Request $request)
     {
         $user = $request->user();
