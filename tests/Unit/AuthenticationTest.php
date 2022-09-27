@@ -85,5 +85,10 @@ class AuthenticationTest extends TestCase
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
+
+        // Assert the user is in the DB
+        $this->assertDatabaseHas('users', [
+            'email' => $passAndEmail,
+        ]);
     }
 }
