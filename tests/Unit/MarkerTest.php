@@ -38,12 +38,11 @@ class MarkerTest extends TestCase
      */
     public function testSeeAllMapMarkersTest()
     {
-        $post = $this->map;
 
-        $response = $this->getJson('/api/maps/' . $post->uuid);
+        $response = $this->getJson('/api/maps/' . $this->map->uuid);
         $response->assertOk();
 
-        $response = $this->getJson('/api/maps/' . $post->uuid . '/markers');
+        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers');
         $response->assertOk();
         $response->assertSee('location');
         $response->assertDontSee('token');
@@ -56,8 +55,7 @@ class MarkerTest extends TestCase
      */
     public function testFailToCreateMarker()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', []);
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', []);
         $response->assertStatus(422);
     }
 
@@ -68,14 +66,13 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarker()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
         // Get raw factory data
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', $marker->toArray());
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
     }
@@ -87,14 +84,13 @@ class MarkerTest extends TestCase
      */
     public function testFailCreateMarkerInBulkUnauthenticated()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
         // Get raw factory data
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(401);
     }
 
@@ -105,7 +101,6 @@ class MarkerTest extends TestCase
      */
     public function testFailCreateMarkerInBulkUnauthorised()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
         // Get raw factory data
         $marker = Marker::factory()->make();
 
@@ -119,7 +114,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(403);
     }
 
@@ -130,7 +125,6 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerInBulk()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
         // Get raw factory data
         $marker = Marker::factory()->make();
 
@@ -152,7 +146,7 @@ class MarkerTest extends TestCase
         $marker['category'] = $marker['category_id'];
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers/bulk', $markers);
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
         $response->assertStatus(200);
     }
 
@@ -163,7 +157,6 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerWithCategoryName()
     {
-        $post = \App\Models\Map::whereHas('markers')->where('users_can_create_markers', 'yes')->firstOrFail();
 
         $marker = Marker::factory()->make();
 
@@ -172,7 +165,7 @@ class MarkerTest extends TestCase
         $marker['category_name'] = $category->name;
         $marker['lat'] = $marker['location']->getLat();
         $marker['lng'] = $marker['location']->getLng();
-        $response = $this->postJson('/api/maps/' . $post->uuid . '/markers', $marker->toArray());
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
     }
@@ -184,7 +177,7 @@ class MarkerTest extends TestCase
      */
     public function testUpdateMarkerDescription()
     {
-        $marker = $this->map->markers()->firstOrFail();
+        $marker = $this->map->markers()->firstOrCreate();
 
         $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token, [
             'description' => 'New description',
@@ -201,7 +194,7 @@ class MarkerTest extends TestCase
      */
     public function testUpdateMarkerIsSpamNotAllowedByMarkerAuthor()
     {
-        $marker = $this->map->markers()->firstOrFail();
+        $marker = $this->map->markers()->firstOrCreate();
 
         $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token, [
             'is_spam' => true,
@@ -217,7 +210,7 @@ class MarkerTest extends TestCase
      */
     public function testUpdateMarkerIsSpam()
     {
-        $marker = $this->map->markers()->firstOrFail();
+        $marker = $this->map->markers()->firstOrCreate();
 
         $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?map_token=' . $this->map->token, [
             'is_spam' => true,
@@ -234,7 +227,7 @@ class MarkerTest extends TestCase
      */
     public function testDeleteMarker()
     {
-        $marker = $this->map->markers()->firstOrFail();
+        $marker = $this->map->markers()->firstOrCreate();
 
         $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token);
         $response->assertStatus(200);
