@@ -21,7 +21,7 @@
         "lodash": "^4.17.20",
         "popper.js": "^1.16.1",
         "postcss": "^8.2.4",
-        "purify-css": "^1.1.9",
+        "purify-css": "^1.2.5",
         "purifycss-webpack": "^0.7.0",
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.29.0",
