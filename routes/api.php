@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/test', function (Map $map) {
-    return $map->public()->filterAndExpand()->get();
-});
-
 //  Optionally authenticated routes
 Route::middleware(SetAuthDriverToApi::class)->group(function () {
 
@@ -61,3 +57,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('users', 'UserController')->except(['create', 'index', 'show']);
 });
+
+Route::get('{any}', function () {
+    // Abort with method not allowed if method is not found
+    abort(404);
+})->where('any', '.*');
