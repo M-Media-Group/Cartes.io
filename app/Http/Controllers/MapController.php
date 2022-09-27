@@ -163,28 +163,6 @@ class MapController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Map  $map
-     * @return \Illuminate\Http\Response
-     */
-    public function showEmbed(Request $request, Map $map)
-    {
-        $this->authorize('view', $map);
-
-        $data = [
-            'map' => $map->load('categories'),
-        ];
-
-        // Redirect away to the app.cartes.io version
-        if ($map->shouldUseNewApp) {
-            return redirect(config('app.spa_url') . '/maps/' . $map->slug . '/embed', 301);
-        }
-
-        return View::make('embeds/map', $data);
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
