@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
+/**
+ * @todo change the firstOrCreates to use a factory
+ */
 class AuthenticationTest extends TestCase
 {
     public function testSeeLoginTest()
@@ -27,7 +30,11 @@ class AuthenticationTest extends TestCase
 
     public function testRedirectFromLoginPageWhenLoggedInTest()
     {
-        $response = $this->actingAs(\App\Models\User::firstOrFail());
+        $response = $this->actingAs(\App\Models\User::firstOrCreate([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => 'test',
+        ]));
         $response = $this->get('/login');
         $response->assertStatus(302);
     }
@@ -67,7 +74,11 @@ class AuthenticationTest extends TestCase
         $response->assertSessionHasErrors(['email', 'password']);
 
         $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/login', [
-            'email' => \App\Models\User::firstOrFail()->email,
+            'email' => \App\Models\User::firstOrCreate([
+                'email' => 'test@test.com',
+                'username' => 'test',
+                'password' => 'test',
+            ])->email,
         ]);
         $response->assertStatus(302);
         $response->assertSessionHasErrors('password');
@@ -99,7 +110,11 @@ class AuthenticationTest extends TestCase
         ]);
 
         // Assert notification was sent
-        $user = \App\Models\User::where('email', $passAndEmail)->firstOrFail();
+        $user = \App\Models\User::where('email', $passAndEmail)->firstOrCreate([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => 'test',
+        ]);
         Notification::assertSentTo($user, VerifyEmail::class);
 
         return $passAndEmail;
@@ -131,7 +146,11 @@ class AuthenticationTest extends TestCase
     {
         Notification::fake();
 
-        $user = \App\Models\User::firstOrFail();
+        $user = \App\Models\User::firstOrCreate([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => 'test',
+        ]);
         $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/password/email', [
             'email' => $user->email,
         ]);
