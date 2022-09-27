@@ -12,18 +12,6 @@ class DeleteEmptyMaps implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    //protected $map;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //$this->map = $map;
-    }
-
     /**
      * Execute the job.
      *
