@@ -110,4 +110,19 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
     }
+
+    /**
+     * Test able to reset password
+     *
+     * @return void
+     */
+    public function testResetPassword()
+    {
+        $user = \App\Models\User::firstOrFail();
+        $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/password/email', [
+            'email' => $user->email,
+        ]);
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+    }
 }
