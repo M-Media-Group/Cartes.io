@@ -71,7 +71,7 @@ class AuthenticationTest extends TestCase
     /**
      * Test registering a new user
      *
-     * @return void
+     * @return string
      */
     public function testRegisterNewUser()
     {
@@ -90,5 +90,24 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => $passAndEmail,
         ]);
+
+        return $passAndEmail;
+    }
+
+    /**
+     * Test able to log in
+     *
+     * @depends testRegisterNewUser
+     * @param string $email The email to use to log in filled automatically by PHPunit using the @depends
+     * @return void
+     */
+    public function testLoginNewUser(string $email)
+    {
+        $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)->post('/login', [
+            'email' => $email,
+            'password' => $email,
+        ]);
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
     }
 }
