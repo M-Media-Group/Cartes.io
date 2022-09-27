@@ -178,6 +178,23 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test update a marker description
+     *
+     * @return void
+     */
+    public function testUpdateMarkerDescription()
+    {
+        $marker = $this->map->markers()->firstOrFail();
+
+        $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token, [
+            'description' => 'New description',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertSee('New description');
+    }
+
+    /**
      * Test delete marker.
      *
      * @return void
