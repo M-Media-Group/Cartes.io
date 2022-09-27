@@ -31,10 +31,6 @@ Route::get('csrf-token', function () {
     return csrf_token();
 });
 
-// Route::get('/about', function () {
-//     return view('about');
-// });
-
 Route::middleware(ProtectAgainstSpam::class)->group(function () {
     Auth::routes(['verify' => true]);
 });
@@ -45,8 +41,6 @@ Route::resources([
 ]);
 
 Route::post('me/apply/reporter', 'UserController@applyForReporter');
-
-Route::get('/embeds/maps/{map}', 'MapController@showEmbed');
 
 if (config('app.spa_url')) {
     // Catch all and redirect to web-app
