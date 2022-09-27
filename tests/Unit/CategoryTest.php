@@ -13,7 +13,7 @@ class CategoryTest extends TestCase
     {
         parent::setUp();
 
-        $post = \App\Models\Category::firstOrCreate();
+        $post = \App\Models\Category::firstOrCreate(['name' => 'test', 'icon' => 'test.jpg']);
         $this->category = $post;
     }
 

@@ -110,11 +110,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         // Assert notification was sent
-        $user = \App\Models\User::where('email', $passAndEmail)->firstOrCreate([
-            'email' => 'test@test.com',
-            'username' => 'test',
-            'password' => 'test',
-        ]);
+        $user = \App\Models\User::where('email', $passAndEmail)->first();
         Notification::assertSentTo($user, VerifyEmail::class);
 
         return $passAndEmail;
