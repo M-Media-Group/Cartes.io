@@ -40,6 +40,9 @@ See the Cartes.io package at https://pypi.org/project/py-cartes-io/ - `pip insta
 ## Interact with in JS
 See the Cartes.io NPM package at https://www.npmjs.com/package/@m-media/npm-cartes-io - `npm install @m-media/npm-cartes-io`, which allows you to interact with the Cartes.io API in a fluent way in JS.
 
+## Interact with using iFrames
+Cartes.io supports embedding maps on any site and also sends postMessages so your site can listen to map events. See the [iFrame docs](https://github.com/M-Media-Group/Cartes.io/wiki/iFrame).
+
 ## Development installation
 
 After running composer and npm, run the following commands to create the permissions and roles:
@@ -48,6 +51,10 @@ After running composer and npm, run the following commands to create the permiss
 - php artisan permission:create-role editor web "manage markers|manage categories|manage maps"
 - php artisan permission:create-role "power reporter" web "create markers in bulk"
 - php artisan permission:create-role reporter web "edit markers|create markers|delete markers|mark spam"
+
+### Running the tests
+
+To run the tests, use phpunit - `./vendor/bin/phpunit`.
 
 ## Roadmap
 
