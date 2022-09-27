@@ -54,7 +54,7 @@ After running composer and npm, run the following commands to create the permiss
 
 ### Running the tests
 
-To run the tests, use phpunit - `./vendor/bin/phpunit`.
+To run the tests, use phpunit - `composer test`.
 
 ## Roadmap
 
