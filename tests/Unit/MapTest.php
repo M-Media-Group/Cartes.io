@@ -15,6 +15,8 @@ class MapTest extends TestCase
 
         $post = \App\Models\Map::create();
         $this->map = $post;
+
+        $this->withoutExceptionHandling();
     }
 
     /**
