@@ -152,7 +152,7 @@ class Map extends Model
             ->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
     }
 
-    public function related(): HasManyRelatedThrough
+    public function related(): HasManyThrough
     {
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'category_id')
             ->where($this->getTable() . ".privacy", "=", "public")

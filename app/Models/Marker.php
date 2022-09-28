@@ -20,7 +20,7 @@ class Marker extends Pivot
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var bool
      */
     public $incrementing = true;
 
