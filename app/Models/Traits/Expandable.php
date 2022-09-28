@@ -75,7 +75,7 @@ trait Expandable
     /**
      * Get the models available scopes.
      *
-     * @return array
+     * @return array<string>
      */
     private function getAllScopes()
     {

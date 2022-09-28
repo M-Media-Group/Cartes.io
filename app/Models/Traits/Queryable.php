@@ -9,7 +9,7 @@ trait Queryable
     /**
      * The allowed operators in a given query
      *
-     * @var array
+     * @var array<string>
      */
     private $allowedOperators = [
         '>=',
@@ -41,7 +41,7 @@ trait Queryable
     public function scopeParseQuery(Builder $query)
     {
         // request()->input('query') trimmed to max 50 chars
-        $queryString = substr(request()->input('query'), 0, 50);
+        $queryString = substr((string) request()->input('query'), 0, 50);
         $queries = explode('AND', $queryString);
         foreach ($queries as $q) {
             // If the query contains "OR", skip it
@@ -68,7 +68,7 @@ trait Queryable
      * Get the exploded value from a string with underscores
      *
      * @param string $value
-     * @return array
+     * @return array<string>
      */
     private function getExplodedValue(string $value)
     {
@@ -130,7 +130,7 @@ trait Queryable
      * Explode the dot notation of a parameter
      *
      * @param string $parameter
-     * @return array<string, string>
+     * @return array<string>
      */
     private function explodeDotNotation(string $parameter)
     {
