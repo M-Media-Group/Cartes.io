@@ -36,7 +36,7 @@ trait Queryable
      * Allow and parse a query parameter in the request
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeParseQuery(Builder $query)
     {
@@ -68,7 +68,7 @@ trait Queryable
      * Get the exploded value from a string with underscores
      *
      * @param string $value
-     * @return void
+     * @return array
      */
     private function getExplodedValue(string $value)
     {
@@ -81,8 +81,8 @@ trait Queryable
      * Add a where or having clause to the query
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param [type] $parsedQuery
-     * @return void
+     * @param Object $parsedQuery
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     private function addWhereOrHavingClause(Builder $query, $parsedQuery)
     {
@@ -108,11 +108,11 @@ trait Queryable
      * Recursively append a whereHas if the query parameter is dot notation
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param [type] $relation
-     * @param [type] $parameter
-     * @param [type] $operator
-     * @param [type] $value
-     * @return void
+     * @param mixed $relation
+     * @param mixed $parameter
+     * @param mixed $operator
+     * @param mixed $value
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     private function appendWhereHas(Builder $query, $relation, $parameter, $operator, $value)
     {
@@ -130,7 +130,7 @@ trait Queryable
      * Explode the dot notation of a parameter
      *
      * @param string $parameter
-     * @return void
+     * @return array
      */
     private function explodeDotNotation(string $parameter)
     {
@@ -190,7 +190,7 @@ trait Queryable
     /**
      * Parse a query parameter operator
      *
-     * @return void
+     * @return string
      */
     private function parseOperator()
     {
@@ -207,7 +207,7 @@ trait Queryable
      *
      * @param string $value
      * @param string $operator
-     * @return void
+     * @return string|bool|null
      */
     private function prepareValueForWhereClause(string $value, string $operator)
     {

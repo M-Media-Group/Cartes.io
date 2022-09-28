@@ -21,8 +21,9 @@ class MarkerPolicy
     /**
      * Determine whether the user can view the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Map $map
+     * @param string|null $token
      * @return mixed
      */
     public function index(?User $user, Map $map, $token = null)
@@ -43,7 +44,7 @@ class MarkerPolicy
     /**
      * Determine whether the user can create markers.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function create(?User $user, Map $map, $token = null)
@@ -67,7 +68,7 @@ class MarkerPolicy
     /**
      * Determine whether the user can create markers.
      *
-     * @param  \App\Models\User  $user
+     * @param User $user
      * @return mixed
      */
     public function createInBulk(User $user, Map $map, $token = null)
@@ -82,8 +83,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can update the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Marker $marker
      * @return mixed
      */
     public function update(?User $user, Marker $marker)
@@ -102,8 +103,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can delete the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Marker $marker
      * @return mixed
      */
     public function delete(User $user, Marker $marker)
@@ -121,8 +122,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can restore the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Marker $marker
      * @return mixed
      */
     public function restore(User $user, Marker $marker)
@@ -133,8 +134,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can permanently delete the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Marker $marker
      * @return mixed
      */
     public function markAsSpam(?User $user, Marker $marker, $map_token = null)
@@ -158,8 +159,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can permanently delete the marker.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Marker  $marker
+     * @param User $user
+     * @param Marker $marker
      * @return mixed
      */
     public function forceDelete(?User $user, Marker $marker, $map_token = null)

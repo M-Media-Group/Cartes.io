@@ -74,7 +74,7 @@ trait Expandable
     /**
      * Get the models available scopes.
      *
-     * @return void
+     * @return array
      */
     private function getAllScopes()
     {
@@ -90,7 +90,7 @@ trait Expandable
     /**
      * Get all of the models relationships
      *
-     * @return void
+     * @return array
      */
     public function getAllRelationships()
     {
@@ -109,7 +109,7 @@ trait Expandable
     /**
      * Get all of the models expandable fields
      *
-     * @return void
+     * @return array
      */
     public function getExpandableFields()
     {
@@ -141,9 +141,8 @@ trait Expandable
     /**
      * Expand the request
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Http\Request $request
-     * @return void
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeExpand(Builder $query)
     {
@@ -181,9 +180,8 @@ trait Expandable
     /**
      * Filter the request
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Http\Request $request
-     * @return void
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeFilter(Builder $query)
     {
@@ -214,8 +212,8 @@ trait Expandable
     /**
      * Apply all scopes
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return void
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeFilterAndExpand(Builder $query)
     {

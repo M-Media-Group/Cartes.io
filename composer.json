@@ -39,6 +39,7 @@
         "fzaninotto/faker": "^1.4",
         "laravel/telescope": "^4.0",
         "mockery/mockery": "^1.0",
+        "nunomaduro/larastan": "^1.0",
         "phpunit/phpunit": "^9.0",
         "squizlabs/php_codesniffer": "^3.7"
     },
@@ -75,6 +76,7 @@
         "test-dox": "vendor/bin/phpunit --testdox-text test-results/testDox",
         "lint": "vendor/bin/phpcs --standard=PSR12 --exclude=Generic.Files.LineLength app",
         "lint-fix": "vendor/bin/phpcbf --standard=PSR12 app",
+        "stan": "vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress --memory-limit 1G",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

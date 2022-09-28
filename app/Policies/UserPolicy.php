@@ -20,7 +20,6 @@ class UserPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
     public function index(?User $user)

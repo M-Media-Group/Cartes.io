@@ -118,10 +118,8 @@ jobs:
 
       - name: Execute Code Sniffer via phpcs
         run: |
-          composer require --dev squizlabs/php_codesniffer
           composer lint
 
-      - name: Execute Code Static Analysis (PHP Stan + Larastan)
-        run: |
-          composer require --dev nunomaduro/larastan
-          vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
+      # - name: Execute Code Static Analysis (PHP Stan + Larastan)
+      #   run: |
+      #     composer stan
