@@ -1,9 +1,11 @@
 includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 parameters:
-    level: 9
+    level: 4
     checkModelProperties: true
     checkPhpDocMissingReturn: false
     paths:
         - app
         - database
+    ignoreErrors:
+        - '#^Access to an undefined property .*?\.#'
