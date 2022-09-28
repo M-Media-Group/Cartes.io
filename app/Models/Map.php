@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
-use Webpatser\Uuid\Uuid;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
 use MMedia\LaravelCollaborativeFiltering\HasManyRelatedThrough;
@@ -70,7 +69,7 @@ class Map extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->token = Str::random(32);
-            $model->uuid = (string) Uuid::generate(4);
+            $model->uuid = (string) Str::uuid();
             $model->user_id = $model->user_id ?? (request()->user() ? request()->user()->id : null);
             $model->slug = $model->slug ?? Str::slug($model->uuid);
             $model->users_can_create_markers = $model->users_can_create_markers ?? 'only_logged_in';
