@@ -76,7 +76,7 @@
         "test-dox": "vendor/bin/phpunit --testdox-text test-results/testDox",
         "lint": "vendor/bin/phpcs --standard=PSR12 --exclude=Generic.Files.LineLength app",
         "lint-fix": "vendor/bin/phpcbf --standard=PSR12 app",
-        "stan": "vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress --memory-limit 1G",
+        "stan": "vendor/bin/phpstan analyse  --no-progress --memory-limit 1G",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
