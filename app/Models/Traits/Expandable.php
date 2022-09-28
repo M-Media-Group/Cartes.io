@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 trait Expandable
 {
-
     /**
      * The relationships to expand
      *
@@ -69,7 +68,7 @@ trait Expandable
      */
     private function getReflectionInstance()
     {
-        return new \ReflectionClass(Self::class);
+        return new \ReflectionClass(self::class);
     }
 
     /**
@@ -192,7 +191,7 @@ trait Expandable
 
         $this->validateScopeFilter($request);
 
-        foreach (Self::getFillable() as $prop) {
+        foreach (self::getFillable() as $prop) {
             $query->when($request->input($prop), function ($q) use ($request, $prop) {
                 $q->where($prop, $request->input($prop));
             });

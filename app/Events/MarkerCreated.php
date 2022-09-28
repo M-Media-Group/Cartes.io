@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
 
 class MarkerCreated implements ShouldBroadcast
 {
-    use SerializesModels, InteractsWithSockets;
+    use SerializesModels;
+    use InteractsWithSockets;
 
     public $marker;
 

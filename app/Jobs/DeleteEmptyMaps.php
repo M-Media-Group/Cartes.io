@@ -10,7 +10,10 @@ use Illuminate\Queue\SerializesModels;
 
 class DeleteEmptyMaps implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Execute the job.

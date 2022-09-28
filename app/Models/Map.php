@@ -19,7 +19,12 @@ use MMedia\LaravelCollaborativeFiltering\HasManyRelatedThrough;
 
 class Map extends Model
 {
-    use HasCollaborativeFiltering, HasFactory, Searchable, Expandable, Queryable;
+    use HasCollaborativeFiltering;
+    use HasFactory;
+    use Searchable;
+    use Expandable;
+    use Queryable;
+
     /**
      * The attributes that are mass assignable.
      *

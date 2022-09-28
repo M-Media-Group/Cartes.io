@@ -10,7 +10,10 @@ use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 
 class Category extends Model
 {
-    use HasCollaborativeFiltering, HasFactory, Searchable;
+    use HasCollaborativeFiltering;
+    use HasFactory;
+    use Searchable;
+
     /**
      * The attributes that are mass assignable.
      *

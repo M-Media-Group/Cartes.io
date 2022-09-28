@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 
 class MapController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('throttle:maps')->only('store');

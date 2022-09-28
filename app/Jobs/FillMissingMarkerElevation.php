@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 class FillMissingMarkerElevation implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Execute the job.

@@ -15,7 +15,6 @@ use Illuminate\Validation\Rule;
 
 class MarkerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -80,8 +79,8 @@ class MarkerController extends Controller
             'category' => 'required_without:category_name|exists:categories,id',
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
-            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
-            'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
+            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
+            'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'user_id' => 'nullable|exists:users,id',
             'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'elevation' => 'nullable|numeric|between:-100000,100000',
@@ -134,7 +133,7 @@ class MarkerController extends Controller
             'markers.*.lat' => 'required|numeric|between:-90,90',
             'markers.*.lng' => 'required|numeric|between:-180,180',
             'markers.*.description' => ['nullable', 'string', 'max:191'],
-            'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString],
+            'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'user_id' => 'exists:users,id',
             'markers.*.created_at' => 'nullable',
             'markers.*.updated_at' => 'nullable',
@@ -222,7 +221,7 @@ class MarkerController extends Controller
     public function update(Request $request, Map $map, Marker $marker)
     {
         $validated_data = $request->validate([
-            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString],
+            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
             'is_spam' => 'nullable|boolean',
         ]);
 

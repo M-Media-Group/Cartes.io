@@ -13,7 +13,10 @@ use Laravel\Scout\Searchable;
 
 class Marker extends Pivot
 {
-    use SpatialTrait, HasFactory, Searchable;
+    use SpatialTrait;
+    use HasFactory;
+    use Searchable;
+
     /**
      * The attributes that are mass assignable.
      *

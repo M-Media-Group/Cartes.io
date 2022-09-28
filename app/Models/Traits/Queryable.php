@@ -146,7 +146,7 @@ trait Queryable
      * @param string $query
      * @return Object
      */
-    private function parseQueryParam(string $query): Object
+    private function parseQueryParam(string $query): object
     {
         $parameter = null;
         $operator = null;
@@ -158,7 +158,6 @@ trait Queryable
         foreach ($this->allowedOperators as $allowedOperator) {
             // If the query contains the allowedOperator
             if (str_contains($query, $allowedOperator)) {
-
                 // Split the query based on the allowedOperator
                 $query = explode($allowedOperator, $query);
 

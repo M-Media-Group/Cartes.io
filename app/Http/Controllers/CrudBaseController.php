@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\App;
 
 class CrudBaseController extends Controller
 {
-
     /**
      * The model namespaced path.
      *
