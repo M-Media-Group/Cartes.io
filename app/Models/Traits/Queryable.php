@@ -108,13 +108,13 @@ trait Queryable
      * Recursively append a whereHas if the query parameter is dot notation
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param mixed $relation
-     * @param mixed $parameter
+     * @param string $relation
+     * @param string $parameter
      * @param mixed $operator
      * @param mixed $value
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function appendWhereHas(Builder $query, $relation, $parameter, $operator, $value)
+    private function appendWhereHas(Builder $query, string $relation, string $parameter, $operator, $value)
     {
         return $query->whereHas($relation, function ($q) use ($parameter, $operator, $value) {
             if (str_contains($parameter, '.')) {
@@ -130,7 +130,7 @@ trait Queryable
      * Explode the dot notation of a parameter
      *
      * @param string $parameter
-     * @return array
+     * @return array<string, string>
      */
     private function explodeDotNotation(string $parameter)
     {
