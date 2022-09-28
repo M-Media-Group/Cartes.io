@@ -13,8 +13,7 @@ class MapTest extends TestCase
     {
         parent::setUp();
 
-        $post = new \App\Models\Map();
-        $post->save();
+        $post = \App\Models\Map::create();
         $this->map = $post;
     }
 
