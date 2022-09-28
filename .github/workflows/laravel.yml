@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ["7.4"]
+        php-versions: ["7.4", "8.1"]
         dependency-stability: ["prefer-none"]
 
     name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
@@ -80,7 +80,7 @@ jobs:
           DB_PORT: 33306
           DB_USER: root
           DB_PASSWORD: DB_PASSWORD
-        run: php artisan key:generate
+        run: php artisan key:generate && php artisan passport:install
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
       - name: Run Migrations
