@@ -103,7 +103,7 @@ class MapController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|MapResource
      */
     public function store(Request $request)
     {
@@ -134,7 +134,7 @@ class MapController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Map  $map
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|MapResource
      */
     public function show(Request $request, $uuid)
     {
@@ -166,7 +166,7 @@ class MapController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Map  $map
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Map $map)
     {
@@ -213,7 +213,6 @@ class MapController extends Controller
     /**
      * Detach the user associated with the map
      *
-     * @param \Illuminate\Http\Request $request
      * @param \App\Models\Map $map
      * @return \Illuminate\Http\Response
      */
@@ -229,7 +228,7 @@ class MapController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Map  $map
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, Map $map)
     {

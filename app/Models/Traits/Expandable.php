@@ -5,7 +5,6 @@ namespace App\Models\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 trait Expandable
 {
@@ -51,10 +50,12 @@ trait Expandable
 
     /**
      * Constructor
+     *
+     * @param array $attributes
      */
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
         $this->reflection = $this->getReflectionInstance();
         $this->expandableFields = $this->getAllRelationships();
         $this->expandableFieldCounts = $this->getAllRelationships();
