@@ -73,7 +73,7 @@
         "test": "vendor/bin/phpunit",
         "test-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html test-results/coverage",
         "test-dox": "vendor/bin/phpunit --testdox-text test-results/testDox",
-        "lint": "vendor/bin/phpcs --standard=PSR12 app",
+        "lint": "vendor/bin/phpcs --standard=PSR12 --exclude=Generic.Files.LineLength app",
         "lint-fix": "vendor/bin/phpcbf --standard=PSR12 app",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
