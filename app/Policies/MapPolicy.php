@@ -26,7 +26,7 @@ class MapPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Map  $map
-     * @return mixed
+     * @return bool
      */
     public function view(?User $user, Map $map)
     {
@@ -47,7 +47,7 @@ class MapPolicy
      * Determine whether the user can create maps.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return bool
      */
     public function create(?User $user)
     {
@@ -59,7 +59,7 @@ class MapPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Map  $map
-     * @return mixed
+     * @return bool
      */
     public function update(?User $user, Map $map)
     {
@@ -81,7 +81,7 @@ class MapPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Map  $map
-     * @return mixed
+     * @return bool
      */
     public function delete(?User $user, Map $map)
     {
@@ -100,7 +100,7 @@ class MapPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Map  $map
-     * @return mixed
+     * @return bool
      */
     public function restore(User $user, Map $map)
     {
@@ -112,7 +112,7 @@ class MapPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Map  $map
-     * @return mixed
+     * @return bool
      */
     public function forceDelete(?User $user, Map $map)
     {

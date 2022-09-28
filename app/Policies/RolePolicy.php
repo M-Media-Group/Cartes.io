@@ -22,7 +22,7 @@ class RolePolicy
      *
      * @param  User  $user
      * @param  Role $role
-     * @return mixed
+     * @return bool
      */
     public function view(User $user, Role $role)
     {
@@ -33,7 +33,7 @@ class RolePolicy
      * Determine whether the user can create posts.
      *
      * @param  User  $user
-     * @return mixed
+     * @return bool
      */
     public function create(User $user)
     {
@@ -45,7 +45,7 @@ class RolePolicy
      *
      * @param  User  $user
      * @param  Role $role
-     * @return mixed
+     * @return bool
      */
     public function update(User $user, Role $role)
     {
@@ -57,7 +57,7 @@ class RolePolicy
      *
      * @param  User  $user
      * @param  Role $role
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, Role $role)
     {
@@ -69,7 +69,7 @@ class RolePolicy
      *
      * @param  User  $user
      * @param  Role $role
-     * @return mixed
+     * @return bool
      */
     public function restore(User $user, Role $role)
     {
@@ -81,7 +81,7 @@ class RolePolicy
      *
      * @param  User  $user
      * @param  Role $role
-     * @return mixed
+     * @return bool
      */
     public function forceDelete(User $user, Role $role)
     {

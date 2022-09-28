@@ -21,7 +21,7 @@ class CategoryPolicy
      * Determine whether the user can view the category.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return bool
      */
     public function viewAny(?User $user)
     {
@@ -33,7 +33,7 @@ class CategoryPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Category  $category
-     * @return mixed
+     * @return bool
      */
     public function view(?User $user, Category $category)
     {
@@ -44,7 +44,7 @@ class CategoryPolicy
      * Determine whether the user can create categories.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return bool
      */
     public function create(User $user)
     {
@@ -56,7 +56,7 @@ class CategoryPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Category  $category
-     * @return mixed
+     * @return bool
      */
     public function update(User $user, Category $category)
     {
@@ -68,7 +68,7 @@ class CategoryPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Category  $category
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, Category $category)
     {
@@ -80,7 +80,7 @@ class CategoryPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Category  $category
-     * @return mixed
+     * @return bool
      */
     public function restore(User $user, Category $category)
     {
@@ -92,7 +92,7 @@ class CategoryPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Category  $category
-     * @return mixed
+     * @return bool
      */
     public function forceDelete(User $user, Category $category)
     {

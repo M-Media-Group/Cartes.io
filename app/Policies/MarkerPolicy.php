@@ -24,7 +24,7 @@ class MarkerPolicy
      * @param User $user
      * @param Map $map
      * @param string|null $token
-     * @return mixed
+     * @return bool
      */
     public function index(?User $user, Map $map, $token = null)
     {
@@ -45,7 +45,7 @@ class MarkerPolicy
      * Determine whether the user can create markers.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function create(?User $user, Map $map, $token = null)
     {
@@ -69,7 +69,7 @@ class MarkerPolicy
      * Determine whether the user can create markers.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
     public function createInBulk(User $user, Map $map, $token = null)
     {
@@ -85,7 +85,7 @@ class MarkerPolicy
      *
      * @param User $user
      * @param Marker $marker
-     * @return mixed
+     * @return bool
      */
     public function update(?User $user, Marker $marker)
     {
@@ -105,7 +105,7 @@ class MarkerPolicy
      *
      * @param User $user
      * @param Marker $marker
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, Marker $marker)
     {
@@ -124,7 +124,7 @@ class MarkerPolicy
      *
      * @param User $user
      * @param Marker $marker
-     * @return mixed
+     * @return bool
      */
     public function restore(User $user, Marker $marker)
     {
@@ -136,7 +136,7 @@ class MarkerPolicy
      *
      * @param User $user
      * @param Marker $marker
-     * @return mixed
+     * @return bool
      */
     public function markAsSpam(?User $user, Marker $marker, $map_token = null)
     {
@@ -161,7 +161,7 @@ class MarkerPolicy
      *
      * @param User $user
      * @param Marker $marker
-     * @return mixed
+     * @return bool
      */
     public function forceDelete(?User $user, Marker $marker, $map_token = null)
     {

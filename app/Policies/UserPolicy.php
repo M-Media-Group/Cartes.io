@@ -20,7 +20,7 @@ class UserPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return bool
      */
     public function index(?User $user)
     {
@@ -32,7 +32,7 @@ class UserPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $model
-     * @return mixed
+     * @return bool
      */
     public function view(?User $user, User $model)
     {
@@ -49,7 +49,7 @@ class UserPolicy
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return bool
      */
     public function create(User $user)
     {
@@ -61,7 +61,7 @@ class UserPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $model
-     * @return mixed
+     * @return bool
      */
     public function update(User $user, User $model)
     {
@@ -73,7 +73,7 @@ class UserPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $model
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, User $model)
     {
@@ -85,7 +85,7 @@ class UserPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $model
-     * @return mixed
+     * @return bool
      */
     public function restore(User $user, User $model)
     {
@@ -97,7 +97,7 @@ class UserPolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $model
-     * @return mixed
+     * @return bool
      */
     public function forceDelete(User $user, User $model)
     {
