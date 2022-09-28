@@ -188,21 +188,6 @@ trait Queryable
     }
 
     /**
-     * Parse a query parameter operator
-     *
-     * @return string
-     */
-    private function parseOperator()
-    {
-        $request = request();
-        $operator = $request->input('operator');
-        if ($operator) {
-            return $operator;
-        }
-        return '=';
-    }
-
-    /**
      * Prepare the value for a where clause
      *
      * @param string $value
