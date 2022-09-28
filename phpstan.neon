@@ -4,6 +4,7 @@ parameters:
     level: 4
     checkModelProperties: true
     checkPhpDocMissingReturn: false
+    checkOctaneCompatibility: true
     paths:
         - app
         - database
