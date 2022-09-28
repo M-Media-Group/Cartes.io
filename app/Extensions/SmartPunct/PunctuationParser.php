@@ -42,10 +42,7 @@ class PunctuationParser extends AbstractInlineParser
             $inlineContext->getContainer()->appendChild(new Text('…'));
 
             return true;
-        }
-
-        // Em/En-dashes
-        elseif ($ch === '-' && $matched = $cursor->match('/^(?<!-)(-{2,})/')) {
+        } elseif ($ch === '-' && $matched = $cursor->match('/^(?<!-)(-{2,})/')) {
             $count = strlen($matched);
             $en_dash = '–';
             $en_count = 0;
