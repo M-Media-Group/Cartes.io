@@ -174,22 +174,6 @@ class Map extends Model
         return !!$this->user_id;
     }
 
-    /**
-     * Simple collaborative  filtering.
-     *
-     * @deprecated use the related() relationship instead
-     * @see https://arctype.com/blog/collaborative-filtering-tutorial/ - Thanks arctype!
-     * @return Collection
-     */
-    public function getRelatedMapsAttribute()
-    {
-        return $this->getRelatedModels(\App\Models\Marker::class, 'category_id', function ($query) {
-            return $query
-                ->where($this->getTable() . ".privacy", "=", "public")
-                ->with("categories");
-        });
-    }
-
     public function scopePublic($query)
     {
         return $query->where("privacy", "=", "public");
