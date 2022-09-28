@@ -1,25 +1,23 @@
-name: Laravel
-
+# GithHub Actions Workflow generated with Ghygen
+# Original configuration: https://ghygen.hi-folks.dev?code=0fc6acca315338aa8750dad7a80e8232
+name: Template - Laravel application (Mysql)
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
-
+# Service container Mysql mysql
     services:
-      # mysql-service Label used to access the service container
-      mysql-service:
+      # Label used to access the service container
+      mysql:
         # Docker Hub image (also with version)
         image: mysql:5.7
         env:
-          ## Accessing to Github secrets, where you can store your configuration
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: db_test
+          MYSQL_ROOT_PASSWORD: DB_PASSWORD
+          MYSQL_DATABASE:  db_test_laravel
         ## map the "external" 33306 port with the "internal" 3306
         ports:
           - 33306:3306
@@ -30,26 +28,88 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: [ '8.1','8.0' ]
+        dependency-stability: [ 'prefer-none' ]
+
+    name: P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-stability }} - ${{ matrix.operating-system}}
+
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+    - uses: actions/checkout@v2
+    - name: Install PHP versions
+      uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
-    - uses: actions/checkout@v3
+        php-version: ${{ matrix.php-versions }}
+    - name: Get Composer Cache Directory 2
+      id: composer-cache
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      id: actions-cache
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    - name: Cache PHP dependencies
+      uses: actions/cache@v2
+      id: vendor-cache
+      with:
+        path: vendor
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
+      if: steps.vendor-cache.outputs.cache-hit != 'true'
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
+
+    - name: Update Dependencies with latest stable
+      if: matrix.dependency-stability == 'prefer-stable'
+      run: composer update --prefer-stable
+    - name: Update Dependencies with lowest stable
+      if: matrix.dependency-stability == 'prefer-lowest'
+      run: composer update --prefer-stable --prefer-lowest
+
     - name: Generate key
       run: php artisan key:generate
-    - name: Run migrations
-      run: php artisan migrate:fresh --force
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
+    - name: Directory Permissions
+      run: chmod -R 777 storage bootstrap/cache
+    - name: Run Migrations
+# Set environment
       env:
         DB_CONNECTION: mysql
-        DB_DATABASE: db_test
+        DB_DATABASE: db_test_laravel
         DB_PORT: 33306
         DB_USER: root
-        DB_PASSWORD: password
+        DB_PASSWORD: DB_PASSWORD
+
+      run: php artisan migrate
+
+    - name: Show dir
+      run: pwd
+    - name: PHP Version
+      run: php --version
+
+# Code quality
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+# Set environment
+      env:
+        DB_CONNECTION: mysql
+        DB_DATABASE: db_test_laravel
+        DB_PORT: 33306
+        DB_USER: root
+        DB_PASSWORD: DB_PASSWORD
+
       run: composer test
+
+    - name: Execute Code Sniffer via phpcs
+      run: |
+        composer require --dev squizlabs/php_codesniffer
+        vendor/bin/phpcs --standard=PSR12 app
+
+    - name: Execute Code Static Analysis (PHP Stan + Larastan)
+      run: |
+        composer require --dev nunomaduro/larastan
+        vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress
