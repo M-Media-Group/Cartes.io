@@ -80,7 +80,7 @@ jobs:
           DB_PORT: 33306
           DB_USER: root
           DB_PASSWORD: DB_PASSWORD
-        run: php artisan key:generate && php artisan passport:install
+        run: php artisan key:generate && php artisan passport:keys
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
       - name: Run Migrations
