@@ -1,8 +1,9 @@
 includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 parameters:
-    level: 4
+    level: 9
     checkModelProperties: true
+    checkPhpDocMissingReturn: false
     paths:
         - app
         - database

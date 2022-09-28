@@ -6,14 +6,14 @@ use Illuminate\Contracts\Validation\Rule;
 
 class OnGeographicalBodyType implements Rule
 {
-    public $body_type;
+    public string $body_type;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($body_type = 'land')
+    public function __construct(string $body_type = 'land')
     {
         $this->body_type = $body_type;
     }

@@ -7,16 +7,16 @@ use Illuminate\Contracts\Validation\Rule;
 
 class UniqueInRadius implements Rule
 {
-    public $radius;
-    public $map_id;
-    public $category_id;
+    public int $radius;
+    public ?string $map_id;
+    public ?int $category_id;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($radius = 20, $map_id = null, $category_id = null)
+    public function __construct(int $radius = 20, ?string $map_id = null, ?int $category_id = null)
     {
         $this->radius = $radius;
         $this->map_id = $map_id;
