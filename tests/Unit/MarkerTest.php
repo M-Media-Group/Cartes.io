@@ -44,8 +44,23 @@ class MarkerTest extends TestCase
 
         $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers');
         $response->assertOk();
-        $response->assertSee('location');
+
         $response->assertDontSee('token');
+
+        // Assert see in each marker that a key of coordinates exists
+        $response->assertJsonStructure([
+            '*' => [
+                'description',
+                'link',
+                'elevation',
+                'location' => [
+                    'coordinates',
+                ],
+                'category' => [
+                    'name',
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -75,6 +90,11 @@ class MarkerTest extends TestCase
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
+
+        // Assert added to DB
+        $this->assertDatabaseHas('markers', [
+            'description' => $marker['description'],
+        ]);
     }
 
     /**
@@ -143,11 +163,14 @@ class MarkerTest extends TestCase
 
         $markers = ['markers' => [$marker->toArray()]];
 
-        $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
         $response->assertStatus(200);
+
+        // Assert added to DB
+        $this->assertDatabaseHas('markers', [
+            'description' => $marker['description'],
+            'category_id' => $marker['category_id'],
+        ]);
     }
 
     /**
@@ -168,6 +191,19 @@ class MarkerTest extends TestCase
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');
+
+        // Assert category was created
+        $this->assertDatabaseHas('categories', [
+            'name' => $category->name,
+        ]);
+
+        // Get the new category ID
+        $category = Category::where('name', $category->name)->first();
+
+        // Assert category was assigned to marker
+        $this->assertDatabaseHas('markers', [
+            'category_id' => $category->id,
+        ]);
     }
 
     /**
@@ -185,6 +221,11 @@ class MarkerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('New description');
+
+        $this->assertDatabaseHas('markers', [
+            'id' => $marker->id,
+            'description' => 'New description',
+        ]);
     }
 
     /**
@@ -218,6 +259,11 @@ class MarkerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('is_spam');
+
+        $this->assertDatabaseHas('markers', [
+            'id' => $marker->id,
+            'is_spam' => true,
+        ]);
     }
 
     /**
@@ -231,5 +277,9 @@ class MarkerTest extends TestCase
 
         $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token);
         $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('markers', [
+            'id' => $marker->id,
+        ]);
     }
 }
