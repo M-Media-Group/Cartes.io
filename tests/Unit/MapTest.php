@@ -13,7 +13,8 @@ class MapTest extends TestCase
     {
         parent::setUp();
 
-        $post = \App\Models\Map::firstOrCreate();
+        $post = new \App\Models\Map();
+        $post->save();
         $this->map = $post;
     }
 
@@ -25,7 +26,6 @@ class MapTest extends TestCase
     public function testSeeSingleMapTest()
     {
         $response = $this->get('/maps/' . $this->map->uuid);
-
         $response->assertStatus(301);
 
         $response = $this->getJson('/api/maps/' . $this->map->uuid);
