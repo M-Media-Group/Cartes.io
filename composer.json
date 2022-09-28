@@ -22,7 +22,7 @@
         "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "lcobucci/jwt": "3.3.3",
+        "lcobucci/jwt": "^3.4|^4.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "mews/purifier": "^3.3",
         "mmedia/laravel-collaborative-filtering": "dev-master",
@@ -45,10 +45,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "platform": {
-            "php": "7.4.0"
-        }
+        "sort-packages": true
     },
     "extra": {
         "laravel": {
