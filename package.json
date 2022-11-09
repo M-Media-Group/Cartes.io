@@ -23,7 +23,7 @@
         "postcss": "^8.2.4",
         "purify-css": "^1.1.9",
         "purifycss-webpack": "^0.7.0",
-        "resolve-url-loader": "^3.1.2",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.29.0",
         "sass-loader": "^7.3.1",
         "ts-loader": "^9.2.6",
