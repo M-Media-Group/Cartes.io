@@ -21,9 +21,9 @@ class MarkerPolicy
     /**
      * Determine whether the user can view the marker.
      *
-     * @param User $user
-     * @param Map $map
-     * @param string|null $token
+     * @param  User  $user
+     * @param  Map  $map
+     * @param  string|null  $token
      * @return bool
      */
     public function index(?User $user, Map $map, $token = null)
@@ -44,7 +44,7 @@ class MarkerPolicy
     /**
      * Determine whether the user can create markers.
      *
-     * @param User $user
+     * @param  User  $user
      * @return bool
      */
     public function create(?User $user, Map $map, $token = null)
@@ -68,7 +68,7 @@ class MarkerPolicy
     /**
      * Determine whether the user can create markers.
      *
-     * @param User $user
+     * @param  User  $user
      * @return bool
      */
     public function createInBulk(User $user, Map $map, $token = null)
@@ -83,8 +83,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can update the marker.
      *
-     * @param User $user
-     * @param Marker $marker
+     * @param  User  $user
+     * @param  Marker  $marker
      * @return bool
      */
     public function update(?User $user, Marker $marker)
@@ -103,8 +103,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can delete the marker.
      *
-     * @param User $user
-     * @param Marker $marker
+     * @param  User  $user
+     * @param  Marker  $marker
      * @return bool
      */
     public function delete(User $user, Marker $marker)
@@ -122,8 +122,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can restore the marker.
      *
-     * @param User $user
-     * @param Marker $marker
+     * @param  User  $user
+     * @param  Marker  $marker
      * @return bool
      */
     public function restore(User $user, Marker $marker)
@@ -134,8 +134,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can permanently delete the marker.
      *
-     * @param User $user
-     * @param Marker $marker
+     * @param  User  $user
+     * @param  Marker  $marker
      * @return bool
      */
     public function markAsSpam(?User $user, Marker $marker, $map_token = null)
@@ -159,8 +159,8 @@ class MarkerPolicy
     /**
      * Determine whether the user can permanently delete the marker.
      *
-     * @param User $user
-     * @param Marker $marker
+     * @param  User  $user
+     * @param  Marker  $marker
      * @return bool
      */
     public function forceDelete(?User $user, Marker $marker, $map_token = null)

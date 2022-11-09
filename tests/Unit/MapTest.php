@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 class MapTest extends TestCase
 {
-
     protected $map;
 
     protected function setUp(): void
@@ -26,10 +25,10 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapTest()
     {
-        $response = $this->get('/maps/' . $this->map->uuid);
+        $response = $this->get('/maps/'.$this->map->uuid);
         $response->assertStatus(301);
 
-        $response = $this->getJson('/api/maps/' . $this->map->uuid);
+        $response = $this->getJson('/api/maps/'.$this->map->uuid);
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
@@ -41,7 +40,7 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapEmbedTest()
     {
-        $response = $this->get('/embeds/maps/' . $this->map->uuid . '#2/43.7/7.3');
+        $response = $this->get('/embeds/maps/'.$this->map->uuid.'#2/43.7/7.3');
 
         $response->assertStatus(301);
         $response->assertDontSee('map-token');
@@ -49,23 +48,23 @@ class MapTest extends TestCase
     }
 
     /**
-     * Test see related maps for a given map
+     * Test see related maps for a given map.
      *
      * @return void
      */
     public function testSeeRelatedMapsTest()
     {
-        $response = $this->get('/maps/' . $this->map->uuid . '/related');
+        $response = $this->get('/maps/'.$this->map->uuid.'/related');
 
         $response->assertStatus(301);
 
-        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/related');
+        $response = $this->getJson('/api/maps/'.$this->map->uuid.'/related');
         $response->assertStatus(200);
         $response->assertDontSee('token');
     }
 
     /**
-     * Test searching for a map
+     * Test searching for a map.
      *
      * @return void
      */
@@ -116,7 +115,7 @@ class MapTest extends TestCase
     }
 
     /**
-     * Test claiming a map
+     * Test claiming a map.
      *
      * @return void
      */
@@ -126,7 +125,7 @@ class MapTest extends TestCase
         $user = \App\Models\User::firstOrCreate();
         $this->actingAs($user, 'api');
 
-        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/claim');
+        $response = $this->postJson('/api/maps/'.$this->map->uuid.'/claim');
 
         // Assert returns 200
         $response->assertStatus(200);
@@ -144,7 +143,7 @@ class MapTest extends TestCase
     }
 
     /**
-     * Test un-claiming a map
+     * Test un-claiming a map.
      *
      * @return void
      */
@@ -154,7 +153,7 @@ class MapTest extends TestCase
         $user = \App\Models\User::firstOrCreate();
         $this->actingAs($user, 'api');
 
-        $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/claim');
+        $response = $this->deleteJson('/api/maps/'.$this->map->uuid.'/claim');
 
         // Assert returns 200
         $response->assertStatus(200);
@@ -172,7 +171,7 @@ class MapTest extends TestCase
     }
 
     /**
-     * Test updating a map
+     * Test updating a map.
      *
      * @return void
      */
@@ -182,7 +181,7 @@ class MapTest extends TestCase
         $user = \App\Models\User::firstOrCreate();
         $this->actingAs($user, 'api');
 
-        $response = $this->putJson('/api/maps/' . $this->map->uuid, [
+        $response = $this->putJson('/api/maps/'.$this->map->uuid, [
             'title' => 'Test Map',
         ]);
 
@@ -208,7 +207,7 @@ class MapTest extends TestCase
      */
     public function testDeleteMapTest()
     {
-        $response = $this->deleteJson('/api/maps/' . $this->map->uuid, [
+        $response = $this->deleteJson('/api/maps/'.$this->map->uuid, [
             'token' => $this->map->token,
         ]);
 
