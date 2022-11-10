@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MarkerFactory extends Factory
 {
@@ -17,6 +17,7 @@ class MarkerFactory extends Factory
     {
         $faker = $this->faker;
         $point = new Point($faker->latitude, $faker->longitude);
+
         return
             [
                 'token' => $faker->uuid,

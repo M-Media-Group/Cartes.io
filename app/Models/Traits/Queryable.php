@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait Queryable
 {
     /**
-     * The allowed operators in a given query
+     * The allowed operators in a given query.
      *
      * @var array<string>
      */
@@ -19,23 +19,23 @@ trait Queryable
         '<',
         ':',
         '~',
-        '='
+        '=',
     ];
 
     /**
-     * The mapping between query operators and their respective where() operators
+     * The mapping between query operators and their respective where() operators.
      *
      * @var array
      */
     private $operatorsToLaravelWhere = [
         '~' => 'like',
-        ':' => '='
+        ':' => '=',
     ];
 
     /**
-     * Allow and parse a query parameter in the request
+     * Allow and parse a query parameter in the request.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeParseQuery(Builder $query)
@@ -65,53 +65,56 @@ trait Queryable
     }
 
     /**
-     * Get the exploded value from a string with underscores
+     * Get the exploded value from a string with underscores.
      *
-     * @param string $value
+     * @param  string  $value
      * @return array<string>
      */
     private function getExplodedValue(string $value)
     {
         $parts = explode('_', $value);
         $last = array_pop($parts);
-        return array(implode('_', $parts), $last);
+
+        return [implode('_', $parts), $last];
     }
 
     /**
-     * Add a where or having clause to the query
+     * Add a where or having clause to the query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param Object $parsedQuery
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  object  $parsedQuery
      * @return \Illuminate\Database\Eloquent\Builder
      */
     private function addWhereOrHavingClause(Builder $query, $parsedQuery)
     {
-        if (!$parsedQuery->parameter) {
+        if (! $parsedQuery->parameter) {
             return $query;
         }
         // If the parameter uses dot notation, we need to split it up
         if (str_contains($parsedQuery->parameter, '.')) {
             [$relation, $parameter] = $this->explodeDotNotation($parsedQuery->parameter);
+
             return $this->appendWhereHas($query, $relation, $parameter, $parsedQuery->operator, $parsedQuery->value);
         }
         $explodedValue = $this->getExplodedValue($parsedQuery->parameter);
-        if (!isset($this->attributes[$parsedQuery->parameter]) && $explodedValue[1] === 'count') {
+        if (! isset($this->attributes[$parsedQuery->parameter]) && $explodedValue[1] === 'count') {
             // We need to use a HAVING statement in this case
             $query->having($parsedQuery->parameter, $parsedQuery->operator, $parsedQuery->value);
         } else {
             $query->where($parsedQuery->parameter, $parsedQuery->operator, $parsedQuery->value);
         }
+
         return $query;
     }
 
     /**
-     * Recursively append a whereHas if the query parameter is dot notation
+     * Recursively append a whereHas if the query parameter is dot notation.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $relation
-     * @param string $parameter
-     * @param mixed $operator
-     * @param mixed $value
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $relation
+     * @param  string  $parameter
+     * @param  mixed  $operator
+     * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder
      */
     private function appendWhereHas(Builder $query, string $relation, string $parameter, $operator, $value)
@@ -119,6 +122,7 @@ trait Queryable
         return $query->whereHas($relation, function ($q) use ($parameter, $operator, $value) {
             if (str_contains($parameter, '.')) {
                 [$relation, $parameter] = $this->explodeDotNotation($parameter);
+
                 return $this->appendWhereHas($q, $relation, $parameter, $operator, $value);
             } else {
                 return $q->where($parameter, $operator, $value);
@@ -127,9 +131,9 @@ trait Queryable
     }
 
     /**
-     * Explode the dot notation of a parameter
+     * Explode the dot notation of a parameter.
      *
-     * @param string $parameter
+     * @param  string  $parameter
      * @return array<string>
      */
     private function explodeDotNotation(string $parameter)
@@ -137,14 +141,15 @@ trait Queryable
         $exploded = explode('.', $parameter);
         $relation = array_shift($exploded);
         $parameter = implode('.', $exploded);
+
         return [$relation, $parameter];
     }
 
     /**
-     * Parse a query parameter
+     * Parse a query parameter.
      *
-     * @param string $query
-     * @return Object
+     * @param  string  $query
+     * @return object
      */
     private function parseQueryParam(string $query): object
     {
@@ -188,10 +193,10 @@ trait Queryable
     }
 
     /**
-     * Prepare the value for a where clause
+     * Prepare the value for a where clause.
      *
-     * @param string $value
-     * @param string $operator
+     * @param  string  $value
+     * @param  string  $operator
      * @return string|bool|null
      */
     private function prepareValueForWhereClause(string $value, string $operator)
@@ -203,7 +208,7 @@ trait Queryable
 
         // if the operator is 'like', then we need to add '%' to the value
         if (strtolower($operator) == 'like') {
-            return '%' . $value . '%';
+            return '%'.$value.'%';
         }
 
         // If the operator is 'true'
@@ -215,6 +220,7 @@ trait Queryable
         if (strtolower($operator) == 'false') {
             return false;
         }
+
         return $value;
     }
 }

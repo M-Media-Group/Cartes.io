@@ -19,6 +19,7 @@ class CategoryController extends Controller
         $search_query = $request->input('query');
         if ($search_query) {
             $request->merge(['q' => $search_query]);
+
             return $this->search($request);
         }
         if ($request->wantsJson()) {
@@ -29,9 +30,9 @@ class CategoryController extends Controller
     }
 
     /**
-     * Search for a given category
+     * Search for a given category.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request)
@@ -39,13 +40,14 @@ class CategoryController extends Controller
         $request->validate([
             'q' => 'required|string|min:3|max:255',
         ]);
+
         return Category::search($request->input('q'))->get();
     }
 
     /**
-     * Get the related categories for a given category
+     * Get the related categories for a given category.
      *
-     * @param \App\Models\Category $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
     public function related(Category $category)
@@ -61,6 +63,7 @@ class CategoryController extends Controller
     public function create()
     {
         $this->authorize('create', Category::class);
+
         return view('categories.create');
     }
 
@@ -143,7 +146,7 @@ class CategoryController extends Controller
             ]
         );
 
-        return redirect('/categories/' . Str::slug($request->input('name')));
+        return redirect('/categories/'.Str::slug($request->input('name')));
     }
 
     /**

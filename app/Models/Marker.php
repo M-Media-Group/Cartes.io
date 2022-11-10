@@ -56,7 +56,7 @@ class Marker extends Pivot
     ];
 
     protected $with = [
-        'category'
+        'category',
     ];
 
     /**
@@ -92,12 +92,12 @@ class Marker extends Pivot
         });
 
         /**
-         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times)
+         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times).
          *
          * @todo move to a listener
          */
         self::saved(function ($model) {
-            if (!$model->elevation) {
+            if (! $model->elevation) {
                 \App\Jobs\FillMissingMarkerElevation::dispatch();
             }
         });
