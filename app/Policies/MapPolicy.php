@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- *
  * @todo slowly deprecating token in favor of map_token
  */
 class MapPolicy
