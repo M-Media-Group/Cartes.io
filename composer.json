@@ -24,6 +24,7 @@
         "league/flysystem-aws-s3-v3": "~1.0",
         "mews/purifier": "^3.3",
         "mmedia/laravel-collaborative-filtering": "dev-master",
+        "predis/predis": "^2.0",
         "pusher/pusher-php-server": "~4.0",
         "spatie/laravel-cookie-consent": "^2.12.0",
         "spatie/laravel-honeypot": "^3.0",

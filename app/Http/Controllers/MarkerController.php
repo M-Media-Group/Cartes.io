@@ -175,7 +175,7 @@ class MarkerController extends Controller
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
             }
 
-            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $marker['link'] : null;
+            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? ($marker['link'] ?? null) : null;
 
             // Check if created_at index exists
             if (isset($marker['created_at'])) {

@@ -178,6 +178,46 @@ class MarkerTest extends TestCase
      *
      * @return void
      */
+    public function testCreateMarkerInBulkWithAllMapOptions()
+    {
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'optional'];
+        $map->save();
+
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = $marker['location']->getLat();
+        $marker['lng'] = $marker['location']->getLng();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $markers = ['markers' => [$marker->toArray()]];
+
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
+        $response->assertStatus(200);
+
+        // Assert added to DB
+        $this->assertDatabaseHas('markers', [
+            'description' => $marker['description'],
+            'category_id' => $marker['category_id'],
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
     public function testCreateMarkerWithCategoryName()
     {
 
