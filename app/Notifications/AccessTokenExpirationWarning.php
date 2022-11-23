@@ -7,20 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MapsSummary extends Notification
+class AccessTokenExpirationWarning extends Notification
 {
     use Queueable;
 
-    private $maps;
+    private $token;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($maps)
+    public function __construct($token)
     {
-        $this->maps = $maps;
+        $this->token = $token;
     }
 
     /**
@@ -43,12 +43,10 @@ class MapsSummary extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Weekly maps summary')
-            ->line('Your maps with new markers created by other people in the last week:')
-            ->line($this->maps->map(function ($map) {
-                return $map->title ?? 'Untitled map';
-            })->implode(' - '))
-            ->action('View maps', url('/'))
+            ->subject('Your access token is about to expire')
+            ->line('The token with the name: ' . $this->token->name . ', created at ' . $this->token->created_at . ', will expire at: ' . $this->token->expires_at . '.')
+            ->line("For your security, we automatically expire access tokens after 1 year. You can create a new one to continue accessing the API.")
+            ->action('Create a new access token', url('/'))
             ->line('Thank you for using Cartes.io!');
     }
 
