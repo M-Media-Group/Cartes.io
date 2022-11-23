@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -28,7 +29,7 @@ Route::get('/apply', function () {
 })->middleware('auth');
 
 Route::get('csrf-token', function () {
-    return csrf_token();
+    return new JsonResponse(null, 204);
 });
 
 Route::middleware(ProtectAgainstSpam::class)->group(function () {
