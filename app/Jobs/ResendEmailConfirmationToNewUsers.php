@@ -32,7 +32,7 @@ class ResendEmailConfirmationToNewUsers implements ShouldQueue
     public function handle()
     {
         // Get all the users that have not confirmed their email address in the past week
-        $users = \App\Models\User::where('email_confirmed', null)
+        $users = \App\Models\User::where('email_verified_at', null)
             // Where the account was created between 1 day and 1 week ago
             ->where('created_at', '>=', \Carbon\Carbon::now()->subWeek()->toDateTimeString())
             ->where('created_at', '<=', \Carbon\Carbon::now()->subDay()->toDateTimeString())
