@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Traits\Expandable;
 use App\Models\Traits\Queryable;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
-use MMedia\LaravelCollaborativeFiltering\HasManyRelatedThrough;
 
 class Map extends Model
 {
@@ -141,15 +139,6 @@ class Map extends Model
     public function categories(): belongsToMany
     {
         return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class);
-    }
-
-    public function activeCategories(): belongsToMany
-    {
-        return $this->categories()
-            ->wherePivot('expires_at', '>', Carbon::now()->toDateTimeString())
-            ->orWherePivot('expires_at', null)
-            ->selectRaw('categories.id, categories.name, categories.icon, count(markers.id) as markers_count')
-            ->groupBy('name', 'map_id', 'id', 'icon', 'category_id');
     }
 
     public function related(): HasManyThrough
