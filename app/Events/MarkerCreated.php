@@ -5,10 +5,10 @@ namespace App\Events;
 use App\Models\Marker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Queue\SerializesModels;
 
-class MarkerCreated implements ShouldBroadcast
+class MarkerCreated implements ShouldBroadcastNow
 {
     use SerializesModels;
     use InteractsWithSockets;
