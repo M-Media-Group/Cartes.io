@@ -5,13 +5,20 @@ namespace App\Events;
 use App\Models\Marker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class MarkerCreated implements ShouldBroadcastNow
+class MarkerCreated implements ShouldBroadcast
 {
     use SerializesModels;
     use InteractsWithSockets;
+
+    /**
+     * The name of the queue connection to use when broadcasting the event.
+     *
+     * @var string
+     */
+    public $connection = 'sync';
 
     public $marker;
 
