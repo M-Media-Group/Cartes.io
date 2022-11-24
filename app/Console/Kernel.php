@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->everyMinute();
         $schedule->job(new \App\Jobs\DeleteEmptyMaps())->daily();
         $schedule->job(new \App\Jobs\FillMissingMarkerElevation())->daily();
-        $schedule->job(new \App\Jobs\SendWeeklyMapsSummaryToUsers())->weeklyOn(3, '13:00');
+        $schedule->job(new \App\Jobs\SendWeeklyMapsSummaryToUsers())->weeklyOn(4, '13:00');
         $schedule->job(new \App\Jobs\ResendEmailConfirmationToNewUsers())->daily();
         $schedule->job(new \App\Jobs\SendAccessTokenExpirationWarningNotification())->daily();
     }
