@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
