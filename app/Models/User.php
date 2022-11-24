@@ -40,6 +40,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_public' => 'boolean',
     ];
 
+    protected static function booted()
+    {
+        static::updated(function ($user) {
+            if ($user->isDirty('is_public') && $user->is_public) {
+                event(new \App\Events\ProfileMadePublic($user));
+            }
+        });
+    }
+
     /**
      * Get the route key for the model.
      *

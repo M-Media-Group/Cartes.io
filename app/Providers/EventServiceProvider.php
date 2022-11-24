@@ -52,6 +52,10 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\LogPasswordReset::class,
         ],
 
+        \App\Events\ProfileMadePublic::class => [
+            \App\Listeners\NotifyUserOfPublicProfile::class,
+        ],
+
         \App\Events\MarkerCreated::class => [],
 
         \App\Events\MarkerDeleted::class => [],
