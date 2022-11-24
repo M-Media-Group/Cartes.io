@@ -29,6 +29,6 @@ class NotifyUserOfPublicProfile implements ShouldQueue
     public function handle(ProfileMadePublic $event)
     {
         // Send a notification to the user
-        $event->user->notify(new \App\Notifications\ProfileMadePublic($event->user));
+        $event->user->notify(new \App\Notifications\ProfileMadePublic());
     }
 }
