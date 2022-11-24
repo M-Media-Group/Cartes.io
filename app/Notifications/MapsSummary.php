@@ -42,7 +42,7 @@ class MapsSummary extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('Weekly maps summary')
             ->line('Your maps with new markers created by other people in the last week:')
             ->line($this->maps->map(function ($map) {
