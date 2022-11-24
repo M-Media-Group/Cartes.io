@@ -5,10 +5,10 @@ namespace App\Events;
 use App\Models\Marker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class MarkerCreated implements ShouldBroadcastNow
+class MarkerCreated implements ShouldBroadcast
 {
     use SerializesModels;
     use InteractsWithSockets;
@@ -44,5 +44,10 @@ class MarkerCreated implements ShouldBroadcastNow
     public function broadcastOn()
     {
         return new Channel('maps.' . $this->marker->map->uuid);
+    }
+
+    public function broadcastQueue()
+    {
+        return 'sync';
     }
 }
