@@ -45,7 +45,7 @@ class MapsSummary extends Notification
         return (new MailMessage())
             ->subject('Your maps with new markers')
             ->greeting('Hey!')
-            ->line('The following maps owned by you saw markers created by other people in the last week:')
+            ->line('The following maps owned by you saw new markers created by other people in the last week:')
             ->line($this->maps->map(function ($map) {
                 return $map->title ?? 'Untitled map';
             })->implode(' - '))
