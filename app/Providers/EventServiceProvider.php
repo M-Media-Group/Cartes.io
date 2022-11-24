@@ -20,6 +20,10 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
 
+        'Laravel\Passport\Events\AccessTokenCreated' => [
+            \App\Listeners\SendAPIWelcomeNotification::class,
+        ],
+
         'Illuminate\Auth\Events\Attempting' => [
             \App\Listeners\LogAuthenticationAttempt::class,
         ],
