@@ -16,6 +16,8 @@ class MarkerCreated implements ShouldBroadcast
     /**
      * The name of the queue connection to use when broadcasting the event.
      *
+     * NOTE: We use this method instead of ShouldBroadcastNow because it seems that that contract causes issues with the serialization of the location (its empty). This achieves the same result but without the issues.
+     *
      * @var string
      */
     public $connection = 'sync';
