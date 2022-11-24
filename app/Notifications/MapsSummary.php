@@ -43,12 +43,13 @@ class MapsSummary extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage())
-            ->subject('Weekly maps summary')
-            ->line('Your maps with new markers created by other people in the last week:')
+            ->subject('Your maps with new markers')
+            ->greeting('Hey!')
+            ->line('The following maps owned by you saw markers created by other people in the last week:')
             ->line($this->maps->map(function ($map) {
                 return $map->title ?? 'Untitled map';
             })->implode(' - '))
-            ->action('View maps', url('/'))
+            ->action('View maps', config('app.spa_url') . '/users/' . $notifiable->username)
             ->line('Thank you for using Cartes.io!');
     }
 
