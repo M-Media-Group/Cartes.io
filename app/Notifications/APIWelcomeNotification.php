@@ -40,7 +40,7 @@ class APIWelcomeNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('Welcome to the Cartes.io API')
             ->greeting('Hey there!')
             ->line('You have successfully created your first access token for the Cartes.io API.')

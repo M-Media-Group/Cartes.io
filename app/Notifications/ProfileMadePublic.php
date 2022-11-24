@@ -40,7 +40,7 @@ class ProfileMadePublic extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject("Your profile is now public")
             ->greeting('Hey!')
             ->line('Your profile is now public.')
