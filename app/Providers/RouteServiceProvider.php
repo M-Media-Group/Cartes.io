@@ -84,13 +84,13 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('maps', function (Request $request) {
             return $request->user()
                 ? Limit::perMinute(30)->by($request->user()->id)
-                : Limit::perMinute(5)->by($request->ip());
+                : Limit::perMinute(3)->by($request->ip());
         });
 
         RateLimiter::for('markers', function (Request $request) {
             return $request->user()
-                ? Limit::perMinute(120)->by($request->user()->id)
-                : Limit::perMinute(30)->by($request->ip());
+                ? Limit::perMinute(60)->by($request->user()->id)
+                : Limit::perMinute(15)->by($request->ip());
         });
     }
 }
