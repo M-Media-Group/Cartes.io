@@ -47,7 +47,7 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
 Route::middleware('auth:api')->group(function () {
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user()->load('roles.permissions', 'permissions');
     })->name('user');
 
     Route::put('/user', 'UserController@updateSelf');
