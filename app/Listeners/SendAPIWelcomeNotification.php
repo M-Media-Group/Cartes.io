@@ -28,9 +28,11 @@ class SendAPIWelcomeNotification implements ShouldQueue
      */
     public function handle(AccessTokenCreated $event)
     {
+        // Get the user
+        $user = \App\Models\User::find($event->userId);
         // If this is the first token created for this user, send a welcome notification
-        if ($event->user->tokens()->count() == 1) {
-            $event->user->notify(new \App\Notifications\APIWelcomeNotification($event->user));
+        if ($user->tokens()->count() == 1) {
+            $user->notify(new \App\Notifications\APIWelcomeNotification($user));
         }
     }
 }
