@@ -11,8 +11,7 @@ class MapController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('throttle:maps')->only('store');
-        $this->middleware('throttle:maps')->only(['update', 'destroy']);
+        $this->middleware('throttle:maps')->only(['store', 'update', 'destroy']);
     }
 
     /**

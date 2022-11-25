@@ -15,6 +15,12 @@ use Illuminate\Validation\Rule;
 
 class MarkerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('throttle:markers')->only(['storeInBulk', 'store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
