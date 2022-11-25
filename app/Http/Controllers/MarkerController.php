@@ -70,7 +70,7 @@ class MarkerController extends Controller
     {
         $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
 
-        $request->merge(['user_id' => $request->user('api')->id ?? null]);
+        $request->merge(['user_id' => $request->user()->id ?? null]);
         if ($request->input('category') < 1) {
             $request->request->remove('category');
         }
@@ -125,7 +125,7 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
-        $request->merge(['user_id' => $request->user('api')->id]);
+        $request->merge(['user_id' => $request->user()->id]);
 
         $validated_data = $request->validate([
             'markers' => 'required|array|min:1',
