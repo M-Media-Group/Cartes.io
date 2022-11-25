@@ -45,6 +45,9 @@ class UserController extends Controller
             if (in_array('maps', $request->input('with'))) {
                 $load[] = 'publicMaps';
             }
+            if (in_array('maps.markers', $request->input('with'))) {
+                $load[] = 'publicMaps.markers';
+            }
             if (in_array('contributions', $request->input('with'))) {
                 $load[] = 'publicMapsContributedTo';
             }
