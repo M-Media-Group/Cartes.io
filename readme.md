@@ -59,3 +59,6 @@ Run tests with `composer test`.
 ## Roadmap
 
 The general plan is that this repo will be simplified to containing just the core app and its API, while the frontend will be developed in a seperate repo, [here](https://github.com/M-Media-Group/Cartes.io-Web-App). If you're a frontend developer, please feel free to contribute on that repo to the development of the web-app.
+
+## Thanks to
+open-elevation.com - used to get elevation data for a given point
