@@ -24,7 +24,7 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
-        \App\Models\Marker::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) {
+        \App\Models\MarkerLocation::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) {
 
             $coordinates = [];
 

@@ -107,16 +107,20 @@ class MarkerController extends Controller
         $result = new Marker(
             [
                 'category_id' => $request->input('category'),
-                'user_id' => $request->input('user_id'),
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
                 'location' => $point,
-                'elevation' => $request->input('elevation'),
                 'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             ]
         );
 
         $result->save();
+
+        $result->primaryLocation()->create([
+            'location' => $result->location,
+            'elevation' => $request->input('elevation'),
+        ]);
+
         return $result->makeVisible(['token'])->load('category');
     }
 
@@ -164,7 +168,7 @@ class MarkerController extends Controller
             $marker['category_id'] = $marker['category'];
             unset($marker['category']);
 
-            if (!isset($marker['category_id'])) {
+            if (!$marker['category_id']) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['name' => $marker['category_name']]
                 );
@@ -205,14 +209,17 @@ class MarkerController extends Controller
             $validated_data['markers'][$index] = $marker;
         }
 
+        // dd($insertableData);
+
         try {
             $result = Marker::insert($insertableData);
             return response()->json(['success' => $result]);
         } catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
-                throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
+                return throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
             }
+            return abort(500, "Markers in bulk error code: " . $errorCode);
         }
     }
 

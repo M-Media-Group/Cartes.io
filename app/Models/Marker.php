@@ -88,6 +88,14 @@ class Marker extends Pivot
         });
 
         self::created(function ($model) {
+            // Create a reference in marker_locations
+            if (!$model->primaryLocation) {
+                $model->primaryLocation()->create([
+                    'location' => $model->location,
+                    'elevation' => $model->elevation,
+                ]);
+            }
+
             broadcast(new \App\Events\MarkerCreated($model))->toOthers();
         });
 
@@ -117,6 +125,16 @@ class Marker extends Pivot
         return $this->belongsTo(\App\Models\Map::class);
     }
 
+    public function locations()
+    {
+        return $this->hasMany(MarkerLocation::class, 'marker_id');
+    }
+
+    public function primaryLocation()
+    {
+        return $this->hasOne(MarkerLocation::class, 'marker_id')->orderBy('created_at', 'desc');
+    }
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
@@ -130,6 +148,16 @@ class Marker extends Pivot
     public function getYAttribute()
     {
         return $this->location->getLat();
+    }
+
+    // public function getLocationAttribute()
+    // {
+    //     return optional($this->primaryLocation)->location ?? $this->attributes['location'];
+    // }
+
+    public function getElevationAttribute()
+    {
+        return optional($this->primaryLocation)->elevation ?? $this->attributes['elevation'];
     }
 
     public function scopeActive($query)
