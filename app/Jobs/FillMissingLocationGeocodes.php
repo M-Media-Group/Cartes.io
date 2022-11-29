@@ -66,7 +66,13 @@ class FillMissingLocationGeocodes implements ShouldQueue
 
                 $geocodeResult = json_decode($response->getBody()->getContents(), false);
 
-                $location->address = $geocodeResult->features[0]->properties->display_name;
+                // This usually happens when a marker is in the middle of nowhere in the ocean
+                if ($geocodeResult->error) {
+                    $location->geocode = $geocodeResult->features ?? [];
+                    return $location->save();
+                }
+
+                $location->address = $geocodeResult->features[0]->properties->display_name ?? null;
 
                 // Note that we use an empty array if no results are found - this is because we need to change the value from NULL to something else to know that we have already attempted to geocode the given location
                 $location->geocode = $geocodeResult->features ?? [];
