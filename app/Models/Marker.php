@@ -155,10 +155,10 @@ class Marker extends Pivot
     //     return optional($this->primaryLocation)->location ?? $this->attributes['location'];
     // }
 
-    public function getElevationAttribute()
-    {
-        return optional($this->primaryLocation)->elevation ?? $this->attributes['elevation'];
-    }
+    // public function getElevationAttribute()
+    // {
+    //     return optional($this->primaryLocation)->elevation ?? $this->attributes['elevation'];
+    // }
 
     public function scopeActive($query)
     {
