@@ -22,6 +22,7 @@ class CreateMarkerLocationsTable extends Migration
             $table->string('address')->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('elevation')->nullable();
+            $table->json("geocode")->nullable();
             $table->timestamps();
 
             $table->foreign('marker_id')->references('id')->on('markers')->onDelete('cascade');

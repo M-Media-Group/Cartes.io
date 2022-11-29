@@ -23,3 +23,9 @@ Artisan::command('fill-missing-marker-elevation', function () {
     App\Jobs\FillMissingMarkerElevation::dispatch();
     $this->info('Done');
 })->describe('Fill missing marker elevation');
+
+Artisan::command('fill-missing-marker-geocode', function () {
+    $this->info('Filling missing marker geocode data...');
+    App\Jobs\FillMissingLocationGeocodes::dispatch();
+    $this->info('Done');
+})->describe('Fill missing marker geocode data');

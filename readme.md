@@ -62,3 +62,4 @@ The general plan is that this repo will be simplified to containing just the cor
 
 ## Thanks to
 open-elevation.com - used to get elevation data for a given point
+nominatim.openstreetmap.org - used to geocode marker locations

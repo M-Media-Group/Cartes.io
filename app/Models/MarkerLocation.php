@@ -35,6 +35,20 @@ class MarkerLocation extends Model
         static::creating(function ($model) {
             $model->user_id = optional(request()->user())->id;
         });
+
+        /**
+         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times)
+         *
+         * @todo move to a listener
+         */
+        static::saved(function ($model) {
+            if (!$model->elevation) {
+                \App\Jobs\FillMissingMarkerElevation::dispatch();
+            }
+            if (!$model->geocode) {
+                \App\Jobs\FillMissingLocationGeocodes::dispatch();
+            }
+        });
     }
 
     public function marker()
