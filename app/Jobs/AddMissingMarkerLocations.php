@@ -31,10 +31,10 @@ class AddMissingMarkerLocations implements ShouldQueue
      */
     public function handle()
     {
-        $markers = Marker::whereDoesntHave('primaryLocation')->get();
+        $markers = Marker::whereDoesntHave('currentLocation')->get();
 
         foreach ($markers as $marker) {
-            $location = $marker->primaryLocation()->create([
+            $location = $marker->currentLocation()->create([
                 'location' => $marker->location,
                 'elevation' => $marker->elevation,
             ]);

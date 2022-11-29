@@ -116,7 +116,7 @@ class MarkerController extends Controller
 
         $result->save();
 
-        $result->primaryLocation()->create([
+        $result->currentLocation()->create([
             'location' => $result->location,
             'elevation' => $request->input('elevation'),
         ]);

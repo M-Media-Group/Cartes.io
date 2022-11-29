@@ -89,8 +89,8 @@ class Marker extends Pivot
 
         self::created(function ($model) {
             // Create a reference in marker_locations
-            if (!$model->primaryLocation) {
-                $model->primaryLocation()->create([
+            if (!$model->currentLocation) {
+                $model->currentLocation()->create([
                     'location' => $model->location,
                     'elevation' => $model->elevation,
                 ]);
@@ -130,7 +130,7 @@ class Marker extends Pivot
         return $this->hasMany(MarkerLocation::class, 'marker_id');
     }
 
-    public function primaryLocation()
+    public function currentLocation()
     {
         return $this->hasOne(MarkerLocation::class, 'marker_id')->orderBy('created_at', 'desc');
     }
@@ -152,12 +152,12 @@ class Marker extends Pivot
 
     // public function getLocationAttribute()
     // {
-    //     return optional($this->primaryLocation)->location ?? $this->attributes['location'];
+    //     return optional($this->currentLocation)->location;
     // }
 
     // public function getElevationAttribute()
     // {
-    //     return optional($this->primaryLocation)->elevation ?? $this->attributes['elevation'];
+    //     return optional($this->currentLocation)->elevation;
     // }
 
     public function scopeActive($query)
