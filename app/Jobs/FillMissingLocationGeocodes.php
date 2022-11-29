@@ -35,6 +35,23 @@ class FillMissingLocationGeocodes implements ShouldQueue
         $locations = \App\Models\MarkerLocation::withoutGlobalScopes()->where('geocode', null)->get();
 
         foreach ($locations as $location) {
+
+            /**
+             *  If there is already a MarkerLocation with the exact same position and with geocode data, use that. Note this is part of the API usage poilicy
+             *
+             * @todo consider reworking this - if this is even a posibility, perhaps another one-many table could be useful. Need to consider pros and cons.
+             */
+            $duplicateLocation = \App\Models\MarkerLocation::withoutGlobalScopes()
+                ->equals('location', $location->location)
+                ->where('id', '!=', $location->id)
+                ->where('geocode', '!=', null)->first();
+
+            if ($duplicateLocation) {
+                $location->address = $duplicateLocation->address;
+                $location->geocode = $duplicateLocation->geocode;
+                return $location->save();
+            }
+
             // Call the API
             $client = new Client();
 
@@ -50,15 +67,17 @@ class FillMissingLocationGeocodes implements ShouldQueue
                 $geocodeResult = json_decode($response->getBody()->getContents(), false);
 
                 $location->address = $geocodeResult->features[0]->properties->display_name;
-                $location->geocode = $geocodeResult->features;
+
+                // Note that we use an empty array if no results are found - this is because we need to change the value from NULL to something else to know that we have already attempted to geocode the given location
+                $location->geocode = $geocodeResult->features ?? [];
 
                 $location->save();
+
+                // Wait one second before the next request, in accordance with the API usage policy
+                sleep(1);
             } catch (\Throwable $th) {
                 Log::error("Could not get Nominatim data", [$th]);
             }
-
-            // Wait one second before the next request, in accordance with the API usage policy
-            sleep(1);
         }
     }
 }
