@@ -59,6 +59,10 @@ class Marker extends Pivot
         'category'
     ];
 
+    protected $appends = [
+        'address'
+    ];
+
     /**
      * The "booting" method of the model.
      *
@@ -159,6 +163,11 @@ class Marker extends Pivot
     // {
     //     return optional($this->currentLocation)->elevation;
     // }
+
+    public function getAddressAttribute()
+    {
+        return optional($this->currentLocation)->address;
+    }
 
     public function scopeActive($query)
     {
