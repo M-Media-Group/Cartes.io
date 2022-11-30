@@ -42,7 +42,7 @@ class Marker extends Pivot
     protected $spatialFields = [
         'location',
     ];
-    protected $hidden = ['token', 'user_id', 'map_id'];
+    protected $hidden = ['token', 'user_id', 'map_id', 'currentLocation'];
 
     protected $dates = [
         'expires_at',
@@ -56,7 +56,8 @@ class Marker extends Pivot
     ];
 
     protected $with = [
-        'category'
+        'category',
+        'currentLocation'
     ];
 
     protected $appends = [
