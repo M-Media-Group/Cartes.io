@@ -34,6 +34,8 @@ class FillMissingLocationGeocodes implements ShouldQueue
     {
         $locations = \App\Models\MarkerLocation::withoutGlobalScopes()->where('geocode', null)->get();
 
+        $client = new Client(['headers' => ['Accept-Language' => 'en']]);
+
         foreach ($locations as $location) {
 
             /**
@@ -51,9 +53,6 @@ class FillMissingLocationGeocodes implements ShouldQueue
                 $location->geocode = $duplicateLocation->geocode;
                 return $location->save();
             }
-
-            // Call the API
-            $client = new Client();
 
             try {
                 $response = $client->get('https://nominatim.openstreetmap.org/reverse?format=geojson&lat=' . $location->y . '&lon=' . $location->x);

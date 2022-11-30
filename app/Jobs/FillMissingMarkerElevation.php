@@ -24,7 +24,11 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
-        \App\Models\MarkerLocation::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) {
+
+        // Call the API
+        $client = new Client();
+
+        \App\Models\MarkerLocation::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) use ($client) {
 
             $coordinates = [];
 
@@ -36,9 +40,6 @@ class FillMissingMarkerElevation implements ShouldQueue
             });
 
             $requestData['locations'] = $coordinates;
-
-            // Call the API
-            $client = new Client();
 
             try {
                 $response = $client->post('https://api.open-elevation.com/api/v1/lookup', [
