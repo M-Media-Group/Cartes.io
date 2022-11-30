@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
@@ -28,6 +29,16 @@ class FetchGeocodeData implements ShouldQueue
     public function __construct(\App\Models\MarkerLocation $location)
     {
         $this->location = $location;
+    }
+
+    /**
+     * Get the middleware the job should pass through. Note the API usage policy states 1 call per second; this middleware will do this.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [new RateLimited('geocodeData')];
     }
 
     /**
