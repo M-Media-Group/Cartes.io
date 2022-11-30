@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         RateLimiter::for('geocodeData', function () {
-            return Limit::perMinute(60);
+            return Limit::perMinute(50);
         });
     }
 
