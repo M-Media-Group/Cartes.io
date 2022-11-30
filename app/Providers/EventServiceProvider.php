@@ -58,6 +58,8 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\MarkerCreated::class => [],
 
+        \App\Events\MarkerUpdated::class => [],
+
         \App\Events\MarkerDeleted::class => [],
     ];
 

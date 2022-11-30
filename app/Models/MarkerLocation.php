@@ -36,6 +36,10 @@ class MarkerLocation extends Model
             $model->user_id = optional(request()->user())->id;
         });
 
+        static::created(function ($model) {
+            broadcast(new \App\Events\MarkerUpdated($model->marker))->toOthers();
+        });
+
         /**
          * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times)
          *

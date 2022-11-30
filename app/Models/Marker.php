@@ -91,15 +91,11 @@ class Marker extends Pivot
             }
         });
 
-        self::created(function ($model) {
-            // Create a reference in marker_locations
-            if (!$model->currentLocation) {
-                $model->currentLocation()->create([
-                    'location' => $model->location,
-                    'elevation' => $model->elevation,
-                ]);
-            }
+        self::updated(function ($model) {
+            broadcast(new \App\Events\MarkerUpdated($model))->toOthers();
+        });
 
+        self::created(function ($model) {
             broadcast(new \App\Events\MarkerCreated($model))->toOthers();
         });
 
