@@ -231,4 +231,20 @@ class Map extends Model
             'activeMarkers.locations'
         ];
     }
+
+    public function getBlacklistedParameters(): array
+    {
+        return [
+            ...$this->hidden,
+            'user.id',
+            'markers.user_id',
+            'markers.map_id',
+            'markers.locations.user_id',
+            'markers.currentLocation.user_id',
+            'markers.bulk_insert_id',
+            'activeMarkers.locations.user_id',
+            'activeMarkers.bulk_insert_id',
+            'activeMarkers.currentLocation.user_id'
+        ];
+    }
 }

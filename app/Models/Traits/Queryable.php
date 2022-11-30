@@ -235,9 +235,19 @@ trait Queryable
      *
      * @return array
      */
-    public function getAllowedParameters(): array
+    public function getWhitelistedParameters(): array
     {
         return [];
+    }
+
+    /**
+     * Get the parameters that cannot be queried.
+     *
+     * @return array
+     */
+    public function getBlacklistedParameters(): array
+    {
+        return [...$this->hidden];
     }
 
     /**
@@ -248,14 +258,14 @@ trait Queryable
      */
     private function isParameterAllowed(string $parameter): bool
     {
-        // If getAllowedParameters is defined, use only that
-        if (count($this->getAllowedParameters()) > 0) {
-            return in_array($parameter, $this->getAllowedParameters());
+        // If the parameter is in the hidden field, return false
+        if (in_array($parameter, $this->getBlacklistedParameters())) {
+            return false;
         }
 
-        // If the parameter is in the hidden field, return false
-        if (in_array($parameter, $this->hidden)) {
-            return false;
+        // If getWhitelistedParameters is defined, use only that
+        if (count($this->getWhitelistedParameters()) > 0) {
+            return in_array($parameter, $this->getWhitelistedParameters());
         }
 
         return true;
