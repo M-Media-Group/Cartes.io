@@ -70,7 +70,7 @@ class FetchGeocodeData implements ShouldQueue
             return;
         }
 
-        $client = new Client(['headers' => ['Accept-Language' => 'en']]);
+        $client = new Client(['headers' => ['Accept-Language' => 'en', 'User-Agent' => config('app.url')]]);
 
         try {
             $response = $client->get('https://nominatim.openstreetmap.org/reverse?format=geojson&lat=' . $this->location->y . '&lon=' . $this->location->x);
