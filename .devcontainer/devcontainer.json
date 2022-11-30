@@ -32,7 +32,7 @@
 		3306
 	],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html && php artisan migrate && php artisan permission:create-role admin web \"manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps|create markers in bulk|mark spam\" && php artisan permission:create-role editor web \"manage markers|manage categories|manage maps\" && php artisan permission:create-role \"power reporter\" web \"create markers in bulk\" && php artisan permission:create-role reporter web \"edit markers|create markers|delete markers|mark spam\"",
+	"postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html && php artisan migrate && php artisan make:permissions",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
 }
