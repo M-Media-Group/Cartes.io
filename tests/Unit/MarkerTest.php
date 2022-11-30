@@ -89,11 +89,16 @@ class MarkerTest extends TestCase
         $marker['lng'] = $marker['location']->getLng();
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
-        $response->assertSee('token');
+        $response->assertSee(['token', 'location', 'id']);
 
         // Assert added to DB
         $this->assertDatabaseHas('markers', [
+            'id' => $response->decodeResponseJson()['id'],
             'description' => $marker['description'],
+        ]);
+
+        $this->assertDatabaseHas('marker_locations', [
+            'marker_id' => $response->decodeResponseJson()['id'],
         ]);
     }
 
@@ -164,6 +169,7 @@ class MarkerTest extends TestCase
         $markers = ['markers' => [$marker->toArray()]];
 
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
+
         $response->assertStatus(200);
 
         // Assert added to DB

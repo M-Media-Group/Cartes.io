@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Map;
 use App\Models\Marker;
+use App\Models\MarkerLocation;
 use Carbon\Carbon;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -134,6 +136,8 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
+        $bulkInsertId = Str::uuid();
+
         $request->merge(['user_id' => $request->user()->id]);
 
         $validated_data = $request->validate([
@@ -156,6 +160,8 @@ class MarkerController extends Controller
         $insertableData = [];
 
         foreach ($validated_data['markers'] as $index => $marker) {
+            $marker['bulk_insert_id'] = $bulkInsertId;
+
             $point = new Point($marker['lat'], $marker['lng']);
 
             $this->validateCreate($request, $marker, $map, $point);
@@ -204,17 +210,47 @@ class MarkerController extends Controller
             $marker['map_id'] = $map->id;
             $marker['user_id'] = $validated_data['user_id'];
 
-            $insertableData[] = $marker;
-
             $validated_data['markers'][$index] = $marker;
+
+            // Unset data that should not be set
+            unset($marker['elevation']);
+            unset($marker['address']);
+            unset($marker['current_location']);
+
+            $insertableData[] = $marker;
         }
 
-        // dd($insertableData);
+        DB::beginTransaction();
 
         try {
             $result = Marker::insert($insertableData);
+            $markerIds = Marker::where('bulk_insert_id', $bulkInsertId)->get();
+
+            $positionData = [];
+            $currentIteration = 0;
+
+            foreach ($markerIds as $marker) {
+                $positionData[] = [
+                    'marker_id' => $marker->id,
+                    'location' => $validated_data['markers'][$currentIteration]['location'],
+                    'elevation' => optional($validated_data['markers'][$currentIteration])['elevation'],
+                    'elevation' => optional($validated_data['markers'][$currentIteration])['address'],
+                    'created_at' => $marker->created_at,
+                    'updated_at' => $marker->updated_at,
+                ];
+                $currentIteration++;
+            }
+
+            $result = MarkerLocation::insert($positionData);
+
+            DB::commit();
+
+            // \App\Jobs\FillMissingMarkerElevation::dispatch();
+            // \App\Jobs\FillMissingLocationGeocodes::dispatch();
+
             return response()->json(['success' => $result]);
         } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
                 return throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
