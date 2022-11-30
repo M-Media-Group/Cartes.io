@@ -275,6 +275,9 @@ class MarkerController extends Controller
         $validated_data = $request->validate([
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
             'is_spam' => 'nullable|boolean',
+            'lat' => 'nullable|numeric|between:-90,90',
+            'lng' => 'nullable|numeric|between:-180,180',
+            'elevation' => 'nullable|numeric|between:-100000,100000',
         ]);
 
         if (isset($validated_data['is_spam'])) {
@@ -288,6 +291,14 @@ class MarkerController extends Controller
         }
 
         $marker->update($validated_data);
+
+        if (isset($validated_data['lat']) && isset($validated_data['lng'])) {
+            $point = new Point($request->lat, $request->lng);
+            $marker->currentLocation()->create([
+                'location' => $point,
+                'elevation' => $request->input('elevation'),
+            ]);
+        }
 
         return $marker;
     }
