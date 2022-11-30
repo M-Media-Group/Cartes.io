@@ -30,6 +30,20 @@ Artisan::command('migrate:locations', function () {
     $this->info('Done');
 })->describe('Migrate the legacy format of locations to the new one');
 
+Artisan::command('make:permissions', function () {
+    $this->info('Making permissions');
+
+    Artisan::call('permission:create-role admin web "manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps|create markers in bulk|mark spam"');
+
+    Artisan::call('permission:create-role editor web "manage markers|manage categories|manage maps"');
+
+    Artisan::call('permission:create-role "power reporter" web "create markers in bulk"');
+
+    Artisan::call('permission:create-role reporter web "edit markers|create markers|delete markers|mark spam"');
+
+    $this->info('Done');
+})->describe('Make required permissions');
+
 Artisan::command('fill-missing-marker-geocode', function () {
     $this->info('Filling missing marker geocode data...');
     App\Jobs\FillMissingLocationGeocodes::dispatch();

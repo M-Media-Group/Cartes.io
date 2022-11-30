@@ -47,10 +47,7 @@ Cartes.io supports embedding maps on any site and also sends postMessages so you
 
 After running composer and npm, run the following commands to create the permissions and roles:
 - php artisan migrate
-- php artisan permission:create-role admin web "manage markers|edit markers|create markers|delete markers|manage categories|edit categories|create categories|delete categories|manage user roles|manage roles|apply to report|manage maps|create markers in bulk|mark spam"
-- php artisan permission:create-role editor web "manage markers|manage categories|manage maps"
-- php artisan permission:create-role "power reporter" web "create markers in bulk"
-- php artisan permission:create-role reporter web "edit markers|create markers|delete markers|mark spam"
+- php artisan make:permissions
 
 ### Running the tests
 
