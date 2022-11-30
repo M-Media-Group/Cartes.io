@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
+use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
@@ -38,6 +39,9 @@ class FetchGeocodeData implements ShouldQueue
      */
     public function middleware()
     {
+        if (config('queue.default') === 'redis') {
+            return [new RateLimitedWithRedis('geocodeData')];
+        }
         return [new RateLimited('geocodeData')];
     }
 
