@@ -15,7 +15,10 @@ class DropLocationFromMarkersTable extends Migration
     {
         Schema::table('markers', function (Blueprint $table) {
             $table->dropColumn('elevation');
-            $table->dropIndex('incidents_location_spatial');
+            /**
+             * @note that the index may be called incidents_location_spatial rather than incidents_location_spatialindex locally
+             */
+            $table->dropIndex('incidents_location_spatialindex');
             $table->dropUnique('markers_location_map_id_category_id_created_at_expires_at_unique');
             $table->dropColumn('location');
         });
