@@ -28,6 +28,10 @@ class MarkerLocation extends Model
         'location',
     ];
 
+    protected $casts = [
+        'geocode' => 'array'
+    ];
+
     protected $hidden = ['user_id'];
 
     protected static function booted()
