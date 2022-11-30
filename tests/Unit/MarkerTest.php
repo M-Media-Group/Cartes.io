@@ -178,6 +178,10 @@ class MarkerTest extends TestCase
             'category_id' => $marker['category_id'],
             'user_id' => $user->id,
         ]);
+
+        $this->assertDatabaseHas('marker_locations', [
+            'user_id' => $user->id,
+        ]);
     }
 
     /**

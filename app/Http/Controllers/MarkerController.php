@@ -234,7 +234,8 @@ class MarkerController extends Controller
                     'marker_id' => $marker->id,
                     'location' => $validated_data['markers'][$currentIteration]['location'],
                     'elevation' => optional($validated_data['markers'][$currentIteration])['elevation'],
-                    'elevation' => optional($validated_data['markers'][$currentIteration])['address'],
+                    'address' => optional($validated_data['markers'][$currentIteration])['address'],
+                    'user_id' => $marker->user_id,
                     'created_at' => $marker->created_at,
                     'updated_at' => $marker->updated_at,
                 ];
@@ -245,8 +246,8 @@ class MarkerController extends Controller
 
             DB::commit();
 
-            // \App\Jobs\FillMissingMarkerElevation::dispatch();
-            // \App\Jobs\FillMissingLocationGeocodes::dispatch();
+            \App\Jobs\FillMissingMarkerElevation::dispatch();
+            \App\Jobs\FillMissingLocationGeocodes::dispatch();
 
             return response()->json(['success' => $result]);
         } catch (\Illuminate\Database\QueryException $e) {

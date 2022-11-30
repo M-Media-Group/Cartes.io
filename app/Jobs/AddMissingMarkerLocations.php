@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Marker;
+use App\Models\MarkerLocation;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,17 +38,23 @@ class AddMissingMarkerLocations implements ShouldQueue
     {
         $markers = Marker::whereDoesntHave('currentLocation')->get();
 
+        $insertableData = [];
+
         foreach ($markers as $marker) {
-            $location = $marker->currentLocation()->create([
-                'location' => $marker->location,
-                'elevation' => $marker->elevation,
-            ]);
-
-            $location->user_id = $marker->user_id;
-            $location->created_at = $marker->created_at;
-            $location->updated_at = $marker->updated_at;
-
-            $location->save();
+            $insertableData[] =
+                [
+                    'marker_id' => $marker->id,
+                    'location' => new SpatialExpression($marker->getRawOriginal('location')),
+                    'elevation' => $marker['elevation'],
+                    'user_id' => $marker->user_id,
+                    'created_at' => $marker->created_at,
+                    'updated_at' => $marker->updated_at,
+                ];
         }
+
+        MarkerLocation::insert($insertableData);
+
+        \App\Jobs\FillMissingMarkerElevation::dispatch();
+        \App\Jobs\FillMissingLocationGeocodes::dispatch();
     }
 }
