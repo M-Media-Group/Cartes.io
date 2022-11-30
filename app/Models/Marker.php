@@ -78,7 +78,7 @@ class Marker extends Pivot
         // });
 
         self::creating(function ($model) {
-            $model->user_id = $model->user_id ?? (request()->user() ? request()->user()->id : null);
+            $model->user_id = $model->user_id ?? optional(request()->user())->id;
             $model->token = Str::random(32);
 
             // If an expires_at is already set, keep it

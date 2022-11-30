@@ -77,8 +77,6 @@ class MarkerController extends Controller
     {
         $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
 
-        $request->merge(['user_id' => optional($request->user())->id]);
-
         if ($request->input('category') < 1) {
             $request->request->remove('category');
         }
@@ -89,7 +87,6 @@ class MarkerController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
-            'user_id' => 'nullable|exists:users,id',
             'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'elevation' => 'nullable|numeric|between:-100000,100000',
             "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
