@@ -54,7 +54,7 @@ class MarkerLocation extends Model
                 \App\Jobs\FillMissingMarkerElevation::dispatch();
             }
             if (!$model->geocode) {
-                \App\Jobs\FillMissingLocationGeocodes::dispatch();
+                \App\Jobs\FetchGeocodeData::dispatch($model);
             }
         });
     }
