@@ -80,7 +80,7 @@ class FetchGeocodeData implements ShouldQueue
             // If there was an error, stop
             if ($response->getStatusCode() !== 200) {
                 // Throw an exception
-                throw new \Exception('Error calling Nominatim API - returned code ' . $response->getStatusCode());
+                return Log::error("Code returned from Nominatim API not 200", [$response->getStatusCode(), $response->getHeaders(), $response->getBody()]);
             }
 
             $geocodeResult = json_decode($response->getBody()->getContents(), false);
