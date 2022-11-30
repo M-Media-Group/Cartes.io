@@ -51,6 +51,10 @@ trait Queryable
 
             $parsedQuery = $this->parseQueryParam($q);
 
+            if (!$parsedQuery->parameter) {
+                continue;
+            }
+
             if (!$this->isParameterAllowed($parsedQuery->parameter)) {
                 continue;
             }
@@ -65,6 +69,10 @@ trait Queryable
             }
 
             $parsedQuery = $this->parseQueryParam($q);
+
+            if (!$parsedQuery->parameter) {
+                continue;
+            }
 
             if (!$this->isParameterAllowed($parsedQuery->parameter)) {
                 continue;
