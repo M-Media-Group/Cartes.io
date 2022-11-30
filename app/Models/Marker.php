@@ -196,6 +196,12 @@ class Marker extends Pivot
         ];
     }
 
+    /**
+     * Create a marker and its location in a transaction
+     *
+     * @param array $data
+     * @return mixed returns the new refreshed marker with the token visible if the transaction succeeds
+     */
     public static function createWithLocation(array $data)
     {
         return DB::transaction(function () use ($data) {
