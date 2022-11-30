@@ -77,7 +77,8 @@ class MarkerController extends Controller
     {
         $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
 
-        $request->merge(['user_id' => $request->user()->id ?? null]);
+        $request->merge(['user_id' => optional($request->user())->id]);
+
         if ($request->input('category') < 1) {
             $request->request->remove('category');
         }
@@ -111,7 +112,6 @@ class MarkerController extends Controller
                 'category_id' => $request->input('category'),
                 'description' => clean($request->input('description')),
                 'map_id' => $map->id,
-                'location' => $point,
                 'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             ]
         );
@@ -119,9 +119,11 @@ class MarkerController extends Controller
         $result->save();
 
         $result->currentLocation()->create([
-            'location' => $result->location,
+            'location' => $point,
             'elevation' => $request->input('elevation'),
         ]);
+
+        $result->refresh();
 
         return $result->makeVisible(['token'])->load('category');
     }
@@ -216,6 +218,7 @@ class MarkerController extends Controller
             unset($marker['elevation']);
             unset($marker['address']);
             unset($marker['current_location']);
+            unset($marker['location']);
 
             $insertableData[] = $marker;
         }

@@ -24,11 +24,12 @@ class MarkerTest extends TestCase
         // "lng": 45,
         // "description": "Hungry Pete",
         // "category": 1
-        $this->map->markers()->create([
-            'location' => new \Grimzy\LaravelMysqlSpatial\Types\Point(45, 45),
+        $marker = $this->map->markers()->create([
             'description' => 'Hungry Pete',
             'category_id' => 1,
         ]);
+
+        $marker->currentLocation()->create(['location' => new \Grimzy\LaravelMysqlSpatial\Types\Point(45, 45)]);
     }
 
     /**
@@ -85,8 +86,7 @@ class MarkerTest extends TestCase
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee(['token', 'location', 'id']);
@@ -113,8 +113,7 @@ class MarkerTest extends TestCase
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(401);
     }
@@ -137,8 +136,7 @@ class MarkerTest extends TestCase
         $this->actingAs($user, 'api');
 
         $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', ['markers' => $marker->toArray()]);
         $response->assertStatus(403);
     }
@@ -154,8 +152,7 @@ class MarkerTest extends TestCase
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
 
         $user = User::factory()->create();
 
@@ -200,8 +197,7 @@ class MarkerTest extends TestCase
         $marker = Marker::factory()->make();
 
         $marker['category'] = $marker['category_id'];
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
 
         $user = User::factory()->create();
 
@@ -237,8 +233,7 @@ class MarkerTest extends TestCase
         $category = Category::factory()->make();
 
         $marker['category_name'] = $category->name;
-        $marker['lat'] = $marker['location']->getLat();
-        $marker['lng'] = $marker['location']->getLng();
+
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee('token');

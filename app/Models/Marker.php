@@ -31,11 +31,9 @@ class Marker extends Pivot
     protected $fillable = [
         'category_id',
         'user_id',
-        'location',
         'description',
         'token',
         'map_id',
-        'elevation',
         'link',
         'expires_at',
     ];
@@ -61,7 +59,9 @@ class Marker extends Pivot
     ];
 
     protected $appends = [
-        'address'
+        'address',
+        'elevation',
+        'location'
     ];
 
     /**
@@ -151,15 +151,15 @@ class Marker extends Pivot
         return $this->location->getLat();
     }
 
-    // public function getLocationAttribute()
-    // {
-    //     return optional($this->currentLocation)->location;
-    // }
+    public function getLocationAttribute()
+    {
+        return optional($this->currentLocation)->location;
+    }
 
-    // public function getElevationAttribute()
-    // {
-    //     return optional($this->currentLocation)->elevation;
-    // }
+    public function getElevationAttribute()
+    {
+        return optional($this->currentLocation)->elevation;
+    }
 
     public function getAddressAttribute()
     {
