@@ -220,13 +220,15 @@ class Map extends Model
         return [
             'markers',
             'markers.category',
+            'markers.locations',
             'publicContributors',
             'categories',
             'activeCategories',
             'related',
             'user',
             'activeMarkers',
-            'activeMarkers.category'
+            'activeMarkers.category',
+            'activeMarkers.locations'
         ];
     }
 }
