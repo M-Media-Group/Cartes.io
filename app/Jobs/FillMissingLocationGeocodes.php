@@ -2,14 +2,12 @@
 
 namespace App\Jobs;
 
-use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class FillMissingLocationGeocodes implements ShouldQueue
 {
@@ -36,8 +34,6 @@ class FillMissingLocationGeocodes implements ShouldQueue
     public function handle()
     {
         $locations = \App\Models\MarkerLocation::withoutGlobalScopes()->where('geocode', null)->get();
-
-        $client = new Client(['headers' => ['Accept-Language' => 'en']]);
 
         foreach ($locations as $location) {
 
