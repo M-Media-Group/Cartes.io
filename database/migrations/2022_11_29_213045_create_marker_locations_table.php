@@ -19,7 +19,7 @@ class CreateMarkerLocationsTable extends Migration
 
             $table->integer('marker_id')->unsigned();
             $table->point('location');
-            $table->string('address')->nullable();
+            $table->string('address', 255)->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('elevation')->nullable();
             $table->json("geocode")->nullable();
