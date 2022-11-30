@@ -56,6 +56,7 @@ class MarkerLocation extends Model
             if (!$model->geocode) {
                 \App\Jobs\FetchGeocodeData::dispatch($model);
             }
+            broadcast(new \App\Events\MarkerUpdated($model->marker));
         });
     }
 
