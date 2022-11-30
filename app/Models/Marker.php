@@ -40,7 +40,7 @@ class Marker extends Pivot
     protected $spatialFields = [
         'location',
     ];
-    protected $hidden = ['token', 'user_id', 'map_id', 'currentLocation'];
+    protected $hidden = ['token', 'user_id', 'map_id', 'currentLocation', 'bulk_insert_id'];
 
     protected $dates = [
         'expires_at',
