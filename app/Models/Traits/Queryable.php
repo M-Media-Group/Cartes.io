@@ -58,7 +58,9 @@ trait Queryable
                 continue;
             }
             $parsedQuery = $this->parseQueryParam($q);
-            $query = $this->addWhereOrHavingClause($query, $parsedQuery);
+            if ($this->isParameterAllowed($parsedQuery->parameter)) {
+                $query = $this->addWhereOrHavingClause($query, $parsedQuery);
+            }
         }
 
         return $query;
@@ -216,5 +218,36 @@ trait Queryable
             return false;
         }
         return $value;
+    }
+
+    /**
+     * The allowed parameters that can be queried. If an empty array, will allow everything.
+     *
+     * @return array
+     */
+    public function getAllowedParameters(): array
+    {
+        return [];
+    }
+
+    /**
+     * Determine if a given parameter in a query is allowed to be called.
+     *
+     * @param string $parameter
+     * @return boolean
+     */
+    private function isParameterAllowed(string $parameter): bool
+    {
+        // If getAllowedParameters is defined, use only that
+        if (count($this->getAllowedParameters()) > 0) {
+            return in_array($parameter, $this->getAllowedParameters());
+        }
+
+        // If the parameter is in the hidden field, return false
+        if (in_array($parameter, $this->hidden)) {
+            return false;
+        }
+
+        return true;
     }
 }
