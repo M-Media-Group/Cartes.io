@@ -20,7 +20,7 @@ class DropLocationFromMarkersTable extends Migration
             $table->dropIndex('incidents_location_spatialindex');
             $table->dropUnique('markers_location_map_id_category_id_created_at_expires_at_unique');
             $table->dropColumn('location');
-            // $table->dropColumn('elevation');
+            $table->dropColumn('elevation');
         });
     }
 
