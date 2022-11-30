@@ -183,7 +183,7 @@ class Marker extends Pivot
      */
     public function shouldBeSearchable()
     {
-        return $this->map->privacy === 'public';
+        return optional($this->map)->privacy === 'public';
     }
 
     /**
