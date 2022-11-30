@@ -297,7 +297,7 @@ class MarkerController extends Controller
             ]);
         }
 
-        return $marker;
+        return $marker->refresh();
     }
 
     /**
