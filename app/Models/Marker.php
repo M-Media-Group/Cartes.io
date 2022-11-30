@@ -58,6 +58,10 @@ class Marker extends Pivot
         'currentLocation'
     ];
 
+    protected $withCount = [
+        'locations'
+    ];
+
     protected $appends = [
         'address',
         'elevation',
