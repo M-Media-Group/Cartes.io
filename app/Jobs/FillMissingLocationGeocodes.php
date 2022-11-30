@@ -36,24 +36,6 @@ class FillMissingLocationGeocodes implements ShouldQueue
         $locations = \App\Models\MarkerLocation::withoutGlobalScopes()->where('geocode', null)->get();
 
         foreach ($locations as $location) {
-
-            /**
-             *  If there is already a MarkerLocation with the exact same position and with geocode data, use that. Note this is part of the API usage poilicy
-             *
-             * @todo consider reworking this - if this is even a posibility, perhaps another one-many table could be useful. Need to consider pros and cons.
-             */
-            $duplicateLocation = \App\Models\MarkerLocation::withoutGlobalScopes()
-                ->equals('location', $location->location)
-                ->where('id', '!=', $location->id)
-                ->where('geocode', '!=', null)->first();
-
-            if ($duplicateLocation) {
-                $location->address = $duplicateLocation->address;
-                $location->geocode = $duplicateLocation->geocode;
-                $location->save();
-                continue;
-            }
-
             FetchGeocodeData::dispatch($location);
         }
     }

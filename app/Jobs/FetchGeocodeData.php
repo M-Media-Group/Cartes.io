@@ -52,6 +52,24 @@ class FetchGeocodeData implements ShouldQueue
      */
     public function handle()
     {
+
+        /**
+         *  If there is already a MarkerLocation with the exact same position and with geocode data, use that. Note this is part of the API usage poilicy
+         *
+         * @todo consider reworking this - if this is even a posibility, perhaps another one-many table could be useful. Need to consider pros and cons.
+         */
+        $duplicateLocation = \App\Models\MarkerLocation::withoutGlobalScopes()
+            ->equals('location', $this->location->location)
+            ->where('id', '!=', $this->location->id)
+            ->where('geocode', '!=', null)->first();
+
+        if ($duplicateLocation) {
+            $this->location->address = $duplicateLocation->address;
+            $this->location->geocode = $duplicateLocation->geocode;
+            $this->location->save();
+            return;
+        }
+
         $client = new Client(['headers' => ['Accept-Language' => 'en']]);
 
         try {
