@@ -45,13 +45,17 @@ class MarkerLocation extends Model
          *
          * @todo move to a listener
          */
-        static::saved(function ($model) {
+        static::created(function ($model) {
             if (!$model->elevation) {
                 \App\Jobs\FillMissingMarkerElevation::dispatch();
             }
             if (!$model->geocode) {
                 \App\Jobs\FetchGeocodeData::dispatch($model);
             }
+            broadcast(new \App\Events\MarkerUpdated($model->marker))->toOthers();
+        });
+
+        static::updated(function ($model) {
             broadcast(new \App\Events\MarkerUpdated($model->marker));
         });
     }

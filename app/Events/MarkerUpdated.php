@@ -35,7 +35,7 @@ class MarkerUpdated implements ShouldBroadcast
      */
     public function __construct(Marker $marker)
     {
-        $this->marker = $marker->load('category');
+        $this->marker = $marker;
     }
 
     /**

@@ -64,7 +64,7 @@ class MarkerController extends Controller
             $data = $data->active();
         }
 
-        $data = $data->with('category')->get();
+        $data = $data->get();
 
         return $data;
     }
