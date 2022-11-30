@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Marker;
+use App\Models\MarkerLocation;
 use Illuminate\Contracts\Validation\Rule;
 
 class UniqueInRadius implements Rule
@@ -32,13 +32,19 @@ class UniqueInRadius implements Rule
      */
     public function passes($attribute, $value)
     {
-        $marker = new Marker();
-        $markers = $marker->distanceSphere('location', $value, $this->radius)
+        $markerLocation = new MarkerLocation();
+        $markers = $markerLocation->distanceSphere('location', $value, $this->radius)
             ->when($this->category_id, function ($query) {
-                return $query->where('category_id', $this->category_id);
+                return $query->whereHas('marker', function ($marker) {
+                    return
+                        $marker->where('category_id', $this->category_id);
+                });
             })
             ->when($this->map_id, function ($query) {
-                return $query->where('map_id', $this->map_id);
+                return $query->whereHas('marker', function ($marker) {
+                    return
+                        $marker->where('map_id', $this->map_id);
+                });
             })
             ->first();
         if ($markers) {
