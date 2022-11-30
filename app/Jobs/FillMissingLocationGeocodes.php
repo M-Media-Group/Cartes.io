@@ -55,9 +55,6 @@ class FillMissingLocationGeocodes implements ShouldQueue
             }
 
             FetchGeocodeData::dispatch($location);
-
-            // Wait one second before the next request, in accordance with the API usage policy
-            sleep(1);
         }
     }
 }
