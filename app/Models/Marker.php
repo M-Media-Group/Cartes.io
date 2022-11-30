@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 
@@ -97,7 +98,10 @@ class Marker extends Pivot
         });
 
         self::updated(function ($model) {
-            broadcast(new \App\Events\MarkerUpdated($model))->toOthers();
+            // We only broadcast the event if the description changes. Creating a new location for a marker will emit its own MarkerUpdated event
+            if ($model->isDirty('description')) {
+                broadcast(new \App\Events\MarkerUpdated($model))->toOthers();
+            }
         });
 
         self::created(function ($model) {
@@ -190,5 +194,17 @@ class Marker extends Pivot
             'link' => $this->link,
             'description' => $this->description,
         ];
+    }
+
+    public static function createWithLocation(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+            $marker = static::create($data);
+            $marker->currentLocation()->create([
+                'location' => $data['location'],
+                'elevation' => $data['elevation'],
+            ]);
+            return $marker->refresh()->makeVisible(['token'])->load('category');
+        });
     }
 }

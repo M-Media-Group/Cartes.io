@@ -59,9 +59,11 @@ class MarkerController extends Controller
         $this->authorize('index', [Marker::class, $map, $request->input('map_token')]);
 
         $data = $map->markers();
+
         if ($request->input('show_expired') !== 'true') {
             $data = $data->active();
         }
+
         $data = $data->with('category')->get();
 
         return $data;
@@ -104,25 +106,14 @@ class MarkerController extends Controller
 
         $this->validateCreate($request, $request->input(), $map, $point);
 
-        $result = new Marker(
-            [
-                'category_id' => $request->input('category'),
-                'description' => clean($request->input('description')),
-                'map_id' => $map->id,
-                'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
-            ]
-        );
-
-        $result->save();
-
-        $result->currentLocation()->create([
+        return Marker::createWithLocation([
+            'category_id' => $request->input('category'),
+            'description' => clean($request->input('description')),
+            'map_id' => $map->id,
+            'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             'location' => $point,
             'elevation' => $request->input('elevation'),
         ]);
-
-        $result->refresh();
-
-        return $result->makeVisible(['token'])->load('category');
     }
 
     /**
