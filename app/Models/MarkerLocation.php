@@ -70,14 +70,4 @@ class MarkerLocation extends Model
     {
         return $this->location->getLat();
     }
-
-    public function scopeActive($query)
-    {
-        return $query->where(
-            'expires_at',
-            '>',
-            Carbon::now()->toDateTimeString()
-        )
-            ->orWhere('expires_at', null);
-    }
 }
