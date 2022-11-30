@@ -48,7 +48,13 @@ trait Queryable
             if (str_contains($q, 'OR')) {
                 continue;
             }
+
             $parsedQuery = $this->parseQueryParam($q);
+
+            if (!$this->isParameterAllowed($parsedQuery->parameter)) {
+                continue;
+            }
+
             $query = $this->addWhereOrHavingClause($query, $parsedQuery);
         }
 
@@ -57,10 +63,14 @@ trait Queryable
             if (str_contains($q, 'AND')) {
                 continue;
             }
+
             $parsedQuery = $this->parseQueryParam($q);
-            if ($this->isParameterAllowed($parsedQuery->parameter)) {
-                $query = $this->addWhereOrHavingClause($query, $parsedQuery);
+
+            if (!$this->isParameterAllowed($parsedQuery->parameter)) {
+                continue;
             }
+
+            $query = $this->addWhereOrHavingClause($query, $parsedQuery);
         }
 
         return $query;
