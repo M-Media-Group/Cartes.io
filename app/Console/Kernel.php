@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //     ->everyMinute();
-        $schedule->command('telescope:prune')->everyMinute();
+        // $schedule->command('telescope:prune')->everyMinute();
         $schedule->job(new \App\Jobs\DeleteEmptyMaps())->daily();
         $schedule->job(new \App\Jobs\FillMissingMarkerElevation())->daily();
         $schedule->job(new \App\Jobs\FillMissingLocationGeocodes())->daily();
