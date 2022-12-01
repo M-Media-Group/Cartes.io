@@ -32,7 +32,7 @@ class MarkerLocation extends Model
         'geocode' => 'array'
     ];
 
-    protected $hidden = ['user_id'];
+    protected $hidden = ['user_id', 'marker_id'];
 
     protected static function booted()
     {
