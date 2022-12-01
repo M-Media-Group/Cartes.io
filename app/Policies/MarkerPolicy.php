@@ -87,7 +87,7 @@ class MarkerPolicy
      * @param Marker $marker
      * @return bool
      */
-    public function show(?User $user,  Marker $marker, Map $map, $map_token = null)
+    public function show(?User $user, Marker $marker, Map $map, $map_token = null)
     {
         if ($map->privacy !== 'private') {
             return true;
