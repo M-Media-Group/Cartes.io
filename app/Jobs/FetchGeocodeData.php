@@ -78,7 +78,7 @@ class FetchGeocodeData implements ShouldQueue
         $url = 'https://nominatim.openstreetmap.org/reverse?format=geojson&lat=' . $this->location->y . '&lon=' . $this->location->x;
 
         if ($this->location->zoom) {
-            $url += '&zoom=' . $this->location->zoom;
+            $url .= '&zoom=' . $this->location->zoom;
         }
 
         try {
