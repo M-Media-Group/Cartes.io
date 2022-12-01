@@ -21,7 +21,8 @@ class MarkerLocation extends Model
 
     protected $fillable = [
         'location',
-        'elevation'
+        'elevation',
+        'zoom'
     ];
 
     protected $spatialFields = [
