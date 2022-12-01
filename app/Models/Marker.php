@@ -210,7 +210,7 @@ class Marker extends Pivot
                 'location' => $data['location'],
                 'elevation' => $data['elevation'],
             ]);
-            return $marker->refresh()->makeVisible(['token'])->load('category');
+            return $marker->refresh()->makeVisible(['token'])->loadMissing('category');
         });
     }
 }

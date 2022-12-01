@@ -250,6 +250,18 @@ class MarkerController extends Controller
             return abort(500, "Markers in bulk error code: " . $errorCode);
         }
     }
+    /**
+     * Show the locations for a given marker
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function indexLocations(Request $request, Map $map, Marker $marker)
+    {
+        $this->authorize('show', [$marker, $map, $request->input('map_token')]);
+        return $marker->locations;
+    }
 
     /**
      * Update the specified resource in storage.

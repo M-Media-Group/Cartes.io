@@ -275,6 +275,20 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test getting a markers locations
+     *
+     * @return void
+     */
+    public function testShowMarkerLocations()
+    {
+        $marker = $this->map->markers()->firstOrCreate();
+
+        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '/locations');
+
+        $response->assertStatus(200);
+    }
+
+    /**
      * Test update a marker by setting is_spam fails when the user themselves is the owner
      *
      * @return void

@@ -87,6 +87,29 @@ class MarkerPolicy
      * @param Marker $marker
      * @return bool
      */
+    public function show(?User $user,  Marker $marker, Map $map, $map_token = null)
+    {
+        if ($map->privacy !== 'private') {
+            return true;
+        } elseif ($user && $map->user_id == $user->id) {
+            return true;
+        } elseif ($user && $marker->user_id == $user->id) {
+            return true;
+        } elseif ($marker->token == request()->input('token')) {
+            return true;
+        } elseif ($map_token == $marker->map->token) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the marker.
+     *
+     * @param User $user
+     * @param Marker $marker
+     * @return bool
+     */
     public function update(?User $user, Marker $marker)
     {
         if ($user && $marker->user_id == $user->id) {
