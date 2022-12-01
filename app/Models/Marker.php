@@ -67,7 +67,8 @@ class Marker extends Pivot
     protected $appends = [
         'address',
         'elevation',
-        'location'
+        'location',
+        'zoom'
     ];
 
     /**
@@ -159,6 +160,11 @@ class Marker extends Pivot
         return optional($this->currentLocation)->elevation;
     }
 
+    public function getZoomAttribute()
+    {
+        return optional($this->currentLocation)->zoom;
+    }
+
     public function getAddressAttribute()
     {
         return optional($this->currentLocation)->address;
@@ -210,6 +216,7 @@ class Marker extends Pivot
             $marker->currentLocation()->create([
                 'location' => $data['location'],
                 'elevation' => $data['elevation'],
+                'zoom' => $data['zoom'],
             ]);
             return $marker->refresh()->makeVisible(['token'])->loadMissing('category');
         });

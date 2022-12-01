@@ -91,6 +91,7 @@ class MarkerController extends Controller
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'elevation' => 'nullable|numeric|between:-100000,100000',
+            'zoom' => 'nullable|numeric|between:0,20',
             "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
         ]);
 
@@ -112,6 +113,7 @@ class MarkerController extends Controller
             'map_id' => $map->id,
             'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
             'location' => $point,
+            'zoom' => $request->input('zoom'),
             'elevation' => $request->input('elevation'),
         ]);
     }
@@ -141,6 +143,7 @@ class MarkerController extends Controller
             'markers.*.created_at' => 'nullable',
             'markers.*.updated_at' => 'nullable',
             'markers.*.expires_at' => 'nullable',
+            'markers.*.zoom' => 'nullable|numeric|between:0,20',
             'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
         ]);
@@ -207,6 +210,7 @@ class MarkerController extends Controller
             unset($marker['address']);
             unset($marker['current_location']);
             unset($marker['location']);
+            unset($marker['zoom']);
 
             $insertableData[] = $marker;
         }
@@ -226,6 +230,7 @@ class MarkerController extends Controller
                     'location' => $validated_data['markers'][$currentIteration]['location'],
                     'elevation' => optional($validated_data['markers'][$currentIteration])['elevation'],
                     'address' => optional($validated_data['markers'][$currentIteration])['address'],
+                    'zoom' => optional($validated_data['markers'][$currentIteration])['zoom'],
                     'user_id' => $marker->user_id,
                     'created_at' => $marker->created_at,
                     'updated_at' => $marker->updated_at,
