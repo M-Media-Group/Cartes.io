@@ -282,6 +282,7 @@ class MarkerController extends Controller
             'is_spam' => 'nullable|boolean',
             'lat' => 'nullable|numeric|between:-90,90',
             'lng' => 'nullable|numeric|between:-180,180',
+            'zoom' => 'nullable|numeric|between:0,20',
             'elevation' => 'nullable|numeric|between:-100000,100000',
         ]);
 
@@ -302,6 +303,7 @@ class MarkerController extends Controller
             $marker->currentLocation()->create([
                 'location' => $point,
                 'elevation' => $request->input('elevation'),
+                'zoom' => $request->input('zoom'),
             ]);
         }
 
