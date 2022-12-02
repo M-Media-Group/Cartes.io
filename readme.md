@@ -20,6 +20,7 @@ You can create maps for anything! You can [explore the existing public maps](htt
 - Going hiking? Create a map showing where you plan to be, and regularly create new markers as you pass important checkpoints. Share the map with friends/family in case you get lost
 - Does your town have a few "little free libraries"? Create a map of where they are and share it with your community on Facebook or wherever
 - Going out to protest? Create a public community-driven map so that everyone can mark dangerous markers and be aware of what's going on when and where
+- Own a fleet of vehicles? Create markers for each vehicle and add new locations to each marker as the vehicle moves! You'll have a history of locations for each vehicle and you'll be able to see where its been, and when
 
 ### Notable maps created
 

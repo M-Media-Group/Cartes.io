@@ -311,6 +311,36 @@ class MarkerController extends Controller
     }
 
     /**
+     * Add a new location to a marker
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Map $map
+     * @param \App\Models\Marker $marker
+     * @return void
+     */
+    public function storeLocation(Request $request, Map $map, Marker $marker)
+    {
+        $this->authorize('update', [$marker, $request->input('map_token')]);
+
+        $request->validate([
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+            'zoom' => 'nullable|numeric|between:0,20',
+            'elevation' => 'nullable|numeric|between:-100000,100000',
+        ]);
+
+        $point = new Point($request->lat, $request->lng);
+
+        $marker->currentLocation()->create([
+            'location' => $point,
+            'elevation' => $request->input('elevation'),
+            'zoom' => $request->input('zoom'),
+        ]);
+
+        return $marker->refresh();
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

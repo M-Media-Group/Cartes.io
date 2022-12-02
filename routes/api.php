@@ -39,6 +39,7 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
     Route::get('markers', 'MarkerController@indexAll');
     Route::apiResource('maps.markers', 'MarkerController');
     Route::get('maps/{map}/markers/{marker}/locations', 'MarkerController@indexLocations');
+    Route::post('maps/{map}/markers/{marker}/locations', 'MarkerController@storeLocation');
     Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk')->middleware('auth:api');
 });
 
