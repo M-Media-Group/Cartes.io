@@ -27,8 +27,8 @@ class OnGeographicalBodyType implements Rule
      */
     public function passes($attribute, $value)
     {
-        $lat = $value->getLat();
-        $lon = $value->getLng();
+        $lat = $value->latitude;
+        $lon = $value->longitude;
 
         $api_url = 'https://api.onwater.io/api/v1/results/' . $lon . ',' . $lat;
         $json = json_decode(file_get_contents($api_url), true);

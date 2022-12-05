@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use MatanYadaev\EloquentSpatial\Objects\Point;
+use MatanYadaev\EloquentSpatial\SpatialBuilder;
 
 // use Illuminate\Database\Eloquent\Relations\Pivot;
 
-
+/**
+ * @method static SpatialBuilder query()
+ */
 class MarkerLocation extends Model
 {
-    use SpatialTrait;
     use HasFactory;
 
     protected $table = 'marker_locations';
@@ -25,12 +26,9 @@ class MarkerLocation extends Model
         'zoom'
     ];
 
-    protected $spatialFields = [
-        'location',
-    ];
-
     protected $casts = [
-        'geocode' => 'array'
+        'geocode' => 'array',
+        'location' => Point::class
     ];
 
     protected $hidden = ['user_id', 'marker_id'];
@@ -68,11 +66,16 @@ class MarkerLocation extends Model
 
     public function getXAttribute()
     {
-        return $this->location->getLng();
+        return $this->location->longitude;
     }
 
     public function getYAttribute()
     {
-        return $this->location->getLat();
+        return $this->location->latitude;
+    }
+
+    public function newEloquentBuilder($query): SpatialBuilder
+    {
+        return new SpatialBuilder($query);
     }
 }

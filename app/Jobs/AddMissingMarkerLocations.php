@@ -4,13 +4,13 @@ namespace App\Jobs;
 
 use App\Models\Marker;
 use App\Models\MarkerLocation;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class AddMissingMarkerLocations implements ShouldQueue
 {
@@ -44,7 +44,7 @@ class AddMissingMarkerLocations implements ShouldQueue
             $insertableData[] =
                 [
                     'marker_id' => $marker->id,
-                    'location' => new SpatialExpression($marker->getRawOriginal('location')),
+                    'location' => DB::raw("ST_GeomFromText('{$marker->location->toWkt()}', {$marker->location->srid})"),
                     'elevation' => $marker['elevation'],
                     'user_id' => $marker->user_id,
                     'created_at' => $marker->created_at,

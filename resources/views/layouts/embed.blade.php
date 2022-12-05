@@ -60,14 +60,14 @@
     </a>
 
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}" height="0"
-            width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('blog.google_tag_id') }}"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="app" style="height:100%;overflow: hidden;">
         @yield('above_container')
     </div>
 
-    {{-- @include('cookieConsent::index') --}}
+    {{-- @include('cookie-consent::index') --}}
     {{-- <script src="{{ mix('js/manifest.js') }}" defer></script> --}}
     {{-- <script src="{{ mix('js/vendor.js') }}" defer></script> --}}
     <script src="{{ mix('js/app.js') }}" defer></script>

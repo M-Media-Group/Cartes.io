@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -14,7 +12,6 @@ use Laravel\Scout\Searchable;
 
 class Marker extends Pivot
 {
-    use SpatialTrait;
     use HasFactory;
     use Searchable;
 
@@ -37,9 +34,6 @@ class Marker extends Pivot
         'map_id',
         'link',
         'expires_at',
-    ];
-    protected $spatialFields = [
-        'location',
     ];
 
     protected $hidden = ['token', 'user_id', 'map_id', 'currentLocation', 'bulk_insert_id'];
@@ -142,12 +136,12 @@ class Marker extends Pivot
 
     public function getXAttribute()
     {
-        return $this->location->getLng();
+        return $this->location->longitude;
     }
 
     public function getYAttribute()
     {
-        return $this->location->getLat();
+        return $this->location->latitude;
     }
 
     public function getLocationAttribute()

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMarkerRequest;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
 use Carbon\Carbon;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
-use Grimzy\LaravelMysqlSpatial\Types\Point;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -75,26 +75,8 @@ class MarkerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Map $map)
+    public function store(StoreMarkerRequest $request, Map $map)
     {
-        $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
-
-        if ($request->input('category') < 1) {
-            $request->request->remove('category');
-        }
-
-        $request->validate([
-            'category' => 'required_without:category_name|exists:categories,id',
-            'lat' => 'required|numeric|between:-90,90',
-            'lng' => 'required|numeric|between:-180,180',
-            'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
-            'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
-            'link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
-            'elevation' => 'nullable|numeric|between:-100000,100000',
-            'zoom' => 'nullable|numeric|between:0,20',
-            "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
-        ]);
-
         if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => Str::slug($request->input('category_name'))],
@@ -159,7 +141,7 @@ class MarkerController extends Controller
 
             $this->validateCreate($request, $marker, $map, $point);
 
-            $marker['location'] = new SpatialExpression($point);
+            $marker['location'] = DB::raw("ST_GeomFromText('{$point->toWkt()}', {$point->srid})");
 
             unset($marker['lat']);
             unset($marker['lng']);
@@ -270,6 +252,8 @@ class MarkerController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @todo deprecate adding a new location at this endpoint. Use storeLocation instead
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id

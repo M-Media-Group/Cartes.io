@@ -61,7 +61,7 @@ class FetchGeocodeData implements ShouldQueue
          * @todo consider reworking this - if this is even a posibility, perhaps another one-many table could be useful. Need to consider pros and cons.
          */
         $duplicateLocation = \App\Models\MarkerLocation::withoutGlobalScopes()
-            ->equals('location', $this->location->location)
+            ->whereEquals('location', $this->location->location)
             ->where('zoom', '=', $this->location->zoom)
             ->where('id', '!=', $this->location->id)
             ->where('geocode', '!=', null)->first();

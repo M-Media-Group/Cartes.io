@@ -29,7 +29,7 @@ class MarkerTest extends TestCase
             'category_id' => 1,
         ]);
 
-        $marker->currentLocation()->create(['location' => new \Grimzy\LaravelMysqlSpatial\Types\Point(45, 45)]);
+        $marker->currentLocation()->create(['location' => new \MatanYadaev\EloquentSpatial\Objects\Point(45, 45)]);
     }
 
     /**
@@ -89,7 +89,7 @@ class MarkerTest extends TestCase
 
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
-        $response->assertSee(['token', 'location', 'id']);
+        $response->assertSee(['token', 'location', 'id', 'address', 'elevation']);
 
         // Assert added to DB
         $this->assertDatabaseHas('markers', [

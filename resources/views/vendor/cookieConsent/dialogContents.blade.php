@@ -2,11 +2,11 @@
     style="position: fixed;bottom: 0;z-index: 1001;">
 
     <span class="cookie-consent__message">
-        {!! trans('cookieConsent::texts.message') !!}
+        {!! trans('cookie-consent::texts.message') !!}
     </span>
 
     <button class="btn btn-primary js-cookie-consent-agree cookie-consent__agree">
-        {{ trans('cookieConsent::texts.agree') }}
+        {{ trans('cookie-consent::texts.agree') }}
     </button>
 
     <button type="button" class="btn close" data-dismiss="alert" aria-label="Close">
