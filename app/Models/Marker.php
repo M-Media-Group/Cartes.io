@@ -34,6 +34,7 @@ class Marker extends Pivot
         'map_id',
         'link',
         'expires_at',
+        'meta',
     ];
 
     protected $hidden = ['token', 'user_id', 'map_id', 'currentLocation', 'bulk_insert_id'];
