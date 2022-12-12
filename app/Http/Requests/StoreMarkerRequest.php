@@ -42,6 +42,7 @@ class StoreMarkerRequest extends FormRequest
             'elevation' => 'nullable|numeric|between:-100000,100000',
             'zoom' => 'nullable|numeric|between:0,20',
             "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
+            'meta' => 'nullable|array|max:10',
         ];
     }
 

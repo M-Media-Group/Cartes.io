@@ -127,7 +127,8 @@ class MarkerController extends Controller
             'markers.*.expires_at' => 'nullable',
             'markers.*.zoom' => 'nullable|numeric|between:0,20',
             'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
-            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")]
+            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
+            'markers.*.meta' => 'nullable|array|max:10',
         ]);
 
         $now = Carbon::now();
