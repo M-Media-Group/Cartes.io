@@ -131,6 +131,7 @@ class MarkerController extends Controller
             'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'markers.*.meta' => 'nullable|array|max:10',
+            'markers.*.meta.*' => ['nullable', 'max:255'],
         ]);
 
         $now = Carbon::now();
