@@ -48,6 +48,7 @@ class Marker extends Pivot
         'created_at' => 'datetime:c',
         'updated_at' => 'datetime:c',
         'is_spam' => 'boolean',
+        'meta' => 'array',
     ];
 
     protected $with = [
