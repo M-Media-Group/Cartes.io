@@ -97,6 +97,8 @@ class MarkerController extends Controller
             'location' => $point,
             'zoom' => $request->input('zoom'),
             'elevation' => $request->input('elevation'),
+            'expires_at' => $request->input('expires_at') ? Carbon::parse($request->input('expires_at')) : null,
+            'meta' => $request->input('meta'),
         ]);
     }
 
