@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     env_file: ../.env
@@ -21,12 +20,22 @@ services:
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
+    # network_mode: service:db
+    networks:
+      - sail
     # Uncomment the next line to use a non-root user for all processes.
-    # user: vscode
+    user: vscode
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+    ports:
+      - '${APP_PORT:-8000}:8000'
+
+    depends_on:
+      - db
+      - redis
+      - soketi
 
   db:
     env_file: ../.env
@@ -35,13 +44,47 @@ services:
     volumes:
       - mariadb-data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    networks:
+      - sail
+    ports:
+      - '${DB_PORT:-3306}:3306'
 
     # Add "forwardPorts": ["3306"] to **devcontainer.json** to forward MariaDB locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
+  redis:
+      image: 'redis:alpine'
+      ports:
+          - '${FORWARD_REDIS_PORT:-6379}:6379'
+      volumes:
+          - 'sail-redis:/data'
+      networks:
+          - sail
+      healthcheck:
+          test: ["CMD", "redis-cli", "ping"]
+          retries: 3
+          timeout: 5s
+
+
+  soketi:
+    image: 'quay.io/soketi/soketi:latest-16-alpine'
+    environment:
+      SOKETI_DEBUG: '1'
+      SOKETI_METRICS_SERVER_PORT: '9601'
+    ports:
+      - '${SOKETI_PORT:-6001}:6001'
+      - '${SOKETI_METRICS_SERVER_PORT:-9601}:9601'
+    networks:
+      - sail
+
+networks:
+  sail:
+    driver: bridge
+
 volumes:
   mariadb-data: null
+  sail-redis: null
