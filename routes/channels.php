@@ -25,12 +25,12 @@ Broadcast::channel('maps.{mapId}', function (?User $user, Map $mapId) {
     // Check the map policy
     if ($user->can('view', $mapId)) {
         // If the user does not have an email (e.g. they are a guest), the username should be Anonymous + [4 random numbers]
-        if (!$user->email_verified_at) {
+        if ($user->email_verified_at) {
             $user->username = 'Anonymous ' . Str::random(4);
         }
 
         // If the user does have an email but their profile is not set to public, then we should return "Cartes.io user + [4 random numbers]"
-        if ($user->email_verified_at && !$user->is_public) {
+        else if (!$user->is_public) {
             $user->username = 'Cartes.io user ' . Str::random(4);
         }
 
