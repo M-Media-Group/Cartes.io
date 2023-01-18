@@ -25,7 +25,7 @@ Broadcast::channel('maps.{mapId}', function (?User $user, Map $mapId) {
     // Check the map policy
     if ($user->can('view', $mapId)) {
         // If the user does not have an email (e.g. they are a guest), the username should be Anonymous + [4 random numbers]
-        if (!$user->email_verified_at) {
+        if (!$user->email) {
             $user->username = 'Anonymous ' . Str::random(4);
         }
 
