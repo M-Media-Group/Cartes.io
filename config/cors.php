@@ -22,6 +22,7 @@ return [
          */
         'oauth/personal-access-tokens',
         'password/email',
+        'broadcasting/auth',
         // 'password/reset', 'password/reset/{token}', 'password/reset/{token}/{email}'
     ],
 

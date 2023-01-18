@@ -27,6 +27,7 @@ class UserFactory extends Factory
                 'avatar' => '/images/villefranche.jpg',
                 'seen_at' => now(),
                 'remember_token' => Str::random(10),
+                'is_public' => false,
             ];
     }
 }
