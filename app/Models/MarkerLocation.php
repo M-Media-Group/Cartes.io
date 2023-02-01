@@ -23,12 +23,12 @@ class MarkerLocation extends Model
     protected $fillable = [
         'location',
         'elevation',
-        'zoom'
+        'zoom',
     ];
 
     protected $casts = [
         'geocode' => 'array',
-        'location' => Point::class
+        'location' => Point::class,
     ];
 
     protected $hidden = ['user_id', 'marker_id'];
@@ -40,15 +40,15 @@ class MarkerLocation extends Model
         });
 
         /**
-         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times)
+         * We are calling the job in saved because unlike created, saved does not execute when there is a mass save/update (so it won't dispatch a job a million times).
          *
          * @todo move to a listener
          */
         static::created(function ($model) {
-            if (!$model->elevation) {
+            if (! $model->elevation) {
                 \App\Jobs\FillMissingMarkerElevation::dispatch();
             }
-            if (!$model->geocode) {
+            if (! $model->geocode) {
                 \App\Jobs\FetchGeocodeData::dispatch($model);
             }
             broadcast(new \App\Events\MarkerUpdated($model->marker))->toOthers();

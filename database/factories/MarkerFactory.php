@@ -17,13 +17,14 @@ class MarkerFactory extends Factory
     {
         $faker = $this->faker;
         $point = new Point($faker->latitude, $faker->longitude);
+
         return
             [
                 'token' => $faker->uuid,
                 'location' => $point,
                 'lat' => $faker->latitude,
                 'lng' => $faker->longitude,
-                'description' => 'Test description ' . rand(),
+                'description' => 'Test description '.rand(),
                 'category_id' => Category::factory(),
             ];
     }

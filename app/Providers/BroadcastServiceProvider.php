@@ -18,7 +18,7 @@ class BroadcastServiceProvider extends ServiceProvider
     {
         Broadcast::routes([
             // "prefix" => "api",
-            "middleware" => [SetAuthDriverToApi::class, 'api', AuthenticateGuestsForChannels::class],
+            'middleware' => [SetAuthDriverToApi::class, 'api', AuthenticateGuestsForChannels::class],
         ]);
 
         require base_path('routes/channels.php');

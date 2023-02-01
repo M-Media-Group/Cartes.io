@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -85,8 +85,8 @@ class RouteServiceProvider extends ServiceProvider
             return $request->user()
                 ? Limit::perMinute(30)->by($request->user()->id)
                 : [
-                    Limit::perMinute(3)->by($request->ip() . '-minute'),
-                    Limit::perDay(30)->by($request->ip() . '-day')
+                    Limit::perMinute(3)->by($request->ip().'-minute'),
+                    Limit::perDay(30)->by($request->ip().'-day'),
                 ];
         });
 
@@ -94,8 +94,8 @@ class RouteServiceProvider extends ServiceProvider
             return $request->user()
                 ? Limit::perMinute(60)->by($request->user()->id)
                 : [
-                    Limit::perMinute(12)->by($request->ip() . '-minute'),
-                    Limit::perDay(1200)->by($request->ip() . '-day')
+                    Limit::perMinute(12)->by($request->ip().'-minute'),
+                    Limit::perDay(1200)->by($request->ip().'-day'),
                 ];
         });
     }

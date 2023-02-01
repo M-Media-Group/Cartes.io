@@ -7,13 +7,13 @@ use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
 use Carbon\Carbon;
-use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class MarkerController extends Controller
 {
@@ -77,7 +77,7 @@ class MarkerController extends Controller
      */
     public function store(StoreMarkerRequest $request, Map $map)
     {
-        if (!$request->input('category')) {
+        if (! $request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => Str::slug($request->input('category_name'))],
                 ['name' => $request->input('category_name'), 'icon' => '/images/marker-01.svg']
@@ -93,7 +93,7 @@ class MarkerController extends Controller
             'category_id' => $request->input('category'),
             'description' => clean($request->input('description')),
             'map_id' => $map->id,
-            'link' => optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? $request->input('link') : null,
+            'link' => optional($map->options)['links'] && optional($map->options)['links'] !== 'disabled' ? $request->input('link') : null,
             'location' => $point,
             'zoom' => $request->input('zoom'),
             'elevation' => $request->input('elevation'),
@@ -129,7 +129,7 @@ class MarkerController extends Controller
             'markers.*.expires_at' => 'nullable',
             'markers.*.zoom' => 'nullable|numeric|between:0,20',
             'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
-            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
+            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === 'required')],
             'markers.*.meta' => 'nullable|array|max:10',
             'markers.*.meta.*' => ['nullable', 'max:255'],
         ]);
@@ -153,7 +153,7 @@ class MarkerController extends Controller
             $marker['category_id'] = $marker['category'];
             unset($marker['category']);
 
-            if (!$marker['category_id']) {
+            if (! $marker['category_id']) {
                 $category = \App\Models\Category::firstOrCreate(
                     ['name' => $marker['category_name']]
                 );
@@ -161,15 +161,15 @@ class MarkerController extends Controller
                 unset($marker['category_name']);
             }
 
-            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
+            if (isset($marker['expires_at']) && ! $marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
                 $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (!isset($marker['expires_at'])) {
+            } elseif (! isset($marker['expires_at'])) {
                 $marker['expires_at'] = null;
             } else {
                 $marker['expires_at'] = Carbon::parse($marker['expires_at']);
             }
 
-            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? ($marker['link'] ?? null) : null;
+            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== 'disabled' ? ($marker['link'] ?? null) : null;
 
             // Check if created_at index exists
             if (isset($marker['created_at'])) {
@@ -238,11 +238,13 @@ class MarkerController extends Controller
             if ($errorCode == 1062) {
                 return throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
             }
-            return abort(500, "Markers in bulk error code: " . $errorCode);
+
+            return abort(500, 'Markers in bulk error code: '.$errorCode);
         }
     }
+
     /**
-     * Show the locations for a given marker
+     * Show the locations for a given marker.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -251,6 +253,7 @@ class MarkerController extends Controller
     public function indexLocations(Request $request, Map $map, Marker $marker)
     {
         $this->authorize('show', [$marker, $map, $request->input('map_token')]);
+
         return $marker->locations;
     }
 
@@ -299,11 +302,11 @@ class MarkerController extends Controller
     }
 
     /**
-     * Add a new location to a marker
+     * Add a new location to a marker.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Map $map
-     * @param \App\Models\Marker $marker
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Map  $map
+     * @param  \App\Models\Marker  $marker
      * @return void
      */
     public function storeLocation(Request $request, Map $map, Marker $marker)
@@ -338,6 +341,7 @@ class MarkerController extends Controller
     {
         $this->authorize('forceDelete', [$marker, $request->input('map_token')]);
         $marker->delete();
+
         return response()->json(['success' => true]);
     }
 
@@ -353,7 +357,7 @@ class MarkerController extends Controller
 
         // If a link is present, check it
         $validator->sometimes('link', 'url', function ($input) use ($map) {
-            return $input->link !== null && optional($map->options)['links'] && optional($map->options)['links'] !== "disabled";
+            return $input->link !== null && optional($map->options)['links'] && optional($map->options)['links'] !== 'disabled';
         });
 
         $validator->sometimes(
@@ -363,14 +367,14 @@ class MarkerController extends Controller
                     optional($map->options)['require_minimum_seperation_radius'] ?? 15,
                     $map->id,
                     $request->input('category')
-                )
+                ),
             ],
             function ($input) use ($map) {
-                return !optional($map->options)['require_minimum_seperation_radius'];
+                return ! optional($map->options)['require_minimum_seperation_radius'];
             }
         );
 
-        if (!optional($map->options)['limit_to_geographical_body_type']) {
+        if (! optional($map->options)['limit_to_geographical_body_type']) {
             return $validator->validate();
         }
 
