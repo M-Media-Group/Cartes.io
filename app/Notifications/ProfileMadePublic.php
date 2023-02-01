@@ -41,7 +41,7 @@ class ProfileMadePublic extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage())
-            ->subject("Your profile is now public")
+            ->subject('Your profile is now public')
             ->greeting('Hey!')
             ->line('Your profile is now public.')
             ->line('Your profile is publicly visible, shown in search results, and your public maps and marker contributions are displayed.')

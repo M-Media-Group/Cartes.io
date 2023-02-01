@@ -34,14 +34,14 @@ class StoreMarkerRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
             'category_name' => ['required_without:category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'link' => [
-                Rule::requiredIf(optional($this->map->options)['links'] === "required"),
-                Rule::prohibitedIf(optional($this->map->options)['links'] === "disabled"),
+                Rule::requiredIf(optional($this->map->options)['links'] === 'required'),
+                Rule::prohibitedIf(optional($this->map->options)['links'] === 'disabled'),
                 'nullable',
-                'url'
+                'url',
             ],
             'elevation' => 'nullable|numeric|between:-100000,100000',
             'zoom' => 'nullable|numeric|between:0,20',
-            "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
+            'expires_at' => ['nullable', 'date', 'after_or_equal:today'],
             'meta' => 'nullable|array|max:10',
             // Each meta tag must be a max of 255 characters
             'meta.*' => ['nullable', 'max:255'],

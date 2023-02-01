@@ -74,7 +74,7 @@ class RoleController extends Controller
         return redirect()->route('roles.index')
             ->with(
                 'flash_message',
-                'Role' . $role->name . ' added!'
+                'Role'.$role->name.' added!'
             );
     }
 
@@ -115,7 +115,7 @@ class RoleController extends Controller
         $this->authorize('update', $role);
 
         $this->validate($request, [
-            'name' => 'required|max:10|unique:roles,name,' . $role->id,
+            'name' => 'required|max:10|unique:roles,name,'.$role->id,
             'permissions' => 'required',
         ]);
 
@@ -137,7 +137,7 @@ class RoleController extends Controller
         return redirect()->route('roles.index')
             ->with(
                 'flash_message',
-                'Role' . $role->name . ' updated!'
+                'Role'.$role->name.' updated!'
             );
     }
 

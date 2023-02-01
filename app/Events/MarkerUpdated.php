@@ -5,7 +5,6 @@ namespace App\Events;
 use App\Models\Marker;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -44,6 +43,6 @@ class MarkerUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('maps.' . $this->marker->map->uuid);
+        return new PresenceChannel('maps.'.$this->marker->map->uuid);
     }
 }

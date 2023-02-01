@@ -4,8 +4,6 @@ namespace Tests\Unit;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Notifications\AnonymousNotifiable;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -85,7 +83,7 @@ class AuthenticationTest extends TestCase
     }
 
     /**
-     * Test registering a new user
+     * Test registering a new user.
      *
      * @return string
      */
@@ -93,10 +91,10 @@ class AuthenticationTest extends TestCase
     {
         Notification::fake();
 
-        $passAndEmail = 'asdad' . time() . '@test.com';
+        $passAndEmail = 'asdad'.time().'@test.com';
         $this->withoutExceptionHandling();
         $response = $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class, \Spatie\Honeypot\ProtectAgainstSpam::class)->post('/register', [
-            'username' => 'TestUser' . rand(1, 1000),
+            'username' => 'TestUser'.rand(1, 1000),
             'email' => $passAndEmail,
             'password' => $passAndEmail,
             'password_confirmation' => $passAndEmail,
@@ -117,10 +115,11 @@ class AuthenticationTest extends TestCase
     }
 
     /**
-     * Test able to log in
+     * Test able to log in.
      *
      * @depends testRegisterNewUser
-     * @param string $email The email to use to log in filled automatically by PHPunit using the @depends
+     *
+     * @param  string  $email  The email to use to log in filled automatically by PHPunit using the @depends
      * @return void
      */
     public function testLoginNewUser(string $email)
@@ -134,7 +133,7 @@ class AuthenticationTest extends TestCase
     }
 
     /**
-     * Test able to reset password
+     * Test able to reset password.
      *
      * @return void
      */

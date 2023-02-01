@@ -20,6 +20,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         '/csrf-token',
-        '/webhooks/soketi'
+        '/webhooks/soketi',
     ];
 }

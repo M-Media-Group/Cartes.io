@@ -27,13 +27,13 @@ class UniqueInRadius implements Rule
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param MatanYadaev\EloquentSpatial\Objects\Point  $value
+     * @param  MatanYadaev\EloquentSpatial\Objects\Point  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
         $markerLocation = new MarkerLocation();
-        $markers = $markerLocation->whereDistanceSphere('location', $value, "<=", $this->radius)
+        $markers = $markerLocation->whereDistanceSphere('location', $value, '<=', $this->radius)
             ->when($this->category_id, function ($query) {
                 return $query->whereHas('marker', function ($marker) {
                     return

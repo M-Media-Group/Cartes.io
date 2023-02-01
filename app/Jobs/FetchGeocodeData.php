@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -44,6 +43,7 @@ class FetchGeocodeData implements ShouldQueue
         if (config('queue.default') === 'redis') {
             return [new RateLimitedWithRedis('geocodeData'), (new ThrottlesExceptionsWithRedis(10, 5))->backoff(1)];
         }
+
         return [new RateLimited('geocodeData'), (new ThrottlesExceptions(10, 5))->backoff(1)];
     }
 
@@ -56,7 +56,7 @@ class FetchGeocodeData implements ShouldQueue
     {
 
         /**
-         *  If there is already a MarkerLocation with the exact same position and with geocode data, use that. Note this is part of the API usage poilicy
+         *  If there is already a MarkerLocation with the exact same position and with geocode data, use that. Note this is part of the API usage poilicy.
          *
          * @todo consider reworking this - if this is even a posibility, perhaps another one-many table could be useful. Need to consider pros and cons.
          */
@@ -70,15 +70,16 @@ class FetchGeocodeData implements ShouldQueue
             $this->location->address = $duplicateLocation->address;
             $this->location->geocode = $duplicateLocation->geocode;
             $this->location->save();
+
             return;
         }
 
         $client = new Client(['headers' => ['Accept-Language' => 'en', 'User-Agent' => config('app.url')]]);
 
-        $url = 'https://nominatim.openstreetmap.org/reverse?format=geojson&lat=' . $this->location->y . '&lon=' . $this->location->x;
+        $url = 'https://nominatim.openstreetmap.org/reverse?format=geojson&lat='.$this->location->y.'&lon='.$this->location->x;
 
         if ($this->location->zoom) {
-            $url .= '&zoom=' . $this->location->zoom;
+            $url .= '&zoom='.$this->location->zoom;
         }
 
         try {
@@ -87,7 +88,7 @@ class FetchGeocodeData implements ShouldQueue
             // If there was an error, stop
             if ($response->getStatusCode() !== 200) {
                 // Throw an exception
-                return Log::error("Code returned from Nominatim API not 200", [$response->getStatusCode(), $response->getHeaders(), $response->getBody()]);
+                return Log::error('Code returned from Nominatim API not 200', [$response->getStatusCode(), $response->getHeaders(), $response->getBody()]);
             }
 
             $geocodeResult = json_decode($response->getBody()->getContents(), false);
@@ -96,6 +97,7 @@ class FetchGeocodeData implements ShouldQueue
             if (property_exists($geocodeResult, 'error')) {
                 $this->location->geocode = $geocodeResult ?? [];
                 $this->location->save();
+
                 return;
             }
 
@@ -106,7 +108,7 @@ class FetchGeocodeData implements ShouldQueue
 
             $this->location->save();
         } catch (\Throwable $th) {
-            Log::error("Could not get Nominatim data", [$th]);
+            Log::error('Could not get Nominatim data', [$th]);
         }
     }
 }
