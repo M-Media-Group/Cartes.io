@@ -53,18 +53,18 @@ class Marker extends Pivot
 
     protected $with = [
         'category',
-        'currentLocation'
+        'currentLocation',
     ];
 
     protected $withCount = [
-        'locations'
+        'locations',
     ];
 
     protected $appends = [
         'address',
         'elevation',
         'location',
-        'zoom'
+        'zoom',
     ];
 
     /**
@@ -200,9 +200,9 @@ class Marker extends Pivot
     }
 
     /**
-     * Create a marker and its location in a transaction
+     * Create a marker and its location in a transaction.
      *
-     * @param array $data
+     * @param  array  $data
      * @return mixed returns the new refreshed marker with the token visible if the transaction succeeds
      */
     public static function createWithLocation(array $data)
@@ -214,6 +214,7 @@ class Marker extends Pivot
                 'elevation' => $data['elevation'],
                 'zoom' => $data['zoom'],
             ]);
+
             return $marker->refresh()->makeVisible(['token'])->loadMissing('category');
         });
     }
