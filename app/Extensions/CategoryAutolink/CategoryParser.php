@@ -52,9 +52,9 @@ class CategoryParser extends AbstractInlineParser
             return false;
         }
 
-        $profileUrl = '/categories/' . Str::slug($handle);
+        $profileUrl = '/categories/'.Str::slug($handle);
 
-        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#' . $handle));
+        $inlineContext->getContainer()->appendChild(new Link($profileUrl, '#'.$handle));
 
         return true;
     }

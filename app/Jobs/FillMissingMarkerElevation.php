@@ -24,12 +24,10 @@ class FillMissingMarkerElevation implements ShouldQueue
      */
     public function handle()
     {
-
         // Call the API
         $client = new Client();
 
         \App\Models\MarkerLocation::withoutGlobalScopes()->where('elevation', null)->chunkById(500, function ($markers) use ($client) {
-
             $coordinates = [];
 
             $markers->each(function ($marker) use (&$coordinates) {
@@ -49,7 +47,7 @@ class FillMissingMarkerElevation implements ShouldQueue
                 // If there was an error, stop
                 if ($response->getStatusCode() !== 200) {
                     // Throw an exception
-                    throw new \Exception('Error calling Open Elevation API - returned code ' . $response->getStatusCode());
+                    throw new \Exception('Error calling Open Elevation API - returned code '.$response->getStatusCode());
                 }
 
                 $elevationResults = json_decode($response->getBody()->getContents(), true);
@@ -63,7 +61,7 @@ class FillMissingMarkerElevation implements ShouldQueue
                     $marker->save(['timestamps' => false]);
                 }
             } catch (\Throwable $th) {
-                Log::error("Could not get elevation data from https://api.open-elevation.com", [$th]);
+                Log::error('Could not get elevation data from https://api.open-elevation.com', [$th]);
             }
         });
     }

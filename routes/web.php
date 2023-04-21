@@ -46,7 +46,8 @@ Route::post('me/apply/reporter', 'UserController@applyForReporter');
 if (config('app.spa_url')) {
     // Catch all and redirect to web-app
     Route::get('{any}', function () {
-        $path = request()->path() ?? "";
-        return redirect(config('app.spa_url') . '/' . $path, 301);
+        $path = request()->path() ?? '';
+
+        return redirect(config('app.spa_url').'/'.$path, 301);
     })->where('any', '.*');
 }

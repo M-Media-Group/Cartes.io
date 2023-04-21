@@ -9,14 +9,14 @@ use Illuminate\Validation\Rule;
 trait Expandable
 {
     /**
-     * The relationships to expand
+     * The relationships to expand.
      *
      * @var array
      */
     protected $expandableFields = [];
 
     /**
-     * The count of relationships to retrieve
+     * The count of relationships to retrieve.
      *
      * @var array
      */
@@ -42,16 +42,16 @@ trait Expandable
     ];
 
     /**
-     * An instance of the reflection class for the current model
+     * An instance of the reflection class for the current model.
      *
      * @var \ReflectionClass
      */
     protected \ReflectionClass $reflection;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param array $attributes
+     * @param  array  $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -85,11 +85,12 @@ trait Expandable
                 $scopes[] = lcfirst(substr($reflectionMethod->name, 5));
             }
         }
+
         return $scopes;
     }
 
     /**
-     * Get all of the models relationships
+     * Get all of the models relationships.
      *
      * @return array
      */
@@ -97,7 +98,7 @@ trait Expandable
     {
         return collect($this->reflection->getMethods())
             ->filter(
-                fn ($method) => !empty($method->getReturnType()) &&
+                fn ($method) => ! empty($method->getReturnType()) &&
                     str_contains(
                         $method->getReturnType(),
                         'Illuminate\Database\Eloquent\Relations'
@@ -108,7 +109,7 @@ trait Expandable
     }
 
     /**
-     * Get all of the models expandable fields
+     * Get all of the models expandable fields.
      *
      * @return array
      */
@@ -118,9 +119,9 @@ trait Expandable
     }
 
     /**
-     * Validate the expansion scopes
+     * Validate the expansion scopes.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     private function validateScopeExpand(Request $request)
@@ -140,9 +141,9 @@ trait Expandable
     }
 
     /**
-     * Expand the request
+     * Expand the request.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeExpand(Builder $query)
@@ -161,9 +162,9 @@ trait Expandable
     }
 
     /**
-     * Validate the filter scopes
+     * Validate the filter scopes.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     private function validateScopeFilter(Request $request)
@@ -179,9 +180,9 @@ trait Expandable
     }
 
     /**
-     * Filter the request
+     * Filter the request.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeFilter(Builder $query)
@@ -211,15 +212,16 @@ trait Expandable
     }
 
     /**
-     * Apply all scopes
+     * Apply all scopes.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeFilterAndExpand(Builder $query)
     {
         $query->filter($query);
         $query->expand($query);
+
         return $query;
     }
 

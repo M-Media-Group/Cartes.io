@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
-use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
+use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 
 class Map extends Model
 {
@@ -48,11 +48,11 @@ class Map extends Model
     ];
 
     protected $appends = [
-        'is_linked_to_user'
+        'is_linked_to_user',
     ];
 
     protected $withCount = [
-        'markers'
+        'markers',
     ];
 
     // protected $dateFormat = 'c';
@@ -144,14 +144,14 @@ class Map extends Model
     public function related(): HasManyThrough
     {
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'category_id')
-            ->where($this->getTable() . ".privacy", "=", "public")
-            ->with("categories");
+            ->where($this->getTable().'.privacy', '=', 'public')
+            ->with('categories');
     }
 
     public function getShouldUseNewAppAttribute()
     {
         // If there is no SPA_URL set, return false
-        if (!config('app.spa_url')) {
+        if (! config('app.spa_url')) {
             return false;
         }
 
@@ -160,12 +160,12 @@ class Map extends Model
 
     public function getIsLinkedToUserAttribute()
     {
-        return !!$this->user_id;
+        return (bool) $this->user_id;
     }
 
     public function scopePublic($query)
     {
-        return $query->where("privacy", "=", "public");
+        return $query->where('privacy', '=', 'public');
     }
 
     public function scopePublicOrOwn($query)
@@ -173,8 +173,9 @@ class Map extends Model
         return $query->where(function ($query) {
             $query->public();
             if (request()->user()) {
-                $query->orWhere("user_id", "=", request()->user()->id);
+                $query->orWhere('user_id', '=', request()->user()->id);
             }
+
             return $query;
         });
     }
@@ -182,10 +183,11 @@ class Map extends Model
     public function scopeOwnOrRequestByIds($query, $ids)
     {
         return $query->where(function ($query) use ($ids) {
-            $query->whereIn("uuid", $ids);
+            $query->whereIn('uuid', $ids);
             if (request()->user()) {
-                $query->orWhere("user_id", "=", request()->user()->id);
+                $query->orWhere('user_id', '=', request()->user()->id);
             }
+
             return $query;
         });
     }
@@ -228,7 +230,7 @@ class Map extends Model
             'user',
             'activeMarkers',
             'activeMarkers.category',
-            'activeMarkers.locations'
+            'activeMarkers.locations',
         ];
     }
 
@@ -244,7 +246,7 @@ class Map extends Model
             'markers.bulk_insert_id',
             'activeMarkers.locations.user_id',
             'activeMarkers.bulk_insert_id',
-            'activeMarkers.currentLocation.user_id'
+            'activeMarkers.currentLocation.user_id',
         ];
     }
 }

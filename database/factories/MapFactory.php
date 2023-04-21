@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MapFactory extends Factory
 {
-
     protected $model = Map::class;
 
     /**
@@ -18,6 +17,7 @@ class MapFactory extends Factory
     public function definition()
     {
         $faker = \Faker\Factory::create();
+
         return [
             'title' => $faker->userName,
             'slug' => $faker->slug,

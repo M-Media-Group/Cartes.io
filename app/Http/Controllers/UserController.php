@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $this->authorize('view', $user);
 
-        if (!$request->wantsJson()) {
+        if (! $request->wantsJson()) {
             return view('users.show', ['user' => $user]);
         }
 
@@ -54,7 +54,7 @@ class UserController extends Controller
             $user->load($load);
         }
 
-        if (!$request->user() || $request->user()->id !== $user->id) {
+        if (! $request->user() || $request->user()->id !== $user->id) {
             $user->makeHidden(['email', 'name', 'surname', 'id', 'updated_at', 'is_public']);
         }
 
@@ -88,11 +88,11 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $validatedData = $request->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id, 'min:3', 'alpha_dash'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id, 'min:3', 'alpha_dash'],
             'description' => 'nullable|string|max:191',
             'name' => ['nullable', 'string', 'max:255'],
             'surname' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'is_public' => ['nullable', 'boolean'],
         ]);
 
@@ -111,18 +111,19 @@ class UserController extends Controller
             return $user;
         }
 
-        return redirect('/users/' . urlencode($request->input('username')));
+        return redirect('/users/'.urlencode($request->input('username')));
     }
 
     /**
      * Update the currently authenticated user.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function updateSelf(Request $request)
     {
         $user = $request->user();
+
         return $this->update($request, $user);
     }
 
