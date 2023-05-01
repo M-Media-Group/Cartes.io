@@ -44,8 +44,8 @@ class AccessTokenExpirationWarning extends Notification implements ShouldQueue
     {
         return (new MailMessage())
             ->subject('Your access token is about to expire')
-            ->line('The token with the name: ' . $this->token->name . ', created at ' . $this->token->created_at . ', will expire at: ' . $this->token->expires_at . '.')
-            ->line("For your security, we automatically expire access tokens after 1 year. You can create a new one to continue accessing the API.")
+            ->line('The token with the name: '.$this->token->name.', created at '.$this->token->created_at.', will expire at: '.$this->token->expires_at.'.')
+            ->line('For your security, we automatically expire access tokens after 1 year. You can create a new one to continue accessing the API.')
             ->action('Create a new access token', url('/'))
             ->line('Thank you for using Cartes.io!');
     }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\SetAuthDriverToApi;
-use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 //  Optionally authenticated routes
 Route::middleware(SetAuthDriverToApi::class)->group(function () {
-
     Route::get('categories/search', 'CategoryController@search');
     Route::get('categories', 'CategoryController@index');
 
@@ -45,7 +43,6 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
 
 // Authenticated routes
 Route::middleware('auth:api')->group(function () {
-
     Route::get('/user', function (Request $request) {
         return $request->user()->load('roles.permissions', 'permissions');
     })->name('user');
