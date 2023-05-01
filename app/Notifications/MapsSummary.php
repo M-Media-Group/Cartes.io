@@ -49,7 +49,7 @@ class MapsSummary extends Notification implements ShouldQueue
             ->line($this->maps->map(function ($map) {
                 return $map->title ?? 'Untitled map';
             })->implode(' - '))
-            ->action('View maps', config('app.spa_url') . '/users/' . $notifiable->username)
+            ->action('View maps', config('app.spa_url').'/users/'.$notifiable->username)
             ->line('Thank you for using Cartes.io!');
     }
 

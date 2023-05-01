@@ -21,7 +21,7 @@ class RolePolicy
      * Determine whether the user can view the post.
      *
      * @param  User  $user
-     * @param  Role $role
+     * @param  Role  $role
      * @return bool
      */
     public function view(User $user, Role $role)
@@ -44,7 +44,7 @@ class RolePolicy
      * Determine whether the user can update the post.
      *
      * @param  User  $user
-     * @param  Role $role
+     * @param  Role  $role
      * @return bool
      */
     public function update(User $user, Role $role)
@@ -56,7 +56,7 @@ class RolePolicy
      * Determine whether the user can delete the post.
      *
      * @param  User  $user
-     * @param  Role $role
+     * @param  Role  $role
      * @return bool
      */
     public function delete(User $user, Role $role)
@@ -68,7 +68,7 @@ class RolePolicy
      * Determine whether the user can restore the post.
      *
      * @param  User  $user
-     * @param  Role $role
+     * @param  Role  $role
      * @return bool
      */
     public function restore(User $user, Role $role)
@@ -80,7 +80,7 @@ class RolePolicy
      * Determine whether the user can permanently delete the post.
      *
      * @param  User  $user
-     * @param  Role $role
+     * @param  Role  $role
      * @return bool
      */
     public function forceDelete(User $user, Role $role)
