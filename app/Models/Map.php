@@ -320,6 +320,17 @@ class Map extends Model
         //    Add the markers to the map
         $map->addMarkers($markers);
 
+        // When the dependency creates an image using cURL, it expects REQUEST_SCHEME, HTTP_HOST, and REQUEST_URI to be set, otherwise it will crash with a fatal error. The problem is in vendor/dantsu/php-image-editor/src/Image.php in the `curl` method. So we set them here.
+        if (!isset($_SERVER['REQUEST_SCHEME'])) {
+            $_SERVER['REQUEST_SCHEME'] = 'http';
+        }
+        if (!isset($_SERVER['HTTP_HOST'])) {
+            $_SERVER['HTTP_HOST'] = config('app.url');
+        }
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            $_SERVER['REQUEST_URI'] = '/';
+        }
+
         // Get the image (returns as PHPImageEditor Image), then encode to base64, then return
         $image = $map->getImage();
 
