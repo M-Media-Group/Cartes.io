@@ -35,6 +35,36 @@ class MapTest extends TestCase
     }
 
     /**
+     * Test that it is possible to get the maps static image
+     *
+     * @todo we need to add separate tests for maps with and without markers
+     * @todo add for maps with and without center
+     * @todo add for base64 response request
+     * @return void
+     */
+    public function testSeeSingleMapStaticImageTest()
+    {
+        $cacheKey = $this->map->getStaticMapImageCacheKey();
+
+        // Assert that the cache is empty
+        $this->assertFalse(\Illuminate\Support\Facades\Cache::has($cacheKey));
+
+        $response = $this->get('/api/maps/' . $this->map->uuid . '/images/static');
+
+        //  We should get back a PNG image
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'image/png');
+
+        // Assert that the cache is now populated
+        $this->assertTrue(\Illuminate\Support\Facades\Cache::has($cacheKey));
+
+        // Assert a second request was returned from the cache
+        $response = $this->get('/api/maps/' . $this->map->uuid . '/images/static');
+        $response->assertStatus(200);
+        /** @todo actually test that it came from cache and not from elsewhere */
+    }
+
+    /**
      * A basic test example.
      *
      * @return void

@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "dantsu/php-osm-static-api": "^0.6.4",
         "doctrine/dbal": "^2.12.1",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^3.0",

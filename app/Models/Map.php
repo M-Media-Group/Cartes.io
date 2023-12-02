@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
+use \DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
+use \DantSu\OpenStreetMapStaticAPI\LatLng;
+use \DantSu\OpenStreetMapStaticAPI\Markers;
 
 class Map extends Model
 {
@@ -50,7 +53,7 @@ class Map extends Model
     ];
 
     protected $appends = [
-        'is_linked_to_user',
+        'is_linked_to_user'
     ];
 
     protected $withCount = [
@@ -283,5 +286,57 @@ class Map extends Model
             'center.marker_id',
             'center.id'
         ];
+    }
+
+    /**
+     * Given a width, height and zoom, generate a static image of the map. WIll use default OSM tiles, and the default marker icon.
+     *
+     * @param integer $width
+     * @param integer $height
+     * @param integer $zoom
+     * @param string $output
+     * @return string
+     */
+    public function generateStaticMapImage(int $width = 600, int $height = 400, int $zoom = 10, string $output = 'base64')
+    {
+
+        //    We will use the dantsu/php-osm-static-api package to generate the static map image
+        $map = new OpenStreetMap(
+            new LatLng(
+                optional($this->center)->lat ?? 0,
+                optional($this->center)->lng ?? 0
+            ),
+            $zoom,
+            $width,
+            $height
+        );
+
+        //    Add the markers. THe image is in the public folder, under images, called marker-01.svg
+        $markers = new Markers(public_path('images/vendor/leaflet/dist/marker-icon.png'));
+        foreach ($this->markers as $marker) {
+            $markers->addMarker(new LatLng($marker->y, $marker->x));
+        }
+
+        //    Add the markers to the map
+        $map->addMarkers($markers);
+
+        // Get the image (returns as PHPImageEditor Image), then encode to base64, then return
+        $image = $map->getImage();
+
+        if ($output === 'base64') {
+            return $image->getBase64PNG();
+        } elseif ($output === 'png') {
+            return $image->getDataPNG();
+        }
+
+        return $image;
+    }
+
+    public function getStaticMapImageCacheKey($width = 600, $height = 400, $zoom = 10, $responseType = 'png')
+    {
+        // Build cache key
+        $cacheKey = 'map-' . $this->id . '-static-image-' . $width . 'x' . $height . 'x' . $zoom . '.' . $responseType;
+
+        return $cacheKey;
     }
 }
