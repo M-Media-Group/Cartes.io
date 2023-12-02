@@ -185,7 +185,7 @@ class MapController extends Controller
         // Set default values if they are not set
         $validatedData['width'] = $validatedData['width'] ?? 600;
         $validatedData['height'] = $validatedData['height'] ?? 400;
-        $validatedData['zoom'] = $validatedData['zoom'] ?? 10;
+        $validatedData['zoom'] = $validatedData['zoom'] ?? 5;
         $validatedData['responseType'] = $validatedData['responseType'] ?? 'png';
 
         // If the responseType is base64, we need to return a base64 encoded string

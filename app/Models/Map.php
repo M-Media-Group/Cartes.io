@@ -297,7 +297,7 @@ class Map extends Model
      * @param string $output
      * @return string
      */
-    public function generateStaticMapImage(int $width = 600, int $height = 400, int $zoom = 10, string $output = 'base64')
+    public function generateStaticMapImage(int $width = 600, int $height = 400, int $zoom = 5, string $output = 'base64')
     {
 
         //    We will use the dantsu/php-osm-static-api package to generate the static map image
@@ -343,7 +343,7 @@ class Map extends Model
         return $image;
     }
 
-    public function getStaticMapImageCacheKey($width = 600, $height = 400, $zoom = 10, $responseType = 'png')
+    public function getStaticMapImageCacheKey($width = 600, $height = 400, $zoom = 5, $responseType = 'png')
     {
         // Build cache key
         $cacheKey = 'map-' . $this->id . '-static-image-' . $width . 'x' . $height . 'x' . $zoom . '.' . $responseType;
