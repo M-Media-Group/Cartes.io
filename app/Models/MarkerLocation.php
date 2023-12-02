@@ -78,4 +78,40 @@ class MarkerLocation extends Model
     {
         return new SpatialBuilder($query);
     }
+
+    /**
+     * Scope to a given address component, using the JSON `geocode` column which contains the geocode data.
+     *
+     * @param [type] $query
+     * @param string $component
+     * @param string $value
+     * @param string $operator The operator to use in the query. Defaults to '='
+     * @return void
+     */
+    public function scopeAddressComponent($query, string $component, string $value, string $operator = '=')
+    {
+        // Here the query is a little different because we need to lowercase the value of the component we are querying as well as the value we are comparing it to.
+        // We can use the `#>>` operator to access nested JSON properties as JSON.
+
+        // whereRaw("geocode->'features'->0->'properties'->>'{$component}' {$operator} ?", [$value]);
+
+
+        return $query->where(
+            'geocode->features[0]->properties->address->' . $component,
+            $operator,
+            $value
+        );
+    }
+
+    /**
+     * Scope to a given country, using the JSON `geocode` column which contains the geocode data.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $country The two letter country code (e.g. "US")
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCountryCode($query, string $country)
+    {
+        return $query->addressComponent('country_code', strtolower($country));
+    }
 }
