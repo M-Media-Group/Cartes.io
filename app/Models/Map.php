@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
@@ -48,7 +50,7 @@ class Map extends Model
     ];
 
     protected $appends = [
-        'is_linked_to_user'
+        'is_linked_to_user',
     ];
 
     protected $withCount = [
@@ -129,6 +131,38 @@ class Map extends Model
     public function publicContributors(): HasManyThrough
     {
         return $this->contributors()->where('is_public', true)->selectOnlyPublicAttributes();
+    }
+
+    public function markerLocations(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            \App\Models\MarkerLocation::class,
+            \App\Models\Marker::class,
+            'map_id',
+            'marker_id',
+            'id',
+            'id'
+        );
+    }
+
+    /**
+     * Get the average center of the map based on the markers locations
+     *
+     * @todo this may need a bit of rework, for example, when we want to use this as a query e.g. `?query=center.zoom>12`, it actually finds any marker with a zoom > 12, not the average zoom of the map. In that sense its equivalent to `?query=markers.locations.zoom>12`, which is not exactly the same as what would be expected from `?query=center.zoom>12`.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function center(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            \App\Models\MarkerLocation::class,
+            \App\Models\Marker::class,
+            'map_id',
+            'marker_id',
+            'id',
+            'id'
+        )->selectRaw('AVG(ST_X(location)) as lng, AVG(ST_Y(location)) as lat, CAST(AVG(zoom) as UNSIGNED) as zoom, CAST(AVG(elevation) as UNSIGNED) as elevation')
+            ->groupBy('map_id');
     }
 
     // public function expired_markers()
@@ -244,7 +278,10 @@ class Map extends Model
             'markers.bulk_insert_id',
             'activeMarkers.locations.user_id',
             'activeMarkers.bulk_insert_id',
-            'activeMarkers.currentLocation.user_id'
+            'activeMarkers.currentLocation.user_id',
+            'center.map_id',
+            'center.marker_id',
+            'center.id'
         ];
     }
 }
