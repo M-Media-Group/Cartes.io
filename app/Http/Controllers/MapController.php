@@ -177,7 +177,7 @@ class MapController extends Controller
         $validatedData = request()->validate([
             'width' => 'nullable|in:' . implode(',', $mapImageGenerator->allowedWidths),
             'height' => 'nullable|in:' . implode(',', $mapImageGenerator->allowedHeights),
-            'zoom' => 'nullable|numeric|between:1,19',
+            'zoom' => 'nullable|numeric|between:2,19',
             'responseType' => 'nullable|in:base64,png',
         ]);
 
