@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
-use \DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
-use \DantSu\OpenStreetMapStaticAPI\LatLng;
-use \DantSu\OpenStreetMapStaticAPI\Markers;
+use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
+use DantSu\OpenStreetMapStaticAPI\LatLng;
+use DantSu\OpenStreetMapStaticAPI\Markers;
 
 class Map extends Model
 {
