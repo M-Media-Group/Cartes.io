@@ -47,7 +47,7 @@ class MapTest extends TestCase
     {
         // We get the default key from the MapImageGenerator
         $mapGenerator = new MapImageGenerator();
-        $cacheKey = $$mapGenerator->getCacheKey('map', $this->map->uuid);
+        $cacheKey = $mapGenerator->getCacheKey('map', $this->map->uuid);
 
         // Assert that the cache is empty
         $this->assertFalse(\Illuminate\Support\Facades\Cache::has($cacheKey));
