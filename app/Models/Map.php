@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\MapImageGenerator;
 use App\Models\Traits\Expandable;
 use App\Models\Traits\Queryable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,14 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
 use MMedia\LaravelCollaborativeFiltering\HasCollaborativeFiltering;
 use Laravel\Scout\Searchable;
-use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
-use DantSu\OpenStreetMapStaticAPI\LatLng;
-use DantSu\OpenStreetMapStaticAPI\Markers;
 
 class Map extends Model
 {
@@ -291,63 +288,15 @@ class Map extends Model
     /**
      * Given a width, height and zoom, generate a static image of the map. WIll use default OSM tiles, and the default marker icon.
      *
-     * @param integer $width
-     * @param integer $height
-     * @param integer $zoom
-     * @param string $output
+     * @param integer|null $width
+     * @param integer|null $height
+     * @param integer|null $zoom
+     * @param string|null $output
      * @return string
      */
-    public function generateStaticMapImage(int $width = 600, int $height = 400, int $zoom = 5, string $output = 'base64')
+    public function getStaticMapImage(int $width = null, int $height = null, int $zoom = null, string $output = null)
     {
-
-        //    We will use the dantsu/php-osm-static-api package to generate the static map image
-        $map = new OpenStreetMap(
-            new LatLng(
-                optional($this->center)->lat ?? 0,
-                optional($this->center)->lng ?? 0
-            ),
-            $zoom,
-            $width,
-            $height
-        );
-
-        //    Add the markers. THe image is in the public folder, under images, called marker-01.svg
-        $markers = new Markers(public_path('images/vendor/leaflet/dist/marker-icon.png'));
-        foreach ($this->markers as $marker) {
-            $markers->addMarker(new LatLng($marker->y, $marker->x));
-        }
-
-        //    Add the markers to the map
-        $map->addMarkers($markers);
-
-        // When the dependency creates an image using cURL, it expects REQUEST_SCHEME, HTTP_HOST, and REQUEST_URI to be set, otherwise it will crash with a fatal error. The problem is in vendor/dantsu/php-image-editor/src/Image.php in the `curl` method. So we set them here. @see https://github.com/DantSu/php-image-editor/pull/8
-        if (!isset($_SERVER['REQUEST_SCHEME'])) {
-            $_SERVER['REQUEST_SCHEME'] = 'http';
-        }
-        if (!isset($_SERVER['HTTP_HOST'])) {
-            $_SERVER['HTTP_HOST'] = config('app.url');
-        }
-        if (!isset($_SERVER['REQUEST_URI'])) {
-            $_SERVER['REQUEST_URI'] = '/';
-        }
-
-        // Get the image (returns as PHPImageEditor Image), then encode to base64, then return
-        $image = $map->getImage();
-
-        if ($output === 'base64') {
-            return $image->getBase64PNG();
-        } elseif ($output === 'png') {
-            return $image->getDataPNG();
-        }
-
-        return $image;
-    }
-
-    public function getStaticMapImageCacheKey($width = 600, $height = 400, $zoom = 5, $responseType = 'png')
-    {
-        // Build cache key
-        $cacheKey = 'map-' . $this->id . '-static-image-' . $width . 'x' . $height . 'x' . $zoom . '.' . $responseType;
-
-        return $cacheKey;
+        $generatedMap = new MapImageGenerator($width, $height, $zoom, null, null, $output);
+        return $generatedMap->getOrGenerateForMap($this);
     }
 }

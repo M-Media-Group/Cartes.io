@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MapImageGenerator;
 use App\Http\Resources\MapResource;
 use App\Models\Map;
 use Illuminate\Http\Request;
@@ -170,64 +171,26 @@ class MapController extends Controller
     {
         $this->authorize('view', $map);
 
-        // A fixed range of width/height values to prevent abuse of the endpoint
-        $allowedWidths = [680, 1360, 2048];
-        $allowedHeights = [400, 800, 1200];
+        $mapImageGenerator = new MapImageGenerator();
 
         // Validate the data, we can optionally pass in a width, height, zoom and responseType (base64 or png)
         $validatedData = request()->validate([
-            'width' => 'nullable|in:' . implode(',', $allowedWidths),
-            'height' => 'nullable|in:' . implode(',', $allowedHeights),
+            'width' => 'nullable|in:' . implode(',', $mapImageGenerator->allowedWidths),
+            'height' => 'nullable|in:' . implode(',', $mapImageGenerator->allowedHeights),
             'zoom' => 'nullable|numeric|between:1,19',
             'responseType' => 'nullable|in:base64,png',
         ]);
 
-        // Set default values if they are not set
-        $validatedData['width'] = $validatedData['width'] ?? 600;
-        $validatedData['height'] = $validatedData['height'] ?? 400;
-        $validatedData['zoom'] = $validatedData['zoom'] ?? 5;
-        $validatedData['responseType'] = $validatedData['responseType'] ?? 'png';
+        $mapImageGenerator->updateImageDimensions($validatedData['width'] ?? null, $validatedData['height'] ?? null);
 
-        // If the responseType is base64, we need to return a base64 encoded string
-        if (
-            isset($validatedData['responseType']) &&
-            $validatedData['responseType'] === 'base64'
-        ) {
-            $header = [
-                'Content-Type' => 'text/plain',
-                'Cache-Control' => 'public, max-age=86400',
-            ];
-        } else {
-            // Otherwise we return a png image
-            $header = [
-                'Content-Type' => 'image/png',
-                'Cache-Control' => 'public, max-age=86400',
-            ];
-        }
+        $mapImageGenerator->updateImageCenter(null, null, $validatedData['zoom'] ?? null);
 
-        // If we have already seen this request in the cache, we return the cached version
-        $cacheKey = $map->getStaticMapImageCacheKey(
-            $validatedData['width'],
-            $validatedData['height'],
-            $validatedData['zoom'],
-            $validatedData['responseType']
-        );
+        $mapImageGenerator->updateResponseType($validatedData['responseType'] ?? null);
 
-        if (cache()->has($cacheKey)) {
-            return response(cache()->get($cacheKey), 200, $header);
-        }
+        $image = $mapImageGenerator->getOrGenerateForMap($map);
 
-        $image = $map->generateStaticMapImage(
-            $validatedData['width'],
-            $validatedData['height'],
-            $validatedData['zoom'],
-            $validatedData['responseType']
-        );
 
-        // Cache the result for 24 hours
-        cache()->put($cacheKey, $image, 86400);
-
-        return response($image, 200, $header);
+        return response($image, 200, $mapImageGenerator->getAllHeaders());
     }
 
     /**

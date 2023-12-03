@@ -74,6 +74,16 @@ class Category extends Model
         return $this->hasManyRelatedThrough(\App\Models\Marker::class, 'map_id');
     }
 
+    public function getFullIconUrlAttribute()
+    {
+        // If the URL starts with http, return as is
+        if (Str::startsWith($this->icon, 'http')) {
+            return $this->icon;
+        }
+
+        return public_path($this->icon);
+    }
+
     /**
      * Get the indexable data array for the model.
      *

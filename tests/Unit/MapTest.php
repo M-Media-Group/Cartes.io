@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Helpers\MapImageGenerator;
 use Tests\TestCase;
 
 class MapTest extends TestCase
@@ -44,7 +45,9 @@ class MapTest extends TestCase
      */
     public function testSeeSingleMapStaticImageTest()
     {
-        $cacheKey = $this->map->getStaticMapImageCacheKey();
+        // We get the default key from the MapImageGenerator
+        $mapGenerator = new MapImageGenerator();
+        $cacheKey = $$mapGenerator->getCacheKey('map', $this->map->uuid);
 
         // Assert that the cache is empty
         $this->assertFalse(\Illuminate\Support\Facades\Cache::has($cacheKey));
