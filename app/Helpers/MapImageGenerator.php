@@ -8,12 +8,12 @@ use DantSu\OpenStreetMapStaticAPI\LatLng;
 use DantSu\OpenStreetMapStaticAPI\Markers;
 use DantSu\OpenStreetMapStaticAPI\OpenStreetMap;
 use DantSu\OpenStreetMapStaticAPI\TileLayer;
+use DantSu\PHPImageEditor\Image;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class MapImageGenerator
 {
-
     /**
      * The width of the image
      *
@@ -27,6 +27,20 @@ class MapImageGenerator
      * @var integer
      */
     protected $height = 480;
+
+    /**
+     * The height of the icon
+     *
+     * @var integer
+     */
+    protected $iconHeight = 30;
+
+    /**
+     * The width of the icon
+     *
+     * @var integer
+     */
+    protected $iconWidth = 30;
 
     /**
      * The zoom level of the image
@@ -57,11 +71,11 @@ class MapImageGenerator
     protected $lng = 0;
 
     /**
-     * The maximum age of the cache in seconds
+     * The maximum age of the cache in seconds. By default, this is 6 hours. This is used to cache the image and prevent abuse, as well as speed up the response time significantly.
      *
      * @var integer
      */
-    protected $cacheMaxAge = 86400;
+    protected $cacheMaxAge = 21600;
 
     /**
      * The allowed widths for the image. Setting an array of allowed widths helps prevent abuse by limiting the number of possible image sizes, and therefore the number of possible cache keys.
@@ -111,7 +125,7 @@ class MapImageGenerator
      * @param float|null $lng
      * @param string|null $output
      */
-    function __construct(int $width = null, int $height = null, int $zoom = null, float $lat = null, float $lng = null, string $output = null)
+    public function __construct(int $width = null, int $height = null, int $zoom = null, float $lat = null, float $lng = null, string $output = null)
     {
         $this->updateImageCenter($lat, $lng, $zoom);
         $this->updateImageDimensions($width, $height);
@@ -198,13 +212,46 @@ class MapImageGenerator
      */
     public function generateMarkersForCategory(Category $category, array|Collection $markers): Markers
     {
-        $icon = $this->getBestMarkerIcon($category->full_icon_url);
+        // Get the marker image for the category
+        $markerImage = $this->getOrGenerateMarkerImageForCategory($category);
 
-        $generatedMarkers = new Markers($icon);
+        // Create the marker
+        $generatedMarkers = new Markers($markerImage);
+
         foreach ($markers as $marker) {
             $generatedMarkers->addMarker(new LatLng($marker->y, $marker->x));
         }
+
         return $generatedMarkers;
+    }
+
+    /**
+     * Get the marker image for the category from the cache, or generate it if it doesn't exist.
+     *
+     * We use the cache here to reduce the number of requests to the external icons provider. It should also speed up the response time because we don't have to download the image every time.
+     *
+     * @param \App\Models\Category $category
+     * @return \DantSu\PHPImageEditor\Image
+     */
+    public function getOrGenerateMarkerImageForCategory(Category $category): Image
+    {
+        $cacheKey = $this->getCacheKey('category', $category->id);
+
+        if (cache()->has($cacheKey)) {
+            return Image::fromBase64(cache()->get($cacheKey));
+        }
+
+        $icon = $this->getBestMarkerIcon($category->full_icon_url);
+
+        $markerImage = Image::fromPath($icon);
+
+        // Resize the image to the icon dimensions
+        $markerImage->downscaleProportion($this->iconWidth, $this->iconHeight);
+
+        // Cache as base64
+        cache()->put($cacheKey, $markerImage->getBase64PNG(), $this->cacheMaxAge);
+
+        return $markerImage;
     }
 
     /**
@@ -351,6 +398,6 @@ class MapImageGenerator
      */
     public function getDefaultTileLayer()
     {
-        return new TileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', '© OpenStreetMap | CARTO | ' . config('app.name'));
+        return new TileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', '© ' . config('app.name') . ' | OpenStreetMap | CARTO | Icons8');
     }
 }
