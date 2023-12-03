@@ -81,7 +81,8 @@ class Category extends Model
             return $this->icon;
         }
 
-        return public_path($this->icon);
+        // We need to return the full URL to the image
+        return url($this->icon);
     }
 
     /**

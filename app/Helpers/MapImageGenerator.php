@@ -318,18 +318,30 @@ class MapImageGenerator
      */
     public function getBestMarkerIcon(string $path): string
     {
-        $markerIcon = $path;
-
         // If the file ends in .svg, use the default marker icon
-        if (Str::endsWith($markerIcon, '.svg')) {
-            $markerIcon = $this->pathToBaseMarkerImage;
+        if (Str::endsWith($path, '.svg')) {
+            return $this->pathToBaseMarkerImage;
         }
 
-        if (!file_exists($markerIcon)) {
-            $markerIcon = $this->pathToBaseMarkerImage;
+        // If the path starts with http, check if the file exists
+        if (Str::startsWith($path, 'http')) {
+            $headers = get_headers($path);
+            $fileExists = Str::startsWith($headers[0], 'HTTP/1.1 200 OK');
+
+            if (!$fileExists) {
+                return $this->pathToBaseMarkerImage;
+            }
+
+            return $path;
         }
 
-        return $markerIcon;
+        // If the file doesn't exist, use the default marker icon
+        if (!file_exists(public_path($path))) {
+            return $this->pathToBaseMarkerImage;
+        }
+
+        // If the file exists, return the path
+        return $path;
     }
 
     /**
