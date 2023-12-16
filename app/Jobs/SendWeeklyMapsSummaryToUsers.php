@@ -34,17 +34,22 @@ class SendWeeklyMapsSummaryToUsers implements ShouldQueue
     public function handle()
     {
         // Get all the maps that have a user and markers
-        $maps = \App\Models\Map::where('user_id', '!=', null)->whereHas('markers', function ($q) {
-            // And where the markers were created in the last week
-            $q->withoutGlobalScopes()
-                ->where('created_at', '>=', \Carbon\Carbon::now()->subWeek()->toDateTimeString())
-                ->where('created_at', '<=', \Carbon\Carbon::now()->toDateTimeString())
-                // where the markers were not cretaed by the map owner or the markers dont have a user
-                ->where(function ($q) {
-                    $q->whereRaw('markers.user_id != maps.user_id')
-                        ->orWhereNull('markers.user_id');
-                });
-        })->get();
+        $maps = \App\Models\Map::where('user_id', '!=', null)
+            // The user must have their email validated
+            ->whereHas('user', function ($q) {
+                $q->whereNotNull('email_verified_at');
+            })
+            ->whereHas('markers', function ($q) {
+                // And where the markers were created in the last week
+                $q->withoutGlobalScopes()
+                    ->where('created_at', '>=', \Carbon\Carbon::now()->subWeek()->toDateTimeString())
+                    ->where('created_at', '<=', \Carbon\Carbon::now()->toDateTimeString())
+                    // where the markers were not cretaed by the map owner or the markers dont have a user
+                    ->where(function ($q) {
+                        $q->whereRaw('markers.user_id != maps.user_id')
+                            ->orWhereNull('markers.user_id');
+                    });
+            })->get();
 
         // Group the maps by user
         $mapsByUser = $maps->groupBy('user_id');
