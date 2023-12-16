@@ -213,6 +213,10 @@ class Marker extends Pivot
                 'location' => $data['location'],
                 'elevation' => $data['elevation'],
                 'zoom' => $data['zoom'],
+                'heading' => $data['heading'],
+                'pitch' => $data['pitch'],
+                'roll' => $data['roll'],
+                'speed' => $data['speed'],
             ]);
             return $marker->refresh()->makeVisible(['token'])->loadMissing('category');
         });

@@ -99,6 +99,10 @@ class MarkerController extends Controller
             'elevation' => $request->input('elevation'),
             'expires_at' => $request->input('expires_at') ? Carbon::parse($request->input('expires_at')) : null,
             'meta' => $request->input('meta'),
+            'heading' => $request->input('heading'),
+            'pitch' => $request->input('pitch'),
+            'roll' => $request->input('roll'),
+            'speed' => $request->input('speed'),
         ]);
     }
 
@@ -132,6 +136,10 @@ class MarkerController extends Controller
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'markers.*.meta' => 'nullable|array|max:10',
             'markers.*.meta.*' => ['nullable', 'max:255'],
+            'markers.*.heading' => 'nullable|numeric|between:0,360',
+            'markers.*.pitch' => 'nullable|numeric|between:-90,90',
+            'markers.*.roll' => 'nullable|numeric|between:-180,180',
+            'markers.*.speed' => 'nullable|numeric|between:0,100000',
         ]);
 
         $now = Carbon::now();
@@ -197,6 +205,10 @@ class MarkerController extends Controller
             unset($marker['current_location']);
             unset($marker['location']);
             unset($marker['zoom']);
+            unset($marker['heading']);
+            unset($marker['pitch']);
+            unset($marker['roll']);
+            unset($marker['speed']);
 
             $insertableData[] = $marker;
         }
@@ -217,6 +229,10 @@ class MarkerController extends Controller
                     'elevation' => optional($validated_data['markers'][$currentIteration])['elevation'],
                     'address' => optional($validated_data['markers'][$currentIteration])['address'],
                     'zoom' => optional($validated_data['markers'][$currentIteration])['zoom'],
+                    'heading' => optional($validated_data['markers'][$currentIteration])['heading'],
+                    'pitch' => optional($validated_data['markers'][$currentIteration])['pitch'],
+                    'roll' => optional($validated_data['markers'][$currentIteration])['roll'],
+                    'speed' => optional($validated_data['markers'][$currentIteration])['speed'],
                     'user_id' => $marker->user_id,
                     'created_at' => $marker->created_at,
                     'updated_at' => $marker->updated_at,
@@ -282,10 +298,6 @@ class MarkerController extends Controller
         $validated_data = $request->validate([
             'description' => ['nullable', 'string', 'max:191', new \App\Rules\NotContainsString()],
             'is_spam' => 'nullable|boolean',
-            'lat' => 'nullable|numeric|between:-90,90',
-            'lng' => 'nullable|numeric|between:-180,180',
-            'zoom' => 'nullable|numeric|between:0,20',
-            'elevation' => 'nullable|numeric|between:-100000,100000',
         ]);
 
         if (isset($validated_data['is_spam'])) {
@@ -300,13 +312,10 @@ class MarkerController extends Controller
 
         $marker->update($validated_data);
 
-        if (isset($validated_data['lat']) && isset($validated_data['lng'])) {
-            $point = new Point($request->lat, $request->lng);
-            $marker->currentLocation()->create([
-                'location' => $point,
-                'elevation' => $request->input('elevation'),
-                'zoom' => $request->input('zoom'),
-            ]);
+        // If the request has lat or lng, then we need to add a new location
+        if ($request->input('lat') || $request->input('lng')) {
+            // Pass the request to storeLocation
+            return $this->storeLocation($request, $map, $marker);
         }
 
         return $marker->refresh();
@@ -329,6 +338,10 @@ class MarkerController extends Controller
             'lng' => 'required|numeric|between:-180,180',
             'zoom' => 'nullable|numeric|between:0,20',
             'elevation' => 'nullable|numeric|between:-100000,100000',
+            'heading' => 'nullable|numeric|between:0,360',
+            'pitch' => 'nullable|numeric|between:-90,90',
+            'roll' => 'nullable|numeric|between:-180,180',
+            'speed' => 'nullable|numeric|between:0,100000',
         ]);
 
         $point = new Point($request->lat, $request->lng);
@@ -337,6 +350,10 @@ class MarkerController extends Controller
             'location' => $point,
             'elevation' => $request->input('elevation'),
             'zoom' => $request->input('zoom'),
+            'heading' => $request->input('heading'),
+            'pitch' => $request->input('pitch'),
+            'roll' => $request->input('roll'),
+            'speed' => $request->input('speed'),
         ]);
 
         return $marker->refresh();

@@ -25,7 +25,11 @@ class MarkerLocation extends Model
     protected $fillable = [
         'location',
         'elevation',
-        'zoom'
+        'zoom',
+        'heading',
+        'pitch',
+        'roll',
+        'speed',
     ];
 
     protected $casts = [

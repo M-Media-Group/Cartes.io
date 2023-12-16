@@ -266,6 +266,9 @@ class MarkerTest extends TestCase
     {
         $marker = $this->map->markers()->firstOrCreate();
 
+        // We need to make sure no new location is created when we update the marker
+        $markerLocationCount = $marker->locations()->count();
+
         $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?token=' . $marker->token, [
             'description' => 'New description',
         ]);
@@ -277,6 +280,9 @@ class MarkerTest extends TestCase
             'id' => $marker->id,
             'description' => 'New description',
         ]);
+
+        // Assert no new location was created
+        $this->assertEquals($markerLocationCount, $marker->locations()->count());
     }
 
     /**
@@ -291,6 +297,19 @@ class MarkerTest extends TestCase
         $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '/locations');
 
         $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            '*' => [
+                'location',
+                'created_at',
+                'heading',
+                'pitch',
+                'roll',
+                'speed',
+                'zoom',
+                'elevation',
+            ],
+        ]);
     }
 
     /**
@@ -376,6 +395,9 @@ class MarkerTest extends TestCase
     {
         $marker = $this->map->markers()->firstOrCreate();
 
+        // We need to make sure no new location is created when we update the marker
+        $markerLocationCount = $marker->locations()->count();
+
         $response = $this->putJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '?map_token=' . $this->map->token, [
             'is_spam' => true,
         ]);
@@ -387,6 +409,9 @@ class MarkerTest extends TestCase
             'id' => $marker->id,
             'is_spam' => true,
         ]);
+
+        // Assert no new location was created
+        $this->assertEquals($markerLocationCount, $marker->locations()->count());
     }
 
     /**

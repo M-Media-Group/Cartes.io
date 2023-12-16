@@ -45,6 +45,10 @@ class StoreMarkerRequest extends FormRequest
             'meta' => 'nullable|array|max:10',
             // Each meta tag must be a max of 255 characters
             'meta.*' => ['nullable', 'max:255'],
+            'heading' => 'nullable|numeric|between:0,360',
+            'pitch' => 'nullable|numeric|between:-90,90',
+            'roll' => 'nullable|numeric|between:-180,180',
+            'speed' => 'nullable|numeric|between:0,100000',
         ];
     }
 
