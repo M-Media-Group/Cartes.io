@@ -294,6 +294,64 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test see computed marker location fields of `inbound_course`, `outbound_course` and `groundspeed`
+     *
+     * @return void
+     */
+    public function testSeeMarkerLocationComputedFields()
+    {
+        // Show errors
+        $this->withoutExceptionHandling();
+
+        $marker = $this->map->markers()->firstOrCreate();
+
+        // Wait 0.5 second - this prevents a divide by zero error later on
+        sleep(1);
+
+        // We need to add a second location to the marker
+        $marker->locations()->create([
+            'location' => new \MatanYadaev\EloquentSpatial\Objects\Point(45.1, 45.1),
+        ]);
+
+        // We'll use the difference in time between the two points to compute the time elapsed.
+        $time = $marker->locations()->first()->created_at->diffInMilliseconds($marker->locations()->latest()->first()->created_at) / 1000;
+
+        // The diff between 45.0 and 45.1 is around 13614 meters in haversine. We can a
+        $expectedSpeed = round(13614.576970222 / $time, 9);
+
+        // The diff between 45,45 to 45.1,45.1 gives a course of of 35. something.
+        // We will round this to 35
+        $expectedCourse = 35.20542639685857;
+        $expectedInboundCourse = 215.27619879066634;
+
+        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers/' . $marker->id . '/locations?computed_data=true');
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            '*' => [
+                'inbound_course', // Represents course taken from the previous location to get to this location
+                // 'outbound_course', // Represents course taken from this location to get to the next location
+                'groundspeed', // Represents the groundspeed between this location and the previous location
+            ],
+        ]);
+
+        // The first location should have no inbound course or groundspeed. The course should be around 35
+        $response->assertJsonFragment([
+            'inbound_course' => null,
+            // 'outbound_course' => $expectedCourse,
+            'groundspeed' => null,
+        ]);
+
+        // The second location should have an inbound course of around 35, an outbound course of null and a groundspeed of around 13614
+        $response->assertJsonFragment([
+            'inbound_course' => $expectedInboundCourse,
+            // 'outbound_course' => null,
+            'groundspeed' => $expectedSpeed,
+        ]);
+    }
+
+    /**
      * Test update a marker by setting is_spam fails when the user themselves is the owner
      *
      * @return void

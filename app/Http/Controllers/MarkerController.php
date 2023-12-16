@@ -251,7 +251,21 @@ class MarkerController extends Controller
     public function indexLocations(Request $request, Map $map, Marker $marker)
     {
         $this->authorize('show', [$marker, $map, $request->input('map_token')]);
-        return $marker->locations;
+
+        // Start a query builder
+        $query = $marker->locations();
+
+        $data = $query->get();
+
+        // If the request asks for "positional_data" then we need to include the inbound_course and outbound_course and groundspeed. These are computed attributes, not part of the SQL query;
+
+        if ($request->input('computed_data')) {
+            // We need to append the computed attributes to the collection
+            $data->append(['inbound_course', 'groundspeed']);
+        }
+
+        // Finally, return the results
+        return $data;
     }
 
     /**
