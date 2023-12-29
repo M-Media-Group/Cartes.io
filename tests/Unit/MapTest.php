@@ -204,9 +204,18 @@ class MapTest extends TestCase
             'email' => 'testuser@test.com',
             'password' => 'testuser',
         ]);
+
         $this->actingAs($user, 'api');
 
-        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/claim');
+        // First assert the map is not claimed, e.g. the user_id is null
+        $this->assertDatabaseHas('maps', [
+            'uuid' => $this->map->uuid,
+            'user_id' => null,
+        ]);
+
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/claim', [
+            'map_token' => $this->map->token,
+        ]);
 
         // Assert returns 200
         $response->assertStatus(200);
@@ -231,7 +240,11 @@ class MapTest extends TestCase
     public function testUnclaimMapTest()
     {
         // Act as a user
-        $user = \App\Models\User::firstOrCreate();
+        $user = \App\Models\User::firstOrCreate([
+            'username' => 'testuser',
+            'email' => 'testuser@test.com',
+            'password' => 'testuser',
+        ]);
         $this->actingAs($user, 'api');
 
         $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/claim');
