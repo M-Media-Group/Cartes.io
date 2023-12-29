@@ -240,11 +240,8 @@ class MapTest extends TestCase
     public function testUnclaimMapTest()
     {
         // Act as a user
-        $user = \App\Models\User::firstOrCreate([
-            'username' => 'testuser',
-            'email' => 'testuser@test.com',
-            'password' => 'testuser',
-        ]);
+        $user = $this->map->user;
+
         $this->actingAs($user, 'api');
 
         $response = $this->deleteJson('/api/maps/' . $this->map->uuid . '/claim');
