@@ -172,7 +172,18 @@ class Map extends Model
 
     public function categories(): belongsToMany
     {
-        return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class);
+        return $this->belongsToMany(\App\Models\Category::class, \App\Models\Marker::class)
+            // Unique
+            ->groupBy([
+                'categories.id',
+                'categories.name',
+                'categories.slug',
+                'categories.icon',
+                'categories.created_at',
+                'categories.updated_at',
+                'markers.category_id',
+                'markers.map_id'
+            ]);
     }
 
     public function related(): HasManyThrough

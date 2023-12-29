@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Helpers\MapImageGenerator;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 use Tests\TestCase;
 
 class MapTest extends TestCase
@@ -82,6 +83,48 @@ class MapTest extends TestCase
     }
 
     /**
+     * Test that a map that has two markers with the same category does not return two duplicate categories
+     *
+     * @return void
+     */
+    public function testSeeSingleMapWithDuplicateCategoriesTest()
+    {
+
+        $map = \App\Models\Map::create();
+
+        $category = \App\Models\Category::factory()->create();
+
+        \App\Models\Marker::createWithLocation([
+            'map_id' => $map->id,
+            'category_id' => $category->id,
+            'location' => new Point(45, 45),
+            'elevation' => 10,
+            'zoom' => 10,
+            'heading' => 10,
+            'pitch' => 10,
+            'roll' => 10,
+            'speed' => 10,
+        ]);
+
+        \App\Models\Marker::createWithLocation([
+            'map_id' => $map->id,
+            'category_id' => $category->id,
+            'location' => new Point(43, 43),
+            'elevation' => 10,
+            'zoom' => 10,
+            'heading' => 10,
+            'pitch' => 10,
+            'roll' => 10,
+            'speed' => 10,
+        ]);
+
+        $response = $this->getJson('/api/maps/' . $map->uuid . '?with[]=categories');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'categories');
+    }
+
+    /**
      * Test see related maps for a given map
      *
      * @return void
@@ -156,7 +199,11 @@ class MapTest extends TestCase
     public function testClaimMapTest()
     {
         // Act as a user
-        $user = \App\Models\User::firstOrCreate();
+        $user = \App\Models\User::firstOrCreate([
+            'username' => 'testuser',
+            'email' => 'testuser@test.com',
+            'password' => 'testuser',
+        ]);
         $this->actingAs($user, 'api');
 
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/claim');
