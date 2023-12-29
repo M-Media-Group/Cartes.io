@@ -97,8 +97,8 @@ class MarkerTest extends TestCase
                         'type',
                         'coordinates',
                     ],
+                    'id',
                     'properties' => [
-                        'id',
                         'description',
                         'link',
                         'elevation',
