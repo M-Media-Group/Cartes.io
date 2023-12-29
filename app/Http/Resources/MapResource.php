@@ -14,7 +14,16 @@ class MapResource extends JsonResource
      */
     public function toArray($request)
     {
+        // If $this->whenLoaded('markers'), and the request asks for format=geojson, return MarkerGeoJsonResource, otherwise just return markers.
+        $markers = $this->whenLoaded('markers', function () use ($request) {
+            if ($request->input('format') === 'geojson') {
+                return MarkerGeoJsonResource::collection($this->markers);
+            }
+            return $this->markers;
+        });
+
         return [
+            'center' => $this->whenLoaded('center'),
             'slug' => $this->slug,
             'title' => $this->title,
             'description' => $this->description,
@@ -24,7 +33,7 @@ class MapResource extends JsonResource
             'uuid' => $this->uuid,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'markers' => $this->whenLoaded('markers'),
+            'markers' => $markers,
             'markers_count' => $this->when(isset($this->markers_count), $this->markers_count),
             'active_markers_count' => $this->when(isset($this->active_markers_count), $this->active_markers_count),
             'categories' => $this->whenLoaded('categories'),

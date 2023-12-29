@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMarkerRequest;
+use App\Http\Resources\MarkerGeoJsonResource;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
@@ -29,7 +30,7 @@ class MarkerController extends Controller
      */
     public function indexAll(Request $request)
     {
-        return Marker::where('is_spam', false)
+        $data = Marker::where('is_spam', false)
             ->whereHas('map', function ($query) {
                 $query->where('privacy', 'public');
             })
@@ -47,6 +48,13 @@ class MarkerController extends Controller
                 return $query->active();
             })
             ->paginate();
+
+        // If the requested format is GeoJSON, return the GeoJSON resource collection
+        if ($request->input('format') === 'geojson') {
+            return MarkerGeoJsonResource::collection($data);
+        }
+
+        return $data;
     }
 
     /**
@@ -65,6 +73,12 @@ class MarkerController extends Controller
         }
 
         $data = $data->get();
+
+
+        // If the requested format is GeoJSON, return the GeoJSON resource collection
+        if ($request->input('format') === 'geojson') {
+            return MarkerGeoJsonResource::collection($data);
+        }
 
         return $data;
     }

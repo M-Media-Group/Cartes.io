@@ -64,7 +64,11 @@ class Marker extends Pivot
         'address',
         'elevation',
         'location',
-        'zoom'
+        'zoom',
+        'heading',
+        'pitch',
+        'roll',
+        'speed',
     ];
 
     /**
@@ -164,6 +168,27 @@ class Marker extends Pivot
     public function getAddressAttribute()
     {
         return optional($this->currentLocation)->address;
+    }
+
+
+    public function getHeadingAttribute()
+    {
+        return optional($this->currentLocation)->heading;
+    }
+
+    public function getPitchAttribute()
+    {
+        return optional($this->currentLocation)->pitch;
+    }
+
+    public function getRollAttribute()
+    {
+        return optional($this->currentLocation)->roll;
+    }
+
+    public function getSpeedAttribute()
+    {
+        return optional($this->currentLocation)->speed;
     }
 
     public function scopeActive($query)

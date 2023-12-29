@@ -51,14 +51,69 @@ class MarkerTest extends TestCase
         // Assert see in each marker that a key of coordinates exists
         $response->assertJsonStructure([
             '*' => [
+                'id',
                 'description',
                 'link',
                 'elevation',
+                'created_at',
+                'zoom',
+                'expires_at',
+                'meta',
+                'elevation',
+                'address',
+                'locations_count',
+                'heading',
+                'pitch',
+                'roll',
+                'speed',
                 'location' => [
                     'coordinates',
                 ],
                 'category' => [
                     'name',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Test that its possible to see markes in GeoJSON format when format=geojson is passed
+     *
+     * @return void
+     */
+    public function testSeeAllMapMarkersInGeoJsonFormat()
+    {
+        $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers?format=geojson');
+        $response->assertOk();
+
+        // The type for each
+
+        $response->assertJsonStructure([
+            '*' => [
+                'type',
+                'geometry' => [
+                    'type',
+                    'coordinates',
+                ],
+                'properties' => [
+                    'id',
+                    'description',
+                    'link',
+                    'elevation',
+                    'created_at',
+                    'zoom',
+                    'expires_at',
+                    'meta',
+                    'elevation',
+                    'address',
+                    'locations_count',
+                    'heading',
+                    'pitch',
+                    'roll',
+                    'speed',
+                    'category' => [
+                        'name',
+                    ],
                 ],
             ],
         ]);
