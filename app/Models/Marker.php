@@ -140,14 +140,20 @@ class Marker extends Pivot
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    /**
+     * Get the X attribute.
+     *
+     * Note, while there shouldn't be a case where there is no location for a marker, it could happen due to the architecture of the marker->location relationship - this is why its wrapped in an optional
+     *
+     */
     public function getXAttribute()
     {
-        return $this->location->longitude;
+        return optional($this->location)->longitude;
     }
 
     public function getYAttribute()
     {
-        return $this->location->latitude;
+        return optional($this->location)->latitude;
     }
 
     public function getLocationAttribute()
