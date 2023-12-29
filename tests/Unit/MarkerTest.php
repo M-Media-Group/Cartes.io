@@ -89,30 +89,33 @@ class MarkerTest extends TestCase
         // The type for each
 
         $response->assertJsonStructure([
-            '*' => [
-                'type',
-                'geometry' => [
+            'type',
+            'features' => [
+                '*' => [
                     'type',
-                    'coordinates',
-                ],
-                'properties' => [
-                    'id',
-                    'description',
-                    'link',
-                    'elevation',
-                    'created_at',
-                    'zoom',
-                    'expires_at',
-                    'meta',
-                    'elevation',
-                    'address',
-                    'locations_count',
-                    'heading',
-                    'pitch',
-                    'roll',
-                    'speed',
-                    'category' => [
-                        'name',
+                    'geometry' => [
+                        'type',
+                        'coordinates',
+                    ],
+                    'properties' => [
+                        'id',
+                        'description',
+                        'link',
+                        'elevation',
+                        'created_at',
+                        'zoom',
+                        'expires_at',
+                        'meta',
+                        'elevation',
+                        'address',
+                        'locations_count',
+                        'heading',
+                        'pitch',
+                        'roll',
+                        'speed',
+                        'category' => [
+                            'name',
+                        ],
                     ],
                 ],
             ],

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMarkerRequest;
-use App\Http\Resources\MarkerGeoJsonResource;
+use App\Http\Resources\MarkerGeoJsonCollection;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
@@ -51,7 +51,7 @@ class MarkerController extends Controller
 
         // If the requested format is GeoJSON, return the GeoJSON resource collection
         if ($request->input('format') === 'geojson') {
-            return MarkerGeoJsonResource::collection($data);
+            return new MarkerGeoJsonCollection($data);
         }
 
         return $data;
@@ -77,7 +77,7 @@ class MarkerController extends Controller
 
         // If the requested format is GeoJSON, return the GeoJSON resource collection
         if ($request->input('format') === 'geojson') {
-            return MarkerGeoJsonResource::collection($data);
+            return new MarkerGeoJsonCollection($data);
         }
 
         return $data;

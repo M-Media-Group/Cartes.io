@@ -7,6 +7,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class MarkerGeoJsonResource extends JsonResource
 {
     /**
+     * The "data" wrapper that should be applied.
+     *
+     * @var string|null
+     */
+    public static $wrap = 'features';
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request

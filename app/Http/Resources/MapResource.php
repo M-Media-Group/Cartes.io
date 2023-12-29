@@ -14,10 +14,10 @@ class MapResource extends JsonResource
      */
     public function toArray($request)
     {
-        // If $this->whenLoaded('markers'), and the request asks for format=geojson, return MarkerGeoJsonResource, otherwise just return markers.
+        // If $this->whenLoaded('markers'), and the request asks for format=geojson, return MarkerGeoJsonCollection, otherwise just return markers.
         $markers = $this->whenLoaded('markers', function () use ($request) {
             if ($request->input('format') === 'geojson') {
-                return MarkerGeoJsonResource::collection($this->markers);
+                return new MarkerGeoJsonCollection($this->markers);
             }
             return $this->markers;
         });
