@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use \App\Models\Map;
 use Illuminate\Database\Seeder;
 
 class MapsTableSeeder extends Seeder
@@ -15,11 +16,15 @@ class MapsTableSeeder extends Seeder
     {
         //factory(App\Models\Map::class, 100)->create();
 
-        factory(\App\Models\Map::class, 1)->create()->each(
-            function ($u) {
-                $u->markers()->saveMany(factory(\App\Models\Marker::class, 1000)->make());
-            }
-        );
+        $map = Map::factory(
+            [
+                'title' => 'Tempetetasd',
+                'privacy' => 'public',
+            ]
+        )
+            ->hasMarkers(15000)
+            ->create();
+
         // DB::table('maps')->insert([
         //     'name' => Str::random(10),
         //     'slug' => Str::random(10),
