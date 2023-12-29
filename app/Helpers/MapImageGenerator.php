@@ -116,7 +116,7 @@ class MapImageGenerator
     protected $pathToBaseMarkerImage = 'images/vendor/leaflet/dist/marker-icon.png';
 
     /**
-     * Undocumented function
+     * Constructor
      *
      * @param integer|null $width
      * @param integer|null $height
