@@ -135,7 +135,7 @@ class MarkerController extends Controller
         $request->merge(['user_id' => $request->user()->id]);
 
         $validated_data = $request->validate([
-            'markers' => 'required|array|min:1',
+            'markers' => 'required|array|min:1|max:1000',
             'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
             'markers.*.lat' => 'required|numeric|between:-90,90',
             'markers.*.lng' => 'required|numeric|between:-180,180',
