@@ -46,7 +46,7 @@ class MarkerTest extends TestCase
         $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers');
         $response->assertOk();
 
-        $response->assertDontSee('token');
+        $response->assertDontSee(['token', 'user_id', 'map_id', 'bulk_insert_id']);
 
         // Assert see in each marker that a key of coordinates exists
         $response->assertJsonStructure([
@@ -85,7 +85,7 @@ class MarkerTest extends TestCase
         $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers?format=geojson');
         $response->assertOk();
 
-        // The type for each
+        $response->assertDontSee(['token', 'user_id', 'map_id', 'bulk_insert_id']);
 
         $response->assertJsonStructure([
             'type',
