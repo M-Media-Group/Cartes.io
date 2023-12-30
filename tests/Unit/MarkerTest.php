@@ -54,7 +54,6 @@ class MarkerTest extends TestCase
                 'id',
                 'description',
                 'link',
-                'elevation',
                 'created_at',
                 'zoom',
                 'expires_at',
@@ -95,7 +94,12 @@ class MarkerTest extends TestCase
                     'type',
                     'geometry' => [
                         'type',
-                        'coordinates',
+                        // The coordinates should be an array of three numbers, the first two being the lat and lng and the third being the elevation
+                        'coordinates' => [
+                            0,
+                            0,
+                            0,
+                        ],
                     ],
                     'id',
                     'properties' => [
@@ -106,7 +110,6 @@ class MarkerTest extends TestCase
                         'zoom',
                         'expires_at',
                         'meta',
-                        'elevation',
                         'address',
                         'locations_count',
                         'heading',

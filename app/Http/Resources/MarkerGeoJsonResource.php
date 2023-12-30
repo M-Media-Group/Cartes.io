@@ -27,7 +27,8 @@ class MarkerGeoJsonResource extends JsonResource
             'x',
             'y',
             'location',
-            'id'
+            'id',
+            'elevation',
         ];
 
         // All the rest of the properties available on the model, except the ones we want to skip, should be in an array. For this, we need to get the object as Laravel would provide it, which would hide all the properties we want to skip, as well as all those in $hidden.
@@ -43,6 +44,7 @@ class MarkerGeoJsonResource extends JsonResource
                 'coordinates' => [
                     $this->x,
                     $this->y,
+                    $this->elevation,
                 ],
             ],
             'id' => $this->id,
