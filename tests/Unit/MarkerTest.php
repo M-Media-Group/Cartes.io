@@ -105,7 +105,6 @@ class MarkerTest extends TestCase
                     'properties' => [
                         'description',
                         'link',
-                        'elevation',
                         'created_at',
                         'zoom',
                         'expires_at',
