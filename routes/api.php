@@ -32,6 +32,9 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
     Route::get('maps/{map}/related', 'MapController@related');
 
     Route::get('maps/search', 'MapController@search');
+
+    // Route::post('maps/file', 'MapController@storeFromFile')->middleware('auth:api');
+
     Route::apiResource('maps', 'MapController');
 
     Route::apiResource('users', 'UserController')->only(['index', 'show']);
