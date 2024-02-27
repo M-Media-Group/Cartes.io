@@ -338,7 +338,7 @@ class MarkerController extends Controller
             return response()->json(['error' => 'File type not supported'], 422);
         }
 
-        $markers = $parser->parseFile($request->file('file')->getRealPath());
+        $markers = $parser->parseFile($request->file('file')->getRealPath())['markers'];
 
         $request->merge(['markers' => $markers]);
 

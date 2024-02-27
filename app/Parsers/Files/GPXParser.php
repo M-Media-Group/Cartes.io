@@ -12,6 +12,14 @@ class GPXParser extends FIleParser
      */
     public function parseFile(string $filepath): array
     {
+        return [
+            'map' => $this->parseMapDetailsFromFile($filepath),
+            'markers' => $this->parseMarkersFromFile($filepath),
+        ];
+    }
+
+    public function parseMarkersFromFile(string $filepath): array
+    {
         $xml = simplexml_load_file($filepath);
         $json = json_encode($xml);
         $array = json_decode($json, true);
@@ -125,5 +133,26 @@ class GPXParser extends FIleParser
         }
 
         return $markers;
+    }
+
+    /**
+     * Parse the map details, like the name, description, author, etc.
+     *
+     * @param string $filepath
+     * @return array
+     */
+    public function parseMapDetailsFromFile(string $filepath): array
+    {
+        $xml = simplexml_load_file($filepath);
+        $json = json_encode($xml);
+        $array = json_decode($json, true);
+
+        $mapDetails = [];
+
+        if (isset($array['metadata'])) {
+            $mapDetails = $array['metadata'];
+        }
+
+        return $mapDetails;
     }
 }
