@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use \App\Models\Map;
+use App\Models\Marker;
+use App\Models\MarkerLocation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MapsTableSeeder extends Seeder
 {
@@ -22,8 +27,38 @@ class MapsTableSeeder extends Seeder
                 'privacy' => 'public',
             ]
         )
-            ->hasMarkers(15000)
             ->create();
+
+        $markerId = 100;
+
+        $category = Category::factory()->create();
+        $token = Str::random(32);
+
+        for ($i = 0; $i < 5; $i++) {
+            $data = [];
+            $locationData = [];
+            for ($v = 0; $v < 20; $v++) {
+
+                $data[] = [
+                    'id' => $markerId,
+                    'token' => $token,
+                    'category_id' => $category->id,
+                    'map_id' => $map->id,
+                ];
+
+                $locationData[] = [
+                    'marker_id' => $markerId,
+                    'location' => DB::raw("ST_GeomFromText('POINT(" . rand(-180, 180) . " " . rand(-90, 90) . ")')"),
+                ];
+
+                $markerId++;
+            }
+
+            Marker::insert($data);
+            MarkerLocation::insert($locationData);
+
+            $markerId++;
+        }
 
         // DB::table('maps')->insert([
         //     'name' => Str::random(10),

@@ -7,6 +7,7 @@ use App\Http\Resources\MarkerGeoJsonCollection;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
+use App\Parsers\Files\GPXParser;
 use Carbon\Carbon;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Http\Request;
@@ -130,30 +131,45 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
-        $bulkInsertId = Str::uuid();
+        $bulkInsertId = Str::uuid()->toString();
 
         $request->merge(['user_id' => $request->user()->id]);
 
         $validated_data = $request->validate([
             'markers' => 'required|array|min:1|max:1000',
             'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
-            'markers.*.lat' => 'required|numeric|between:-90,90',
-            'markers.*.lng' => 'required|numeric|between:-180,180',
             'markers.*.description' => ['nullable', 'string', 'max:191'],
             'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'user_id' => 'exists:users,id',
             'markers.*.created_at' => 'nullable',
             'markers.*.updated_at' => 'nullable',
             'markers.*.expires_at' => 'nullable',
-            'markers.*.zoom' => 'nullable|numeric|between:0,20',
-            'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'markers.*.meta' => 'nullable|array|max:10',
             'markers.*.meta.*' => ['nullable', 'max:255'],
+
+            // The markers may contain the below
+            'markers.*.lat' => 'required_without:markers.*.locations|numeric|between:-90,90',
+            'markers.*.lng' => 'required_without:markers.*.locations|numeric|between:-180,180',
             'markers.*.heading' => 'nullable|numeric|between:0,360',
             'markers.*.pitch' => 'nullable|numeric|between:-90,90',
             'markers.*.roll' => 'nullable|numeric|between:-180,180',
             'markers.*.speed' => 'nullable|numeric|between:0,100000',
+            'markers.*.zoom' => 'nullable|numeric|between:0,20',
+            'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
+
+            // Or they may contain a locations array, with each location containing the below
+            'markers.*.locations' => 'array|required_without_all:markers.*.lat,markers.*.lng|min:1',
+            'markers.*.locations.*.lat' => 'required|numeric|between:-90,90',
+            'markers.*.locations.*.lng' => 'required|numeric|between:-180,180',
+            'markers.*.locations.*.heading' => 'nullable|numeric|between:0,360',
+            'markers.*.locations.*.pitch' => 'nullable|numeric|between:-90,90',
+            'markers.*.locations.*.roll' => 'nullable|numeric|between:-180,180',
+            'markers.*.locations.*.speed' => 'nullable|numeric|between:0,100000',
+            'markers.*.locations.*.zoom' => 'nullable|numeric|between:0,20',
+            'markers.*.locations.*.elevation' => 'nullable|numeric|between:-100000,100000',
+            'markers.*.locations.*.created_at' => 'nullable',
+            'markers.*.locations.*.updated_at' => 'nullable',
         ]);
 
         $now = Carbon::now();
@@ -163,68 +179,55 @@ class MarkerController extends Controller
         foreach ($validated_data['markers'] as $index => $marker) {
             $marker['bulk_insert_id'] = $bulkInsertId;
 
-            $point = new Point($marker['lat'], $marker['lng']);
+            $marker['created_at'] = $marker['created_at'] ?? $now;
+            $marker['updated_at'] = $marker['updated_at'] ?? $now;
+            $marker['token'] = Str::random(32);
+            $marker['user_id'] = $validated_data['user_id'];
+            $marker['map_id'] = $map->id;
 
-            $this->validateCreate($request, $marker, $map, $point);
+            $marker['category_id'] = $marker['category'] ?? \App\Models\Category::firstOrCreate(
+                ['slug' => Str::slug($marker['category_name'])],
+                ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
+            )->id;
 
-            $marker['location'] = DB::raw("ST_GeomFromText('{$point->toWkt()}', {$point->srid})");
-
+            $locations = $marker['locations'] ??
+                [
+                    [
+                        'lat' => $marker['lat'],
+                        'lng' => $marker['lng'],
+                        'heading' => $marker['heading'] ?? null,
+                        'pitch' => $marker['pitch'] ?? null,
+                        'roll' => $marker['roll'] ?? null,
+                        'speed' => $marker['speed'] ?? null,
+                        'zoom' => $marker['zoom'] ?? null,
+                        'elevation' => $marker['elevation'] ?? null,
+                        'user_id' => $marker['user_id'],
+                        'created_at' => $marker['created_at'] ?? $now,
+                        'updated_at' => $marker['updated_at'] ?? $now,
+                    ]
+                ];
             unset($marker['lat']);
             unset($marker['lng']);
 
-            $marker['category_id'] = $marker['category'];
-            unset($marker['category']);
-
-            if (!$marker['category_id']) {
-                $category = \App\Models\Category::firstOrCreate(
-                    ['name' => $marker['category_name']]
-                );
-                $marker['category_id'] = $category->id;
-                unset($marker['category_name']);
+            // The first foreach validates and prepares the marker data
+            foreach ($locations as $location) {
+                $this->validateCreate($request, $marker, $map, new Point($location['lat'], $location['lng']));
             }
 
-            if (isset($marker['expires_at']) && !$marker['expires_at'] && $map->options && isset($map->options['default_expiration_time'])) {
-                $marker['expires_at'] = $now->addMinutes($map->options['default_expiration_time'])->toDateTimeString();
-            } elseif (!isset($marker['expires_at'])) {
-                $marker['expires_at'] = null;
-            } else {
-                $marker['expires_at'] = Carbon::parse($marker['expires_at']);
-            }
+            $insertableMarker = $marker;
 
-            $marker['link'] = optional($map->options)['links'] && optional($map->options)['links'] !== "disabled" ? ($marker['link'] ?? null) : null;
+            unset($insertableMarker['elevation']);
+            unset($insertableMarker['current_location']);
+            unset($insertableMarker['zoom']);
+            unset($insertableMarker['heading']);
+            unset($insertableMarker['pitch']);
+            unset($insertableMarker['roll']);
+            unset($insertableMarker['speed']);
+            unset($insertableMarker['locations']);
+            unset($insertableMarker['category']);
+            unset($insertableMarker['category_name']);
 
-            // Check if created_at index exists
-            if (isset($marker['created_at'])) {
-                $marker['created_at'] = Carbon::parse($marker['created_at']);
-            } else {
-                $marker['created_at'] = $now->toDateTimeString();
-            }
-
-            // Check if updated_at index exists
-            if (isset($marker['updated_at'])) {
-                $marker['updated_at'] = Carbon::parse($marker['updated_at']);
-            } else {
-                $marker['updated_at'] = $now->toDateTimeString();
-            }
-
-            $marker['token'] = Str::random(32);
-            $marker['map_id'] = $map->id;
-            $marker['user_id'] = $validated_data['user_id'];
-
-            $validated_data['markers'][$index] = $marker;
-
-            // Unset data that should not be set
-            unset($marker['elevation']);
-            unset($marker['address']);
-            unset($marker['current_location']);
-            unset($marker['location']);
-            unset($marker['zoom']);
-            unset($marker['heading']);
-            unset($marker['pitch']);
-            unset($marker['roll']);
-            unset($marker['speed']);
-
-            $insertableData[] = $marker;
+            $insertableData[] = $insertableMarker;
         }
 
         DB::beginTransaction();
@@ -237,20 +240,39 @@ class MarkerController extends Controller
             $currentIteration = 0;
 
             foreach ($markerIds as $marker) {
-                $positionData[] = [
-                    'marker_id' => $marker->id,
-                    'location' => $validated_data['markers'][$currentIteration]['location'],
-                    'elevation' => optional($validated_data['markers'][$currentIteration])['elevation'],
-                    'address' => optional($validated_data['markers'][$currentIteration])['address'],
-                    'zoom' => optional($validated_data['markers'][$currentIteration])['zoom'],
-                    'heading' => optional($validated_data['markers'][$currentIteration])['heading'],
-                    'pitch' => optional($validated_data['markers'][$currentIteration])['pitch'],
-                    'roll' => optional($validated_data['markers'][$currentIteration])['roll'],
-                    'speed' => optional($validated_data['markers'][$currentIteration])['speed'],
-                    'user_id' => $marker->user_id,
-                    'created_at' => $marker->created_at,
-                    'updated_at' => $marker->updated_at,
+
+                $locations = $validated_data['markers'][$currentIteration]['locations'] ?? [
+                    [
+                        'lat' => $validated_data['markers'][$currentIteration]['lat'],
+                        'lng' => $validated_data['markers'][$currentIteration]['lng'],
+                        'heading' => $validated_data['markers'][$currentIteration]['heading'] ?? null,
+                        'pitch' => $validated_data['markers'][$currentIteration]['pitch'] ?? null,
+                        'roll' => $validated_data['markers'][$currentIteration]['roll'] ?? null,
+                        'speed' => $validated_data['markers'][$currentIteration]['speed'] ?? null,
+                        'zoom' => $validated_data['markers'][$currentIteration]['zoom'] ?? null,
+                        'elevation' => $validated_data['markers'][$currentIteration]['elevation'] ?? null,
+                        'created_at' => $marker->created_at,
+                        'updated_at' => $marker->updated_at,
+                    ]
                 ];
+
+
+                foreach ($locations as $location) {
+                    $positionData[] = [
+                        'marker_id' => $marker->id,
+                        'location' => DB::raw("ST_GeomFromText('POINT(" . $location['lng'] . " " . $location['lat'] . ")')"),
+                        'elevation' => $location['elevation'] ?? null,
+                        'zoom' => $location['zoom'] ?? null,
+                        'heading' => $location['heading'] ?? null,
+                        'pitch' => $location['pitch'] ?? null,
+                        'roll' => $location['roll'] ?? null,
+                        'speed' => $location['speed'] ?? null,
+                        'user_id' => $marker->user_id,
+                        'created_at' => $location['created_at'] ?? $marker->created_at ?? $now,
+                        'updated_at' => $location['updated_at'] ?? $marker->updated_at ?? $now,
+                    ];
+                }
+
                 $currentIteration++;
             }
 
@@ -271,6 +293,36 @@ class MarkerController extends Controller
             return abort(500, "Markers in bulk error code: " . $errorCode);
         }
     }
+
+    /**
+     * Store the newly created resources via a bulk insert from a file. This first parses the file and then calls the above storeInBulk method
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Map $map
+     * @return \Illuminate\Http\Response
+     */
+    public function storeInBulkFromFile(Request $request, Map $map)
+    {
+        $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
+
+        $request->validate([
+            'file' => 'required|file|mimes:gpx',
+        ]);
+
+        // If the file is a GPX file, parse it and return the markers
+        if ($request->file('file')->getClientOriginalExtension() === 'gpx') {
+            $parser = new GPXParser();
+        } else {
+            return response()->json(['error' => 'File type not supported'], 422);
+        }
+
+        $markers = $parser->parseFile($request->file('file')->getRealPath());
+
+        $request->merge(['markers' => $markers]);
+
+        return $this->storeInBulk($request, $map);
+    }
+
     /**
      * Show the locations for a given marker
      *

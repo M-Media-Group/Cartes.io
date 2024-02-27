@@ -41,6 +41,7 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
     Route::get('maps/{map}/markers/{marker}/locations', 'MarkerController@indexLocations');
     Route::post('maps/{map}/markers/{marker}/locations', 'MarkerController@storeLocation');
     Route::post('maps/{map}/markers/bulk', 'MarkerController@storeInBulk')->middleware('auth:api');
+    Route::post('maps/{map}/markers/file', 'MarkerController@storeInBulkFromFile')->middleware('auth:api');
 
     // Route to get the map static image
     Route::get('maps/{map}/images/static', 'MapController@getStaticImage');

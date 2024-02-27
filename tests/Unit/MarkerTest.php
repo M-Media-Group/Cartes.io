@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\Models\Category;
 use App\Models\Marker;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class MarkerTest extends TestCase
@@ -147,6 +149,10 @@ class MarkerTest extends TestCase
 
         $marker['category'] = $marker['category_id'];
 
+        // Random lat and lng
+        $marker['lat'] = 40.139;
+        $marker['lng'] = 44.139;
+
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
         $response->assertSee(['token', 'location', 'id', 'address', 'elevation']);
@@ -213,6 +219,10 @@ class MarkerTest extends TestCase
 
         $marker['category'] = $marker['category_id'];
 
+        // Random lat and lng
+        $marker['lat'] = 27.139;
+        $marker['lng'] = 27.139;
+
 
         $user = User::factory()->create();
 
@@ -258,6 +268,9 @@ class MarkerTest extends TestCase
 
         $marker['category'] = $marker['category_id'];
 
+        // Random lat and lng
+        $marker['lat'] = 45.139;
+        $marker['lng'] = 45.139;
 
         $user = User::factory()->create();
 
@@ -286,6 +299,120 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test creating markers in bulk by where the markers have many locations
+     *
+     * @return void
+     */
+    public function testCreateMarkerInBulkWithMultipleLocations()
+    {
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'optional'];
+        $map->save();
+
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        $marker['category'] = $marker['category_id'];
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        // Create a first location with a location, heading, pitch, roll, speed and zoom
+        $firstLocation = [
+            'lat' => 43,
+            'lng' => 43,
+            'heading' => 145,
+            'pitch' => 55,
+            'roll' => 25,
+            'speed' => 35,
+            'zoom' => 5,
+            'elevation' => 15,
+        ];
+
+        // The second location will just have a location
+        $secondLocation = [
+            'lat' => 49.1,
+            'lng' => 49.1,
+            'heading' => 115,
+        ];
+
+        $locations = [$firstLocation, $secondLocation];
+
+        $marker['locations'] = $locations;
+
+        $markers = ['markers' => [$marker->toArray()]];
+
+        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
+        $response->assertStatus(200);
+
+        // Assert added to DB
+        $this->assertDatabaseHas('markers', [
+            'description' => $marker['description'],
+            'category_id' => $marker['category_id'],
+            'user_id' => $user->id
+        ]);
+
+        // Assert marker locations are added to the database
+        foreach ($locations as $location) {
+            $this->assertDatabaseHas('marker_locations', [
+                'user_id' => $user->id,
+                'heading' => $location['heading'] ?? null,
+                'pitch' => $location['pitch'] ?? null,
+                'roll' => $location['roll'] ?? null,
+                'speed' => $location['speed'] ?? null,
+                'zoom' => $location['zoom'] ?? null,
+            ]);
+        }
+    }
+
+
+    /**
+     * Test creating markers in bulk by uploading a GPX file
+     *
+     * @return void
+     */
+    public function testCreateMarkerInBulkWithGpxFile()
+    {
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'optional'];
+        $map->save();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $gpx = file_get_contents(base_path('tests/fixtures/ashland.gpx'));
+
+        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx, 'application/gpx+xml');
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
+        $response->assertStatus(200);
+
+        // The ashland DB file shoulda add 11 </trk>, 25 wpt, so we should have 36 markers
+        $this->assertEquals(36, $map->markers()->count());
+
+        // The DB file adds 348 trkpt, so we should have 348 locations + 25 wpt
+        $this->assertEquals(373, $map->markerLocations()->count());
+    }
+
+    /**
      * A basic test example.
      *
      * @return void
@@ -298,6 +425,10 @@ class MarkerTest extends TestCase
         $category = Category::factory()->make();
 
         $marker['category_name'] = $category->name;
+
+        // Random lat and lng
+        $marker['lat'] = 20.139;
+        $marker['lng'] = 54.139;
 
         $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers', $marker->toArray());
         $response->assertStatus(201);
@@ -379,9 +510,6 @@ class MarkerTest extends TestCase
      */
     public function testSeeMarkerLocationComputedFields()
     {
-        // Show errors
-        $this->withoutExceptionHandling();
-
         $marker = $this->map->markers()->firstOrCreate();
 
         // Wait 0.5 second - this prevents a divide by zero error later on
