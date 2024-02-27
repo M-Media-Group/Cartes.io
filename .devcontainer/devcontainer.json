@@ -30,7 +30,8 @@
 	"forwardPorts": [
 		8080,
 		3306,
-		9601
+		9601,
+		6001
 	],
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html && php artisan migrate && php artisan make:permissions",
