@@ -19,6 +19,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        // If we are in local, show errors
+        if (config('app.env') === 'local') {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+        }
+
         // view()->composer(
         //     'components.nav',
         //     function ($view) {
