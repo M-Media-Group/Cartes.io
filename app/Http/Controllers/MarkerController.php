@@ -7,6 +7,7 @@ use App\Http\Resources\MarkerGeoJsonCollection;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\MarkerLocation;
+use App\Parsers\Files\GeoJSONParser;
 use App\Parsers\Files\GPXParser;
 use Carbon\Carbon;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -324,7 +325,7 @@ class MarkerController extends Controller
         $request->validate([
             'file' => [
                 'required',
-                File::types(['gpx'])
+                File::types(['gpx', 'geojson'])
                     ->max(1024 * 3)
             ],
         ]);
@@ -334,6 +335,8 @@ class MarkerController extends Controller
 
         if (Str::contains($fileMimeType, 'gpx')) {
             $parser = new GPXParser();
+        } elseif (Str::contains($fileMimeType, 'json')) {
+            $parser = new GeoJSONParser();
         } else {
             return response()->json(['error' => 'File type not supported'], 422);
         }

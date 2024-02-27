@@ -4,12 +4,6 @@ namespace App\Parsers\Files;
 
 class GPXParser extends FIleParser
 {
-    /**
-     * Parse the GPX file.
-     *
-     * @param string $filepath
-     * @return array
-     */
     public function parseFile(string $filepath): array
     {
         return [
@@ -135,12 +129,6 @@ class GPXParser extends FIleParser
         return $markers;
     }
 
-    /**
-     * Parse the map details, like the name, description, author, etc.
-     *
-     * @param string $filepath
-     * @return array
-     */
     public function parseMapDetailsFromFile(string $filepath): array
     {
         $xml = simplexml_load_file($filepath);
@@ -153,6 +141,9 @@ class GPXParser extends FIleParser
             $mapDetails = $array['metadata'];
         }
 
-        return $mapDetails;
+        return [
+            'title' => $mapDetails['name'] ?? null,
+            'description' => $mapDetails['desc'] ?? null,
+        ];
     }
 }

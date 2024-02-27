@@ -454,6 +454,57 @@ class MarkerTest extends TestCase
         $this->assertEquals(11, $map->markers()->whereNotNull('meta->number')->count());
     }
 
+    public function testCreateMarkerInBulkWithGeoJSONFile()
+    {
+        $this->withoutExceptionHandling();
+
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'optional'];
+        $map->save();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $geojson = file_get_contents(base_path('tests/fixtures/ashland.geojson'));
+
+        $file = UploadedFile::fake()->createWithContent('ashland.geojson', $geojson);
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
+        $response->assertStatus(200);
+
+        // The ashland DB file shoulda add 11 </trk>, 25 wpt, so we should have 36 markers
+        $this->assertEquals(36, $map->markers()->count());
+
+        // The DB file adds 348 trkpt, so we should have 348 locations + 25 wpt
+        $this->assertEquals(373, $map->markerLocations()->count());
+
+        // 271 of the locations should have an elevation - note its normal this one is lower than the GPX one, some of the elevations were lost in the conversion to GeoJSON
+        $this->assertEquals(265, $map->markerLocations()->whereNotNull('elevation')->count());
+
+        // 267 should have created_at and updated_at on 2002-04-21 (any time)
+        $this->assertEquals(267, $map->markerLocations()->whereDate('marker_locations.created_at', '2002-04-21')->whereDate('marker_locations.updated_at', '2002-04-21')->count());
+
+        // The others should have todays date
+        $this->assertEquals(106, $map->markerLocations()->whereDate('marker_locations.created_at', now()->toDateString())->whereDate('marker_locations.updated_at', now()->toDateString())->count());
+    }
+
     /**
      * A basic test example.
      *
