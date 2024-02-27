@@ -283,14 +283,15 @@ class MarkerTest extends TestCase
 
         $markers = ['markers' => [$marker->toArray()]];
 
-        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/bulk', $markers);
         $response->assertStatus(200);
 
         // Assert added to DB
         $this->assertDatabaseHas('markers', [
             'description' => $marker['description'],
             'category_id' => $marker['category_id'],
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'map_id' => $map->id,
         ]);
 
         $this->assertDatabaseHas('marker_locations', [
@@ -349,14 +350,15 @@ class MarkerTest extends TestCase
 
         $markers = ['markers' => [$marker->toArray()]];
 
-        $response = $this->postJson('/api/maps/' . $this->map->uuid . '/markers/bulk', $markers);
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/bulk', $markers);
         $response->assertStatus(200);
 
         // Assert added to DB
         $this->assertDatabaseHas('markers', [
             'description' => $marker['description'],
             'category_id' => $marker['category_id'],
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'map_id' => $map->id,
         ]);
 
         // Assert marker locations are added to the database
