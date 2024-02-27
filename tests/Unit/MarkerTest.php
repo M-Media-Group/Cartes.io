@@ -430,7 +430,7 @@ class MarkerTest extends TestCase
 
         $gpx = file_get_contents(base_path('tests/fixtures/ashland.gpx'));
 
-        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx, 'application/gpx+xml');
+        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx);
 
         $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
         $response->assertStatus(200);

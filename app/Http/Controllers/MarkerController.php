@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
 class MarkerController extends Controller
 {
@@ -322,7 +323,11 @@ class MarkerController extends Controller
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
         $request->validate([
-            'file' => 'required|file|mimes:gpx',
+            'file' => [
+                'required',
+                File::types(['gpx'])
+                    ->max(1024 * 3)
+            ],
         ]);
 
         // If the file is a GPX file, parse it and return the markers
