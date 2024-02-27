@@ -219,6 +219,10 @@ class MapImageGenerator
         $generatedMarkers = new Markers($markerImage);
 
         foreach ($markers as $marker) {
+            // If the marker does not have a lat or lng, skip it
+            if (!$marker->y || !$marker->x) {
+                continue;
+            }
             $generatedMarkers->addMarker(new LatLng($marker->y, $marker->x));
         }
 
