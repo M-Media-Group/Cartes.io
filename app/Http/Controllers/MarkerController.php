@@ -257,7 +257,6 @@ class MarkerController extends Controller
             $currentIteration = 0;
 
             foreach ($markerIds as $marker) {
-
                 $locations = $validated_data['markers'][$currentIteration]['locations'] ?? [
                     [
                         'lat' => $validated_data['markers'][$currentIteration]['lat'],
@@ -331,7 +330,9 @@ class MarkerController extends Controller
         ]);
 
         // If the file is a GPX file, parse it and return the markers
-        if ($request->file('file')->getClientOriginalExtension() === 'gpx') {
+        $fileMimeType = $request->file('file')->getMimeType();
+
+        if (Str::contains($fileMimeType, 'gpx')) {
             $parser = new GPXParser();
         } else {
             return response()->json(['error' => 'File type not supported'], 422);
