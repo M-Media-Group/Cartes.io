@@ -141,9 +141,9 @@ class MarkerController extends Controller
             'markers.*.description' => ['nullable', 'string', 'max:191'],
             'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
             'user_id' => 'exists:users,id',
-            'markers.*.created_at' => 'nullable',
-            'markers.*.updated_at' => 'nullable',
-            'markers.*.expires_at' => 'nullable',
+            'markers.*.created_at' => 'nullable|date',
+            'markers.*.updated_at' => 'nullable|date',
+            'markers.*.expires_at' => 'nullable|date',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
             'markers.*.meta' => 'nullable|array|max:10',
             'markers.*.meta.*' => ['nullable', 'max:255'],
@@ -168,8 +168,8 @@ class MarkerController extends Controller
             'markers.*.locations.*.speed' => 'nullable|numeric|between:0,100000',
             'markers.*.locations.*.zoom' => 'nullable|numeric|between:0,20',
             'markers.*.locations.*.elevation' => 'nullable|numeric|between:-100000,100000',
-            'markers.*.locations.*.created_at' => 'nullable',
-            'markers.*.locations.*.updated_at' => 'nullable',
+            'markers.*.locations.*.created_at' => 'nullable|date',
+            'markers.*.locations.*.updated_at' => 'nullable|date',
         ]);
 
         $now = Carbon::now();
@@ -179,8 +179,13 @@ class MarkerController extends Controller
         foreach ($validated_data['markers'] as $index => $marker) {
             $marker['bulk_insert_id'] = $bulkInsertId;
 
-            $marker['created_at'] = $marker['created_at'] ?? $now;
-            $marker['updated_at'] = $marker['updated_at'] ?? $now;
+
+
+            // The dates need to be converted to Carbon instances and then to string for insertion
+            $marker['created_at'] = isset($marker['created_at']) ? Carbon::parse($marker['created_at'])->toDateTimeString() : $now;
+            $marker['updated_at'] = isset($marker['updated_at']) ? Carbon::parse($marker['updated_at'])->toDateTimeString() : $now;
+            $marker['expires_at'] = isset($marker['expires_at']) ? Carbon::parse($marker['expires_at'])->toDateTimeString() : null;
+
             $marker['token'] = Str::random(32);
             $marker['user_id'] = $validated_data['user_id'];
             $marker['map_id'] = $map->id;
@@ -215,6 +220,17 @@ class MarkerController extends Controller
             }
 
             $insertableMarker = $marker;
+
+            // If there is meta, we need to json_encode it
+            if (isset($insertableMarker['meta'])) {
+                $insertableMarker['meta'] = json_encode($insertableMarker['meta']);
+            } else {
+                $insertableMarker['meta'] = null;
+            }
+
+            if (!isset($insertableMarker['link'])) {
+                $insertableMarker['link'] = null;
+            }
 
             unset($insertableMarker['elevation']);
             unset($insertableMarker['current_location']);
@@ -268,8 +284,8 @@ class MarkerController extends Controller
                         'roll' => $location['roll'] ?? null,
                         'speed' => $location['speed'] ?? null,
                         'user_id' => $marker->user_id,
-                        'created_at' => $location['created_at'] ?? $marker->created_at ?? $now,
-                        'updated_at' => $location['updated_at'] ?? $marker->updated_at ?? $now,
+                        'created_at' => isset($location['created_at']) ? Carbon::parse($location['created_at'])->toDateTimeString() : $marker->created_at ?? $now,
+                        'updated_at' => isset($location['updated_at']) ? Carbon::parse($location['updated_at'])->toDateTimeString() : $marker->updated_at ?? $now,
                     ];
                 }
 

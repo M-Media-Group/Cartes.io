@@ -26,7 +26,7 @@ class GPXParser extends FIleParser
                     !is_string($marker['name']) ||
                     empty($marker['name'])
                 ) {
-                    $marker['name'] = 'Waypoint';
+                    $marker['name'] = $marker['sym'] ?? 'Waypoint';
                 }
 
                 if (
@@ -37,11 +37,27 @@ class GPXParser extends FIleParser
                     $marker['desc'] = null;
                 }
 
+                $markerMeta = [];
+
+                // Add all direct children of the wpt element as metadata, except for the name and desc
+                foreach ($marker as $key => $value) {
+                    if ($key === 'name' || $key === 'desc' || $key === 'ele' || $key === 'sym' || $key === 'link' || $key === '@attributes') {
+                        continue;
+                    }
+
+                    $markerMeta[$key] = $value;
+                }
+
                 $markers[] = [
                     'lat' => $marker['@attributes']['lat'],
                     'lng' => $marker['@attributes']['lon'],
-                    'category_name' => $marker['name'] ?? 'Waypoint',
+                    'category_name' => $marker['name'],
                     'description' => $marker['desc'] ?? null,
+                    'link' => $marker['link'] ?? null,
+                    'elevation' => $marker['ele'] ?? null,
+                    'created_at' => $marker['time'] ?? null,
+                    'updated_at' => $marker['time'] ?? null,
+                    'meta' => $markerMeta,
                 ];
             }
         }
@@ -60,6 +76,9 @@ class GPXParser extends FIleParser
                         $markerlocations[] = [
                             'lat' => $trkpt['@attributes']['lat'],
                             'lng' => $trkpt['@attributes']['lon'],
+                            'elevation' => $trkpt['ele'] ?? null,
+                            'created_at' => $trkpt['time'] ?? null,
+                            'updated_at' => $trkpt['time'] ?? null,
                         ];
                     }
                 }
@@ -83,11 +102,24 @@ class GPXParser extends FIleParser
                     $track['desc'] = null;
                 }
 
+                $markerMeta = [];
+
+                // Add all direct children of the trk element as metadata, except for the name and desc
+                foreach ($track as $key => $value) {
+                    if ($key === 'name' || $key === 'desc' || $key === 'ele' || $key === 'trkseg' || $key === 'trkpt' || $key === '@attributes') {
+                        continue;
+                    }
+
+                    $markerMeta[$key] = $value;
+                }
+
                 $markers[] = [
                     'description' => $track['desc'],
                     'locations' => $markerlocations,
                     // The category_name is the name of the track - parsed CDATA
                     'category_name' => $track['name'],
+                    // Meta needs to be encoded as JSON
+                    'meta' => $markerMeta,
                 ];
             }
         }

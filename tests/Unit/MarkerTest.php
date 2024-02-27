@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Jobs\FillMissingLocationGeocodes;
+use App\Jobs\FillMissingMarkerElevation;
 use App\Models\Category;
 use App\Models\Marker;
 use App\Models\User;
@@ -214,6 +216,12 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerInBulk()
     {
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
         // Get raw factory data
         $marker = Marker::factory()->make();
 
@@ -258,6 +266,12 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerInBulkWithAllMapOptions()
     {
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
         $map = new \App\Models\Map();
         $map->users_can_create_markers = 'yes';
         $map->options = ['links' => 'optional'];
@@ -306,6 +320,12 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerInBulkWithMultipleLocations()
     {
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
         $map = new \App\Models\Map();
         $map->users_can_create_markers = 'yes';
         $map->options = ['links' => 'optional'];
@@ -382,6 +402,14 @@ class MarkerTest extends TestCase
      */
     public function testCreateMarkerInBulkWithGpxFile()
     {
+        $this->withoutExceptionHandling();
+
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
         // We need to clean up the database before we start
         DB::table('markers')->delete();
         DB::table('marker_locations')->delete();
@@ -412,6 +440,18 @@ class MarkerTest extends TestCase
 
         // The DB file adds 348 trkpt, so we should have 348 locations + 25 wpt
         $this->assertEquals(373, $map->markerLocations()->count());
+
+        // 271 of the locations should have an elevation
+        $this->assertEquals(271, $map->markerLocations()->whereNotNull('elevation')->count());
+
+        // 267 should have created_at and updated_at on 2002-04-21 (any time)
+        $this->assertEquals(267, $map->markerLocations()->whereDate('marker_locations.created_at', '2002-04-21')->whereDate('marker_locations.updated_at', '2002-04-21')->count());
+
+        // The others should have todays date
+        $this->assertEquals(106, $map->markerLocations()->whereDate('marker_locations.created_at', now()->toDateString())->whereDate('marker_locations.updated_at', now()->toDateString())->count());
+
+        // There should be 11 markers with the field "number". It doesn't matter what the value is, just that it exists. This field will be a key in the JSON column called "meta"
+        $this->assertEquals(11, $map->markers()->whereNotNull('meta->number')->count());
     }
 
     /**
