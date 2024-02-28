@@ -156,4 +156,44 @@ class AuthenticationTest extends TestCase
         // Assert notification was sent
         Notification::assertSentTo($user, ResetPassword::class);
     }
+
+    /**
+     * Test able to get details about self
+     *
+     * @return void
+     */
+    public function testGetUserDetails()
+    {
+        $user = \App\Models\User::firstOrCreate([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => 'test',
+        ]);
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->assignRole('admin')->givePermissionTo('create markers in bulk');
+
+        $response = $this->actingAs($user, 'api')->getJson('/api/user');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'id' => $user->id,
+            'email' => $user->email,
+            'email_verified_at' => false,
+            'is_public' => false,
+            'username' => $user->username,
+            'roles' => [
+                [
+                    'name' => 'admin',
+                ],
+            ],
+            'permissions' => [
+                [
+                    'name' => 'create markers in bulk',
+                ],
+            ],
+        ]);
+    }
 }
