@@ -100,6 +100,11 @@ class MarkerLocation extends Model
         return $this->location->latitude;
     }
 
+    public function getZAttribute()
+    {
+        return $this->elevation;
+    }
+
     /**
      * Get the inbound course from the previous location to this location.
      * @return float

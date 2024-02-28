@@ -313,6 +313,38 @@ class MarkerTest extends TestCase
         ]);
     }
 
+    public function testCreateMarkerInBulkWithAllMapOptionsFailsWithoutLinks()
+    {
+
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'required'];
+        $map->save();
+
+        // Get raw factory data
+        $marker = Marker::factory()->make();
+
+        $marker['category'] = $marker['category_id'];
+
+        // Random lat and lng
+        $marker['lat'] = 45.139;
+        $marker['lng'] = 45.139;
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $markers = ['markers' => [$marker->toArray()]];
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/bulk', $markers);
+        $response->assertStatus(422);
+    }
+
     /**
      * Test creating markers in bulk by where the markers have many locations
      *
@@ -452,6 +484,21 @@ class MarkerTest extends TestCase
 
         // There should be 11 markers with the field "number". It doesn't matter what the value is, just that it exists. This field will be a key in the JSON column called "meta"
         $this->assertEquals(11, $map->markers()->whereNotNull('meta->number')->count());
+
+        // The first marker ordered by ID should only have 1 location
+        $this->assertEquals(1, $map->markers()->orderBy('id', 'asc')->first()->locations()->count());
+
+        // The first marker (ordered by ID) should have a current location of lat="42.246950" lon="-71.461807"
+        $this->assertEquals(42.246950, $map->markers()->orderBy('id', 'asc')->first()->currentLocation->y);
+        $this->assertEquals(-71.461807, $map->markers()->orderBy('id', 'asc')->first()->currentLocation->x);
+
+        // The last marker (ordered by ID) should have a current location of  lat="42.244620" lon="-71.468704", and elevation of 63.584351
+        $this->assertEquals(42.244620, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->y);
+        $this->assertEquals(-71.468704, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->x);
+        // We must round up from 63.584351 to 64 for the elevation
+        $this->assertEquals(64, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->z);
+        // The last marker should have a total of 59 locations
+        $this->assertEquals(59, $map->markers()->orderBy('id', 'desc')->first()->locations()->count());
     }
 
     public function testCreateMarkerInBulkWithGeoJSONFile()

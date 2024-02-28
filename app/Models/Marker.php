@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Illuminate\Validation\ValidationException;
 
 class Marker extends Pivot
 {
@@ -231,7 +232,7 @@ class Marker extends Pivot
     }
 
     /**
-     * Create a marker and its location in a transaction
+     * Create a marker and its location in a transaction and return the new marker with the token visible
      *
      * @param array $data
      * @return mixed returns the new refreshed marker with the token visible if the transaction succeeds
@@ -251,5 +252,141 @@ class Marker extends Pivot
             ]);
             return $marker->refresh()->makeVisible(['token'])->loadMissing('category');
         });
+    }
+
+    /**
+     * Create many markers and their locations in a transaction with a bulk insert
+     *
+     * @param array $data
+     * @param \App\Models\Map|null $map
+     * @return mixed returns the new refreshed marker with the token visible if the transaction succeeds
+     * @throws \Illuminate\Validation\ValidationException|\Exception
+     */
+    public static function bulkInsertWithLocations(array $data, \App\Models\Map $map = null)
+    {
+        $insertableData = [];
+
+        /** @var array Represents all formatted markers (formatted from incoming $data) */
+        $allMarkers = [];
+
+        $now = Carbon::now();
+        $bulkInsertId = Str::uuid()->toString();
+
+        foreach ($data as $marker) {
+            $marker['bulk_insert_id'] = $bulkInsertId;
+
+            // The dates need to be converted to Carbon instances and then to string for insertion
+            $marker['created_at'] = isset($marker['created_at']) ? Carbon::parse($marker['created_at'])->toDateTimeString() : $now;
+            $marker['updated_at'] = isset($marker['updated_at']) ? Carbon::parse($marker['updated_at'])->toDateTimeString() : $now;
+            $marker['expires_at'] = isset($marker['expires_at']) ? Carbon::parse($marker['expires_at'])->toDateTimeString() : null;
+
+            $marker['token'] = Str::random(32);
+            $marker['user_id'] = $marker['user_id'] ?? optional(request()->user())->id;
+            $marker['map_id'] = $marker['map_id'] ?? $map->id ?? null;
+
+            $marker['category_id'] = $marker['category'] ?? Category::firstOrCreate(
+                ['slug' => Str::slug($marker['category_name'])],
+                ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
+            )->id;
+
+            $allMarkers[] = $marker;
+            $insertableMarker = $marker;
+
+            // If there is meta, we need to json_encode it
+            if (isset($insertableMarker['meta'])) {
+                $insertableMarker['meta'] = json_encode($insertableMarker['meta']);
+            } else {
+                $insertableMarker['meta'] = null;
+            }
+
+            if (!isset($insertableMarker['link'])) {
+                $insertableMarker['link'] = null;
+            }
+
+            unset($insertableMarker['lat']);
+            unset($insertableMarker['lng']);
+            unset($insertableMarker['elevation']);
+            unset($insertableMarker['current_location']);
+            unset($insertableMarker['zoom']);
+            unset($insertableMarker['heading']);
+            unset($insertableMarker['pitch']);
+            unset($insertableMarker['roll']);
+            unset($insertableMarker['speed']);
+            unset($insertableMarker['locations']);
+            unset($insertableMarker['category']);
+            unset($insertableMarker['category_name']);
+
+            $insertableData[] = $insertableMarker;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $result = Marker::insert($insertableData);
+            $markersInserted = Marker::where('bulk_insert_id', $bulkInsertId)->orderBy('id')->get();
+
+            $positionData = [];
+            $currentIteration = 0;
+
+            foreach ($markersInserted as $markerInserted) {
+                $locations = self::formatLocations($allMarkers[$currentIteration]);
+
+                foreach ($locations as $location) {
+                    $positionData[] = [
+                        'marker_id' => $location['marker_id'] ?? $markerInserted->id,
+                        'location' => DB::raw("ST_GeomFromText('POINT(" . $location['lng'] . " " . $location['lat'] . ")')"),
+                        'elevation' => $location['elevation'] ?? null,
+                        'zoom' => $location['zoom'] ?? null,
+                        'heading' => $location['heading'] ?? null,
+                        'pitch' => $location['pitch'] ?? null,
+                        'roll' => $location['roll'] ?? null,
+                        'speed' => $location['speed'] ?? null,
+                        'user_id' => $location['user_id'] ?? $markerInserted->user_id,
+                        'created_at' => isset($location['created_at']) ? Carbon::parse($location['created_at'])->toDateTimeString() : $markerInserted->created_at,
+                        'updated_at' => isset($location['updated_at']) ? Carbon::parse($location['updated_at'])->toDateTimeString() : $markerInserted->updated_at,
+                    ];
+                }
+
+                $currentIteration++;
+            }
+
+            $result = MarkerLocation::insert($positionData);
+
+            DB::commit();
+
+            \App\Jobs\FillMissingMarkerElevation::dispatch();
+            \App\Jobs\FillMissingLocationGeocodes::dispatch();
+
+            return $result;
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1062) {
+                return throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
+            }
+            return throw new \Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public static function formatLocations(array $data): array
+    {
+
+        $locations = $data['locations'] ?? [
+            [
+                'lat' => $data['lat'],
+                'lng' => $data['lng'],
+                'heading' => $data['heading'] ?? null,
+                'pitch' => $data['pitch'] ?? null,
+                'roll' => $data['roll'] ?? null,
+                'speed' => $data['speed'] ?? null,
+                'zoom' => $data['zoom'] ?? null,
+                'elevation' => $data['elevation'] ?? null,
+                'user_id' => $data['user_id'] ?? null,
+                'created_at' => $data['created_at'] ?? null,
+                'updated_at' => $data['updated_at'] ?? null,
+            ]
+        ];
+
+        return $locations;
     }
 }

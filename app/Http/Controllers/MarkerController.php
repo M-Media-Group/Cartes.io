@@ -6,16 +6,13 @@ use App\Http\Requests\StoreMarkerRequest;
 use App\Http\Resources\MarkerGeoJsonCollection;
 use App\Models\Map;
 use App\Models\Marker;
-use App\Models\MarkerLocation;
 use App\Parsers\Files\GeoJSONParser;
 use App\Parsers\Files\GPXParser;
 use Carbon\Carbon;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
@@ -133,16 +130,11 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
-        $bulkInsertId = Str::uuid()->toString();
-
-        $request->merge(['user_id' => $request->user()->id]);
-
         $validated_data = $request->validate([
             'markers' => 'required|array|min:1|max:1000',
             'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
             'markers.*.description' => ['nullable', 'string', 'max:191'],
             'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
-            'user_id' => 'exists:users,id',
             'markers.*.created_at' => 'nullable|date',
             'markers.*.updated_at' => 'nullable|date',
             'markers.*.expires_at' => 'nullable|date',
@@ -174,141 +166,16 @@ class MarkerController extends Controller
             'markers.*.locations.*.updated_at' => 'nullable|date',
         ]);
 
-        $now = Carbon::now();
-
-        $insertableData = [];
-
-        foreach ($validated_data['markers'] as $index => $marker) {
-            $marker['bulk_insert_id'] = $bulkInsertId;
-
-
-
-            // The dates need to be converted to Carbon instances and then to string for insertion
-            $marker['created_at'] = isset($marker['created_at']) ? Carbon::parse($marker['created_at'])->toDateTimeString() : $now;
-            $marker['updated_at'] = isset($marker['updated_at']) ? Carbon::parse($marker['updated_at'])->toDateTimeString() : $now;
-            $marker['expires_at'] = isset($marker['expires_at']) ? Carbon::parse($marker['expires_at'])->toDateTimeString() : null;
-
-            $marker['token'] = Str::random(32);
-            $marker['user_id'] = $validated_data['user_id'];
-            $marker['map_id'] = $map->id;
-
-            $marker['category_id'] = $marker['category'] ?? \App\Models\Category::firstOrCreate(
-                ['slug' => Str::slug($marker['category_name'])],
-                ['name' => $marker['category_name'], 'icon' => '/images/marker-01.svg']
-            )->id;
-
-            $locations = $marker['locations'] ??
-                [
-                    [
-                        'lat' => $marker['lat'],
-                        'lng' => $marker['lng'],
-                        'heading' => $marker['heading'] ?? null,
-                        'pitch' => $marker['pitch'] ?? null,
-                        'roll' => $marker['roll'] ?? null,
-                        'speed' => $marker['speed'] ?? null,
-                        'zoom' => $marker['zoom'] ?? null,
-                        'elevation' => $marker['elevation'] ?? null,
-                        'user_id' => $marker['user_id'],
-                        'created_at' => $marker['created_at'] ?? $now,
-                        'updated_at' => $marker['updated_at'] ?? $now,
-                    ]
-                ];
-            unset($marker['lat']);
-            unset($marker['lng']);
-
+        // The first foreach validates and prepares the marker data
+        foreach ($validated_data['markers'] as $marker) {
+            $locations = Marker::formatLocations($marker);
             // The first foreach validates and prepares the marker data
             foreach ($locations as $location) {
                 $this->validateCreate($request, $marker, $map, new Point($location['lat'], $location['lng']));
             }
-
-            $insertableMarker = $marker;
-
-            // If there is meta, we need to json_encode it
-            if (isset($insertableMarker['meta'])) {
-                $insertableMarker['meta'] = json_encode($insertableMarker['meta']);
-            } else {
-                $insertableMarker['meta'] = null;
-            }
-
-            if (!isset($insertableMarker['link'])) {
-                $insertableMarker['link'] = null;
-            }
-
-            unset($insertableMarker['elevation']);
-            unset($insertableMarker['current_location']);
-            unset($insertableMarker['zoom']);
-            unset($insertableMarker['heading']);
-            unset($insertableMarker['pitch']);
-            unset($insertableMarker['roll']);
-            unset($insertableMarker['speed']);
-            unset($insertableMarker['locations']);
-            unset($insertableMarker['category']);
-            unset($insertableMarker['category_name']);
-
-            $insertableData[] = $insertableMarker;
         }
 
-        DB::beginTransaction();
-
-        try {
-            $result = Marker::insert($insertableData);
-            $markerIds = Marker::where('bulk_insert_id', $bulkInsertId)->get();
-
-            $positionData = [];
-            $currentIteration = 0;
-
-            foreach ($markerIds as $marker) {
-                $locations = $validated_data['markers'][$currentIteration]['locations'] ?? [
-                    [
-                        'lat' => $validated_data['markers'][$currentIteration]['lat'],
-                        'lng' => $validated_data['markers'][$currentIteration]['lng'],
-                        'heading' => $validated_data['markers'][$currentIteration]['heading'] ?? null,
-                        'pitch' => $validated_data['markers'][$currentIteration]['pitch'] ?? null,
-                        'roll' => $validated_data['markers'][$currentIteration]['roll'] ?? null,
-                        'speed' => $validated_data['markers'][$currentIteration]['speed'] ?? null,
-                        'zoom' => $validated_data['markers'][$currentIteration]['zoom'] ?? null,
-                        'elevation' => $validated_data['markers'][$currentIteration]['elevation'] ?? null,
-                        'created_at' => $marker->created_at,
-                        'updated_at' => $marker->updated_at,
-                    ]
-                ];
-
-
-                foreach ($locations as $location) {
-                    $positionData[] = [
-                        'marker_id' => $marker->id,
-                        'location' => DB::raw("ST_GeomFromText('POINT(" . $location['lng'] . " " . $location['lat'] . ")')"),
-                        'elevation' => $location['elevation'] ?? null,
-                        'zoom' => $location['zoom'] ?? null,
-                        'heading' => $location['heading'] ?? null,
-                        'pitch' => $location['pitch'] ?? null,
-                        'roll' => $location['roll'] ?? null,
-                        'speed' => $location['speed'] ?? null,
-                        'user_id' => $marker->user_id,
-                        'created_at' => isset($location['created_at']) ? Carbon::parse($location['created_at'])->toDateTimeString() : $marker->created_at ?? $now,
-                        'updated_at' => isset($location['updated_at']) ? Carbon::parse($location['updated_at'])->toDateTimeString() : $marker->updated_at ?? $now,
-                    ];
-                }
-
-                $currentIteration++;
-            }
-
-            $result = MarkerLocation::insert($positionData);
-
-            DB::commit();
-
-            \App\Jobs\FillMissingMarkerElevation::dispatch();
-            \App\Jobs\FillMissingLocationGeocodes::dispatch();
-
-            return response()->json(['success' => $result]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            $errorCode = $e->errorInfo[1];
-            if ($errorCode == 1062) {
-                return throw ValidationException::withMessages(['marker' => 'Some of the markers you submitted already exist in the database']);
-            }
-            return abort(500, "Markers in bulk error code: " . $errorCode);
-        }
+        return Marker::bulkInsertWithLocations($validated_data['markers'], $map);
     }
 
     /**
