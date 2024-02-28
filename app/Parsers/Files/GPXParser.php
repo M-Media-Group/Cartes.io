@@ -130,15 +130,44 @@ class GPXParser extends FIleParser
         }
 
         return [
-            'title' => $mapDetails['name'] ?? null,
-            'description' => $mapDetails['desc'] ?? null,
+            'title' => $mapDetails['name'] ?? (string) $array['name'] ?? null,
+            'description' => $mapDetails['desc'] ?? (string) $array['desc'] ?? null,
         ];
+    }
+
+    // Recursively convert the SimpleXMLElement to a string.
+    private function convertSimpleXMLElementToString($element)
+    {
+        if (is_array($element)) {
+            foreach ($element as $key => $value) {
+                $element[$key] = $this->convertSimpleXMLElementToString($value);
+            }
+        } elseif (
+            $element instanceof \SimpleXMLElement
+            // And there are no children
+            && count($element->children()) === 0
+        ) {
+            $element = (string) $element;
+        }
+        // Else if it is a simpleXMLElement and it has children we need to call this function again
+        elseif ($element instanceof \SimpleXMLElement) {
+            $element = (array) $element;
+            foreach ($element as $key => $value) {
+                $element[$key] = $this->convertSimpleXMLElementToString($value);
+            }
+        }
+
+        return $element;
     }
 
     public function readFile(string $filepath): mixed
     {
-        $xml = simplexml_load_file($filepath);
-        $json = json_encode($xml);
-        return json_decode($json, true);
+        $array = (array) simplexml_load_file($filepath);
+
+        $finalData = [];
+
+        $finalData = $this->convertSimpleXMLElementToString($array);
+
+        return $finalData;
     }
 }
