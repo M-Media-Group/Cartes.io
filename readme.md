@@ -2,13 +2,13 @@
 
 This is an open source project based on Laravel 8 (upgraded from 5.7). Feel free to fork and use! This repo is the code behind [Cartes.io](https://cartes.io).
 
-The [API docs are available in our wiki](https://github.com/M-Media-Group/Cartes.io/wiki/API).
+The [API docs are available in our wiki](https://docs.cartes.io/).
 
 Want to just test out the site? [There's a demo map](https://cartes.io/maps/048eebe4-8dac-46e2-a947-50b6b8062fec#2/43.7/7.3), or you can create your own map.
 
 ## Using Cartes.io
 
-You are free to use [Cartes.io](https://cartes.io) and/or it's [API](https://github.com/M-Media-Group/Cartes.io/wiki/API) free of charge. No authentication is required.
+You are free to use [Cartes.io](https://cartes.io) and/or it's [API](https://docs.cartes.io/) free of charge. No authentication is required.
 
 [Please consider donating/sponsoring](https://github.com/sponsors/M-Media-Group) the project!
 
@@ -42,7 +42,7 @@ See the Cartes.io package at https://pypi.org/project/py-cartes-io/ - `pip insta
 See the Cartes.io NPM package at https://www.npmjs.com/package/@m-media/npm-cartes-io - `npm install @m-media/npm-cartes-io`, which allows you to interact with the Cartes.io API in a fluent way in JS.
 
 ## Interact with using iFrames
-Cartes.io supports embedding maps on any site and also sends postMessages so your site can listen to map events. See the [iFrame docs](https://github.com/M-Media-Group/Cartes.io/wiki/iFrame).
+Cartes.io supports embedding maps on any site and also sends postMessages so your site can listen to map events. See the [iFrame docs](https://docs.cartes.io/developers/iFrame).
 
 ## Development installation
 
