@@ -148,9 +148,8 @@ class GPXParser extends FIleParser
             && count($element->children()) === 0
         ) {
             $element = (string) $element;
-        }
-        // Else if it is a simpleXMLElement and it has children we need to call this function again
-        elseif ($element instanceof \SimpleXMLElement) {
+        } elseif ($element instanceof \SimpleXMLElement) {
+            // Else if it is a simpleXMLElement and it has children we need to call this function again
             $element = (array) $element;
             foreach ($element as $key => $value) {
                 $element[$key] = $this->convertSimpleXMLElementToString($value);
