@@ -129,9 +129,25 @@ class GPXParser extends FIleParser
             $mapDetails = $array['metadata'];
         }
 
+        $mapTitle = null;
+        $mapDescription = null;
+
+        // Depending what is isset, we will return the name and desc of the map
+        if (isset($mapDetails['name'])) {
+            $mapTitle = $mapDetails['name'];
+        } elseif (isset($array['name'])) {
+            $mapTitle = (string) $array['name'];
+        }
+
+        if (isset($mapDetails['desc'])) {
+            $mapDescription = $mapDetails['desc'];
+        } elseif (isset($array['desc'])) {
+            $mapDescription = (string) $array['desc'];
+        }
+
         return [
-            'title' => $mapDetails['name'] ?? (string) $array['name'] ?? null,
-            'description' => $mapDetails['desc'] ?? (string) $array['desc'] ?? null,
+            'title' => $mapTitle,
+            'description' => $mapDescription,
         ];
     }
 

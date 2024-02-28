@@ -499,6 +499,45 @@ class MarkerTest extends TestCase
         $this->assertEquals(59, $map->markers()->orderBy('id', 'desc')->first()->locations()->count());
     }
 
+    /**
+     * Test creating markers in bulk by uploading a GPX file
+     *
+     * @return void
+     */
+    public function testCreateMarkerInBulkWithSecondGpxFile()
+    {
+        $this->withoutExceptionHandling();
+
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'optional'];
+        $map->save();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $file = new UploadedFile(base_path('tests/fixtures/fells_loop.gpx'), 'fells_loop.gpx', 'application/gpx+xml', null, true);
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
+        $response->assertStatus(200);
+    }
+
     public function testCreateMarkerInBulkWithGeoJSONFile()
     {
         $this->withoutExceptionHandling();
