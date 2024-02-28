@@ -10,7 +10,13 @@ abstract class FIleParser
      * @param string $filepath
      * @return array{map: array, markers: array}
      */
-    abstract public function parseFile(string $filepath): array;
+    public function parseFile(string $filepath): array
+    {
+        return [
+            'map' => $this->parseMapDetailsFromFile($filepath),
+            'markers' => $this->parseMarkersFromFile($filepath),
+        ];
+    }
 
     /**
      * Parse the filetype. This function must be implemented by all parsers.
@@ -27,4 +33,15 @@ abstract class FIleParser
      * @return array{title?: string, description?: string}
      */
     abstract public function parseMapDetailsFromFile(string $filepath): array;
+
+    /**
+     * Read the data from the file and return its contents for further processing.
+     *
+     * @param string $filepath
+     * @return mixed
+     */
+    public function readFile(string $filepath): mixed
+    {
+        return file_get_contents($filepath);
+    }
 }

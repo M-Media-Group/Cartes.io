@@ -4,19 +4,9 @@ namespace App\Parsers\Files;
 
 class GPXParser extends FIleParser
 {
-    public function parseFile(string $filepath): array
-    {
-        return [
-            'map' => $this->parseMapDetailsFromFile($filepath),
-            'markers' => $this->parseMarkersFromFile($filepath),
-        ];
-    }
-
     public function parseMarkersFromFile(string $filepath): array
     {
-        $xml = simplexml_load_file($filepath);
-        $json = json_encode($xml);
-        $array = json_decode($json, true);
+        $array = $this->readFile($filepath);
 
         $markers = [];
 
@@ -131,9 +121,7 @@ class GPXParser extends FIleParser
 
     public function parseMapDetailsFromFile(string $filepath): array
     {
-        $xml = simplexml_load_file($filepath);
-        $json = json_encode($xml);
-        $array = json_decode($json, true);
+        $array = $this->readFile($filepath);
 
         $mapDetails = [];
 
@@ -145,5 +133,12 @@ class GPXParser extends FIleParser
             'title' => $mapDetails['name'] ?? null,
             'description' => $mapDetails['desc'] ?? null,
         ];
+    }
+
+    public function readFile(string $filepath): mixed
+    {
+        $xml = simplexml_load_file($filepath);
+        $json = json_encode($xml);
+        return json_decode($json, true);
     }
 }

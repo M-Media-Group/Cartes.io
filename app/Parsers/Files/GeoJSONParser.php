@@ -4,18 +4,9 @@ namespace App\Parsers\Files;
 
 class GeoJSONParser extends FIleParser
 {
-    public function parseFile(string $filepath): array
-    {
-        return [
-            'map' => $this->parseMapDetailsFromFile($filepath),
-            'markers' => $this->parseMarkersFromFile($filepath),
-        ];
-    }
-
     public function parseMarkersFromFile(string $filepath): array
     {
-        $json = file_get_contents($filepath);
-        $data = json_decode($json, true);
+        $data = $this->readFile($filepath);
 
         $markers = [];
 
@@ -75,5 +66,11 @@ class GeoJSONParser extends FIleParser
             'name' => pathinfo($filepath, PATHINFO_FILENAME),
             'description' => 'A map of ' . pathinfo($filepath, PATHINFO_FILENAME),
         ];
+    }
+
+    public function readFile(string $filepath): mixed
+    {
+        $json = file_get_contents($filepath);
+        return json_decode($json, true);
     }
 }
