@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Helpers\MapImageGenerator;
 use App\Http\Resources\MapResource;
 use App\Models\Map;
+use App\Parsers\Files\GeoJSONParser;
+use App\Parsers\Files\GPXParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\Rules\File;
+use Illuminate\Support\Str;
 
 class MapController extends Controller
 {
@@ -128,6 +132,60 @@ class MapController extends Controller
         } else {
             return redirect('/maps/' . $result->slug)->with('token', $result->token);
         }
+    }
+
+    /**
+     * Store a map from a file
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     *
+     * @deprecated Not yet implemented
+     * @todo Implement this method
+     */
+    public function storeFromFile(Request $request)
+    {
+        $this->authorize('create', Map::class);
+
+        $request->validate([
+            'file' => [
+                'required',
+                File::types(['gpx', 'geojson'])
+                    ->max(1024 * 3)
+            ],
+        ]);
+
+        // If the file is a GPX file, parse it and return the markers
+        $fileMimeType = $request->file('file')->getMimeType();
+
+        if (Str::contains($fileMimeType, 'gpx')) {
+            $parser = new GPXParser();
+        } elseif (Str::contains($fileMimeType, 'json')) {
+            $parser = new GeoJSONParser();
+        } else {
+            return response()->json(['error' => 'File type not supported'], 422);
+        }
+
+        // Spread map and markers
+        $parsedData = $parser->parseFile($request->file('file')->getRealPath());
+
+        // Create a map from the $parsedData['map'] and attach the markers
+        $map = Map::create($parsedData['map']);
+
+        // Attach the markers to the request
+        $request->merge(['markers' => $parsedData['markers']]);
+
+        // Call the Marker Controller to store the markers
+        $markerController = new MarkerController();
+        try {
+            $markerController->storeInBulk($request, $map);
+            return response()->json(['uuid' => $map->uuid, 'token' => $map->token], 201);
+        } catch (\Exception $e) {
+            $map->delete();
+            return response()->json(['error' => 'Error while saving markers'], 500);
+        }
+
+        return response()->json(['error' => 'Error while saving map'], 500);
     }
 
     /**

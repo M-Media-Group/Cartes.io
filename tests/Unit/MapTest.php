@@ -3,8 +3,13 @@
 namespace Tests\Unit;
 
 use App\Helpers\MapImageGenerator;
+use App\Jobs\FillMissingLocationGeocodes;
+use App\Jobs\FillMissingMarkerElevation;
+use App\Models\User;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class MapTest extends TestCase
 {
@@ -189,6 +194,98 @@ class MapTest extends TestCase
             'uuid',
             'token',
         ]);
+    }
+
+    /**
+     * Test create a map from a GPX file.
+     *
+     * @return void
+     */
+    public function testCreateMapFromGpxTest()
+    {
+        $this->withoutExceptionHandling();
+
+        // Skip any dispatched jobs
+        $this->expectsJobs([
+            FillMissingMarkerElevation::class,
+            FillMissingLocationGeocodes::class,
+        ]);
+
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $gpx = file_get_contents(base_path('tests/fixtures/ashland.gpx'));
+
+        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx);
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->postJson('/api/maps/file', [
+            'file' => $file,
+            'user_id' => $user->id,
+        ]);
+
+        // Assert returns 201
+        $response->assertStatus(201);
+
+        // Assert that a map has been created
+        $this->assertDatabaseHas('maps', [
+            'title' => 'Rockbuster Duathlon at Ashland State Park',
+            'description' => 'Team TopoGrafix tracklogs from the Rockbuster Duathlon at Ashland State Park, April 21st, 2002.  The course consisted of a two-mile run, an seven mile mountain bike course, and a final two-mile run.
+
+Braxton carried an eTrex Venture in his Camelbak for the three laps on the mountain bike loop.  Vil carried his new eTrex Venture on the first run, but the GPS shut off during the first mountain bike loop due to battery vibration.
+',
+        ]);
+
+        // Assert that the response contains the map token
+        $response->assertJsonStructure([
+            'uuid',
+            'token',
+        ]);
+
+        // Get the map by its uuid
+        $map = \App\Models\Map::where('uuid', $response->json('uuid'))->first();
+
+        // The ashland DB file shoulda add 11 </trk>, 25 wpt, so we should have 36 markers
+        $this->assertEquals(36, $map->markers()->count());
+
+        // The DB file adds 348 trkpt, so we should have 348 locations + 25 wpt
+        $this->assertEquals(373, $map->markerLocations()->count());
+
+        // 271 of the locations should have an elevation
+        $this->assertEquals(271, $map->markerLocations()->whereNotNull('elevation')->count());
+
+        // 267 should have created_at and updated_at on 2002-04-21 (any time)
+        $this->assertEquals(267, $map->markerLocations()->whereDate('marker_locations.created_at', '2002-04-21')->whereDate('marker_locations.updated_at', '2002-04-21')->count());
+
+        // The others should have todays date
+        $this->assertEquals(106, $map->markerLocations()->whereDate('marker_locations.created_at', now()->toDateString())->whereDate('marker_locations.updated_at', now()->toDateString())->count());
+
+        // There should be 11 markers with the field "number". It doesn't matter what the value is, just that it exists. This field will be a key in the JSON column called "meta"
+        $this->assertEquals(11, $map->markers()->whereNotNull('meta->number')->count());
+
+        // The first marker ordered by ID should only have 1 location
+        $this->assertEquals(1, $map->markers()->orderBy('id', 'asc')->first()->locations()->count());
+
+        // The first marker (ordered by ID) should have a current location of lat="42.246950" lon="-71.461807"
+        $this->assertEquals(42.246950, $map->markers()->orderBy('id', 'asc')->first()->currentLocation->y);
+        $this->assertEquals(-71.461807, $map->markers()->orderBy('id', 'asc')->first()->currentLocation->x);
+
+        // The last marker (ordered by ID) should have a current location of  lat="42.244620" lon="-71.468704", and elevation of 63.584351
+        $this->assertEquals(42.244620, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->y);
+        $this->assertEquals(-71.468704, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->x);
+        // We must round up from 63.584351 to 64 for the elevation
+        $this->assertEquals(64, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->z);
+        // The last marker should have a total of 59 locations
+        $this->assertEquals(59, $map->markers()->orderBy('id', 'desc')->first()->locations()->count());
     }
 
     /**

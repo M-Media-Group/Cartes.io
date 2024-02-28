@@ -33,7 +33,7 @@ Route::middleware(SetAuthDriverToApi::class)->group(function () {
 
     Route::get('maps/search', 'MapController@search');
 
-    // Route::post('maps/file', 'MapController@storeFromFile')->middleware('auth:api');
+    Route::post('maps/file', 'MapController@storeFromFile')->middleware('auth:api');
 
     Route::apiResource('maps', 'MapController');
 
