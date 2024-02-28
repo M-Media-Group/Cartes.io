@@ -460,9 +460,7 @@ class MarkerTest extends TestCase
 
         $this->actingAs($user, 'api');
 
-        $gpx = file_get_contents(base_path('tests/fixtures/ashland.gpx'));
-
-        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx);
+        $file = new UploadedFile(base_path('tests/fixtures/ashland.gpx'), 'ashland.gpx', 'application/gpx+xml', null, true);
 
         $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
         $response->assertStatus(200);
@@ -529,9 +527,7 @@ class MarkerTest extends TestCase
 
         $this->actingAs($user, 'api');
 
-        $geojson = file_get_contents(base_path('tests/fixtures/ashland.geojson'));
-
-        $file = UploadedFile::fake()->createWithContent('ashland.geojson', $geojson);
+        $file = new UploadedFile(base_path('tests/fixtures/ashland.geojson'), 'ashland.geojson', 'application/geo+json', null, true);
 
         $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
         $response->assertStatus(200);

@@ -189,20 +189,26 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
+        // Get the uploaded file type for debug
+        $fileMimeType = $request->file('file')->getMimeType();
+        $fileExtension = $request->file('file')->extension();
+        $clientExtension = $request->file('file')->getClientOriginalExtension();
+        $clientMimeType = $request->file('file')->getClientMimeType();
+
         $request->validate([
             'file' => [
                 'required',
-                File::types(['gpx', 'geojson'])
-                    ->max(1024 * 3)
+                'file',
+                'mimes:gpx,geojson,json,xml',
+                'mimetypes:application/json,application/gpx,application/gpx+xml,text/xml,application/geo+json',
+                // Max 1MB
+                'max:1024',
             ],
         ]);
 
-        // If the file is a GPX file, parse it and return the markers
-        $fileMimeType = $request->file('file')->getMimeType();
-
-        if (Str::contains($fileMimeType, 'gpx')) {
+        if (Str::contains($fileMimeType, 'gpx') || Str::contains($clientMimeType, 'gpx') || $fileExtension === 'gpx' || $clientExtension === 'gpx') {
             $parser = new GPXParser();
-        } elseif (Str::contains($fileMimeType, 'json')) {
+        } elseif (Str::contains($fileMimeType, 'json') || Str::contains($clientMimeType, 'json')) {
             $parser = new GeoJSONParser();
         } else {
             return response()->json(['error' => 'File type not supported'], 422);

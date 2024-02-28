@@ -215,9 +215,7 @@ class MapTest extends TestCase
         DB::table('markers')->delete();
         DB::table('marker_locations')->delete();
 
-        $gpx = file_get_contents(base_path('tests/fixtures/ashland.gpx'));
-
-        $file = UploadedFile::fake()->createWithContent('ashland.gpx', $gpx);
+        $file = new UploadedFile(base_path('tests/fixtures/ashland.gpx'), 'ashland.gpx', 'application/gpx+xml', null, true);
 
         $user = User::factory()->create();
 
