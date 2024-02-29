@@ -141,6 +141,11 @@ class Marker extends Pivot
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    public function getIsLinkedToUserAttribute()
+    {
+        return !!$this->user_id;
+    }
+
     /**
      * Get the X attribute.
      *
