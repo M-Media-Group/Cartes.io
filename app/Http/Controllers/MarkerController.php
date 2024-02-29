@@ -148,7 +148,7 @@ class MarkerController extends Controller
      */
     public function storeInBulkFromFile(Request $request, Map $map)
     {
-        $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
+        $this->authorize('uploadFromFile', [Marker::class, $map, $request->input('map_token')]);
 
         // Get the uploaded file type for debug
         $fileMimeType = $request->file('file')->getMimeType();
@@ -179,7 +179,13 @@ class MarkerController extends Controller
 
         $request->merge(['markers' => $markers]);
 
-        return $this->storeInBulk($request, $map);
+        try {
+            $validated_data = Marker::validateRequestForBulkInsert($request, $map);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        }
+
+        return Marker::bulkInsertWithLocations($validated_data['markers'], $map);
     }
 
     /**

@@ -180,10 +180,18 @@ class MapController extends Controller
         $request->merge(['markers' => $parsedData['markers']]);
 
         try {
+            $this->authorize('uploadFromFile', [Marker::class, $map]);
+
             $validated_data = Marker::validateRequestForBulkInsert($request, $map);
             Marker::bulkInsertWithLocations($validated_data['markers'], $map);
             // Set response code
             return response()->json(new MapResource($map), 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $map->delete();
+            throw $e;
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            $map->delete();
+            throw $e;
         } catch (\Exception $e) {
             $map->delete();
             return response()->json(['error' => 'Error while saving map'], 500);

@@ -455,7 +455,7 @@ class MarkerTest extends TestCase
         /**
          * @var \Illuminate\Contracts\Auth\Authenticatable
          */
-        $user = $user->givePermissionTo('create markers in bulk');
+        $user = $user->givePermissionTo('upload markers from file');
 
         $this->actingAs($user, 'api');
 
@@ -520,7 +520,7 @@ class MarkerTest extends TestCase
         /**
          * @var \Illuminate\Contracts\Auth\Authenticatable
          */
-        $user = $user->givePermissionTo('create markers in bulk');
+        $user = $user->givePermissionTo('upload markers from file');
 
         $this->actingAs($user, 'api');
 
@@ -559,7 +559,7 @@ class MarkerTest extends TestCase
         /**
          * @var \Illuminate\Contracts\Auth\Authenticatable
          */
-        $user = $user->givePermissionTo('create markers in bulk');
+        $user = $user->givePermissionTo('upload markers from file');
 
         $this->actingAs($user, 'api');
 
@@ -593,7 +593,7 @@ class MarkerTest extends TestCase
         /**
          * @var \Illuminate\Contracts\Auth\Authenticatable
          */
-        $user = $user->givePermissionTo('create markers in bulk');
+        $user = $user->givePermissionTo('upload markers from file');
 
         $this->actingAs($user, 'api');
 

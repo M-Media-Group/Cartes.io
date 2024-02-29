@@ -81,6 +81,21 @@ class MarkerPolicy
     }
 
     /**
+     * Determine whether the user can create markers.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function uploadFromFile(User $user, Map $map, $token = null)
+    {
+        if ($map->users_can_create_markers == 'no') {
+            return $map->user_id == $user->id;
+        }
+
+        return $user->hasVerifiedEmail() && $user->hasPermissionTo('upload markers from file', 'web');
+    }
+
+    /**
      * Determine whether the user can update the marker.
      *
      * @param User $user
