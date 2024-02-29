@@ -28,52 +28,21 @@ class GPXParser extends FIleParser
 
         if (isset($array['wpt'])) {
             foreach ($array['wpt'] as $marker) {
-                // If the track name is not a string, we can't use it as a category name, so we use "Track" as the default
-                if (
-                    !isset($marker['name']) ||
-                    !is_string($marker['name']) ||
-                    empty($marker['name'])
-                ) {
-                    $marker['name'] = $marker['sym'] ?? 'Waypoint';
+                $marker = $this->setMarkerDetails($marker, 'Waypoint');
+
+                $markerLocations = [$this->buildMarkerLocationFromXmlElement($marker)];
+
+                if (!count($markerLocations)) {
+                    continue;
                 }
 
-                if (
-                    !isset($marker['desc']) ||
-                    !is_string($marker['desc']) ||
-                    empty($marker['desc'])
-                ) {
-                    $marker['desc'] = null;
-                }
-
-                $markerMeta = [];
-
-                // Add all direct children of the wpt element as metadata, except for the name and desc
-                foreach ($marker as $key => $value) {
-                    if (in_array($key, $this->metadataKeys)) {
-                        continue;
-                    }
-
-                    $markerMeta[$key] = $value;
-                }
-
-                $markers[] = [
-                    'lat' => $marker['@attributes']['lat'],
-                    'lng' => $marker['@attributes']['lon'],
-                    'category_name' => $marker['name'],
-                    'description' => $marker['desc'] ?? null,
-                    'link' => $marker['link'] ?? null,
-                    'elevation' => $marker['ele'] ?? null,
-                    'created_at' => $marker['time'] ?? null,
-                    'updated_at' => $marker['time'] ?? null,
-                    'meta' => $markerMeta,
-                ];
+                $markers[] = $this->buildMarker($marker, $markerLocations);
             }
         }
 
-        // We also need to add the trk. Each trk will be a single marker, and each trkpt will be a location for that marker.
         if (isset($array['trk'])) {
             foreach ($array['trk'] as $track) {
-                $markerlocations = [];
+                $markerLocations = [];
 
                 if (!isset($track['trkseg'])) {
                     continue;
@@ -81,124 +50,134 @@ class GPXParser extends FIleParser
 
                 foreach ($track['trkseg'] as $trkseg) {
                     foreach ($trkseg as $trkpt) {
-                        $markerlocations[] = [
-                            'lat' => $trkpt['@attributes']['lat'],
-                            'lng' => $trkpt['@attributes']['lon'],
-                            'elevation' => $trkpt['ele'] ?? null,
-                            'created_at' => $trkpt['time'] ?? null,
-                            'updated_at' => $trkpt['time'] ?? null,
-                        ];
+                        $markerLocations[] = $this->buildMarkerLocationFromXmlElement($trkpt);
                     }
                 }
 
-                if (!count($markerlocations)) {
+                if (!count($markerLocations)) {
                     continue;
                 }
 
-                // If the track name is not a string, we can't use it as a category name, so we use "Track" as the default
-                if (
-                    !is_string($track['name']) ||
-                    empty($track['name'])
-                ) {
-                    $track['name'] = 'Track';
-                }
-
-                if (
-                    !is_string($track['desc']) ||
-                    empty($track['desc'])
-                ) {
-                    $track['desc'] = null;
-                }
-
-                $markerMeta = [];
-
-                // Add all direct children of the trk element as metadata, except for the name and desc
-                foreach ($track as $key => $value) {
-                    if (in_array($key, $this->metadataKeys)) {
-                        continue;
-                    }
-
-                    $markerMeta[$key] = $value;
-                }
-
-                $markers[] = [
-                    'description' => $track['desc'],
-                    'locations' => $markerlocations,
-                    // The category_name is the name of the track - parsed CDATA
-                    'category_name' => $track['name'],
-                    // Meta needs to be encoded as JSON
-                    'meta' => $markerMeta,
-                ];
+                $markers[] = $this->buildMarker($track, $markerLocations);
             }
         }
 
-        // We need to handle rte as well. Each rte will be a single marker, and each rtept will be a location for that marker.
         if (isset($array['rte'])) {
-
             // Sometimes the rte is not an array, but a single element, so we need to handle that. We can be sure its just a single element if it directly has rtept as a child
             if (isset($array['rte']['rtept'])) {
                 $array['rte'] = [$array['rte']];
             }
 
             foreach ($array['rte'] as $route) {
-                $markerlocations = [];
+                $markerLocations = [];
 
                 if (!isset($route['rtept'])) {
                     continue;
                 }
 
                 foreach ($route['rtept'] as $rtept) {
-                    $markerlocations[] = [
-                        'lat' => $rtept['@attributes']['lat'],
-                        'lng' => $rtept['@attributes']['lon'],
-                        'elevation' => $rtept['ele'] ?? null,
-                        'created_at' => $rtept['time'] ?? null,
-                        'updated_at' => $rtept['time'] ?? null,
-                    ];
+                    $markerLocations[] = $this->buildMarkerLocationFromXmlElement($rtept);
                 }
 
-                if (!count($markerlocations)) {
+                if (!count($markerLocations)) {
                     continue;
                 }
 
-                // If the route name is not a string, we can't use it as a category name, so we use "Route" as the default
-                if (
-                    !is_string($route['name']) ||
-                    empty($route['name'])
-                ) {
-                    $route['name'] = 'Route';
-                }
-
-                if (
-                    !is_string($route['desc']) ||
-                    empty($route['desc'])
-                ) {
-                    $route['desc'] = null;
-                }
-
-                $markerMeta = [];
-
-                // Add all direct children of the rte element as metadata, except for the name and desc
-                foreach ($route as $key => $value) {
-                    if (in_array($key, $this->metadataKeys)) {
-                        continue;
-                    }
-
-                    $markerMeta[$key] = $value;
-                }
-
-                $markers[] = [
-                    'description' => $route['desc'],
-                    'locations' => $markerlocations,
-                    // The category_name is the name of the route - parsed CDATA
-                    'category_name' => $route['name'],
-                    // Meta needs to be encoded as JSON
-                    'meta' => $markerMeta,
-                ];
+                $markers[] = $this->buildMarker($route, $markerLocations);
             }
         }
 
         return $markers;
+    }
+
+    /**
+     * Build a marker location from a single xml element
+     *
+     * @param array $element
+     * @return array
+     */
+    private function buildMarkerLocationFromXmlElement(array $element): array
+    {
+        return [
+            'lat' => $element['@attributes']['lat'],
+            'lng' => $element['@attributes']['lon'],
+            'elevation' => $element['ele'] ?? null,
+            'created_at' => $element['time'] ?? null,
+            'updated_at' => $element['time'] ?? null,
+        ];
+    }
+
+    /**
+     * Get the metadata from the marker
+     *
+     * @param array $marker
+     * @return array
+     */
+    private function getMarkerMeta(array $marker): array
+    {
+        $markerMeta = [];
+
+        // Add all direct children of the wpt element as metadata, except for the name and desc
+        foreach ($marker as $key => $value) {
+            if (in_array($key, $this->metadataKeys)) {
+                continue;
+            }
+
+            $markerMeta[$key] = $value;
+        }
+
+        return $markerMeta;
+    }
+
+    /**
+     * Set the marker details
+     *
+     * @param array $marker
+     * @param string $fallbackName
+     * @return array
+     */
+    private function setMarkerDetails(array $marker, string $fallbackName = 'Marker')
+    {
+        // If the route name is not a string, we can't use it as a category name, so we use "Route" as the default
+        if (
+            !isset($marker['name']) ||
+            !is_string($marker['name']) ||
+            empty($marker['name'])
+        ) {
+            $marker['name'] = $marker['sym'] ?? $fallbackName;
+        }
+
+        if (
+            !is_string($marker['desc']) ||
+            empty($marker['desc'])
+        ) {
+            $marker['desc'] = null;
+        }
+
+        return $marker;
+    }
+
+    /**
+     * Build a marker
+     *
+     * @param array $marker
+     * @param array $locations
+     * @return array
+     */
+    private function buildMarker(array $marker, array $locations)
+    {
+        $marker = $this->setMarkerDetails($marker);
+
+        $markerMeta = $this->getMarkerMeta($marker);
+
+        return
+            [
+                'description' => $marker['desc'],
+                'locations' => $locations,
+                'category_name' => $marker['name'],
+                'link' => $marker['link'] ?? null,
+                'meta' => $markerMeta,
+            ];
     }
 
     public function parseMapDetailsFromFile(string $filepath): array
