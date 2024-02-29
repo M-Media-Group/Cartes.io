@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -195,5 +196,36 @@ class AuthenticationTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Test making yourself public, which should also send a notification
+     *
+     * @return void
+     */
+    public function testMakeUserPublic()
+    {
+        Notification::fake();
+
+        $user = \App\Models\User::factory()->create([
+            'username' => 'testForPublicProfile' . time(),
+            'is_public' => false,
+        ]);
+
+        // Confirm user is not public
+        $this->assertFalse($user->is_public);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->putJson('/api/user', [
+            'email' => $user->email,
+            'username' => $user->username,
+            'is_public' => true
+        ]);
+
+        $response->assertStatus(200);
+
+        // Assert notification was sent
+        Notification::assertSentTo($user, \App\Notifications\ProfileMadePublic::class);
     }
 }
