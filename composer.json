@@ -69,6 +69,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
+        "serve": "php artisan serve --port=8001 --host=0.0.0.0",
         "test": "php artisan cache:clear && vendor/bin/phpunit",
         "test-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html test-results/coverage",
         "test-dox": "vendor/bin/phpunit --testdox-text test-results/testDox",
