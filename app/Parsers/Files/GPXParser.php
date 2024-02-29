@@ -4,6 +4,22 @@ namespace App\Parsers\Files;
 
 class GPXParser extends FIleParser
 {
+
+    /**
+     * All the keys that should not be included in the metadata
+     *
+     * @var array
+     */
+    private $metadataKeys = [
+        'name',
+        'desc',
+        'ele',
+        'sym',
+        'link',
+        'time',
+        '@attributes',
+    ];
+
     public function parseMarkersFromFile(string $filepath): array
     {
         $array = $this->readFile($filepath);
@@ -33,7 +49,7 @@ class GPXParser extends FIleParser
 
                 // Add all direct children of the wpt element as metadata, except for the name and desc
                 foreach ($marker as $key => $value) {
-                    if ($key === 'name' || $key === 'desc' || $key === 'ele' || $key === 'sym' || $key === 'link' || $key === '@attributes') {
+                    if (in_array($key, $this->metadataKeys)) {
                         continue;
                     }
 
@@ -98,7 +114,7 @@ class GPXParser extends FIleParser
 
                 // Add all direct children of the trk element as metadata, except for the name and desc
                 foreach ($track as $key => $value) {
-                    if ($key === 'name' || $key === 'desc' || $key === 'ele' || $key === 'trkseg' || $key === 'trkpt' || $key === '@attributes') {
+                    if (in_array($key, $this->metadataKeys)) {
                         continue;
                     }
 
