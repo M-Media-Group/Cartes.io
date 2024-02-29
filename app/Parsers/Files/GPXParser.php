@@ -4,7 +4,6 @@ namespace App\Parsers\Files;
 
 class GPXParser extends FIleParser
 {
-
     /**
      * All the keys that should not be included in the metadata
      *
