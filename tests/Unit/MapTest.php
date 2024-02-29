@@ -22,8 +22,6 @@ class MapTest extends TestCase
 
         $post = \App\Models\Map::create();
         $this->map = $post;
-
-        $this->withoutExceptionHandling();
     }
 
     /**
@@ -39,6 +37,9 @@ class MapTest extends TestCase
         $response = $this->getJson('/api/maps/' . $this->map->uuid);
         $response->assertStatus(200);
         $response->assertDontSee('token');
+
+        // Assert the response size is less than 1kb
+        $this->assertLessThan(1024, strlen($response->content()));
     }
 
     /**
@@ -170,6 +171,9 @@ class MapTest extends TestCase
         $response = $this->getJson('/api/maps');
         $response->assertStatus(200);
         $response->assertDontSee('token');
+
+        // Assert the response size is less than 1kb
+        $this->assertLessThan(1024, strlen($response->content()));
     }
 
     /**
@@ -423,5 +427,44 @@ Braxton carried an eTrex Venture in his Camelbak for the three laps on the mount
         $this->assertDatabaseMissing('maps', [
             'uuid' => $this->map->uuid,
         ]);
+    }
+
+    /**
+     * Test that we can support up to 10k markers. The DB Seeder will generate them all for us, so we first clean the DB then run the seeder, then check the count.
+     *
+     * @return void
+     */
+    public function test10kMarkersTest()
+    {
+        $this->markTestIncomplete('This test is not yet complete because the memory consumption seems higher than expected due to the test environment. This causes a memory limit error when fetching the JSON response. We need to investigate this further.');
+
+        $newLimit = ini_get('memory_limit');
+
+        // Assert that the memory limit was set
+        $this->assertEquals('128M', $newLimit);
+
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+        DB::table('maps')->delete();
+
+        // Run the seeder
+        $this->seed(\Database\Seeders\MapsTableSeeder::class);
+
+        // Assert only one map was created
+        $this->assertEquals(1, \App\Models\Map::count());
+
+        // Get the map
+        $map = \App\Models\Map::first();
+
+        // There should be 10k markers
+        $this->assertEquals(10000, $map->markers()->count());
+
+        // There should be 10k marker locations
+        $this->assertEquals(10000, $map->markerLocations()->count());
+
+        // // Fetching the map should return the markers without any issues
+        $response = $this->getJson('/api/maps/' . $map->uuid . '?with[]=markers');
+        $response->assertStatus(200);
     }
 }

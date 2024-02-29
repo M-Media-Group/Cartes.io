@@ -34,10 +34,10 @@ class MapsTableSeeder extends Seeder
         $category = Category::factory()->create();
         $token = Str::random(32);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $data = [];
             $locationData = [];
-            for ($v = 0; $v < 20; $v++) {
+            for ($v = 0; $v < 200; $v++) {
 
                 $data[] = [
                     'id' => $markerId,

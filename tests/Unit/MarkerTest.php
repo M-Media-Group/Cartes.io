@@ -43,10 +43,6 @@ class MarkerTest extends TestCase
      */
     public function testSeeAllMapMarkersTest()
     {
-
-        $response = $this->getJson('/api/maps/' . $this->map->uuid);
-        $response->assertOk();
-
         $response = $this->getJson('/api/maps/' . $this->map->uuid . '/markers');
         $response->assertOk();
 
@@ -77,6 +73,9 @@ class MarkerTest extends TestCase
                 ],
             ],
         ]);
+
+        // Assert the response size is less than 1kb
+        $this->assertLessThan(1024, strlen($response->content()));
     }
 
     /**
