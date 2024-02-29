@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Laravel\Scout\Searchable;
 use Illuminate\Validation\ValidationException;
+use MatanYadaev\EloquentSpatial\Objects\Point;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class Marker extends Pivot
 {
@@ -393,5 +397,102 @@ class Marker extends Pivot
         ];
 
         return $locations;
+    }
+
+    /**
+     * Validate a request for a bulk insert
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param Map $map
+     * @throws \Illuminate\Validation\ValidationException
+     *
+     * @return array
+     */
+    public static function validateRequestForBulkInsert(Request $request, Map $map): array
+    {
+        $validated_data = $request->validate([
+            'markers' => 'required|array|min:1|max:1000',
+            'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
+            'markers.*.description' => ['nullable', 'string', 'max:191'],
+            'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
+            'markers.*.created_at' => 'nullable|date',
+            'markers.*.updated_at' => 'nullable|date',
+            'markers.*.expires_at' => 'nullable|date',
+            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
+            'markers.*.meta' => 'nullable|array|max:10',
+            'markers.*.meta.*' => ['nullable', 'max:255'],
+
+            // The markers may contain the below
+            'markers.*.lat' => 'required_without:markers.*.locations|numeric|between:-90,90',
+            'markers.*.lng' => 'required_without:markers.*.locations|numeric|between:-180,180',
+            'markers.*.heading' => 'nullable|numeric|between:0,360',
+            'markers.*.pitch' => 'nullable|numeric|between:-90,90',
+            'markers.*.roll' => 'nullable|numeric|between:-180,180',
+            'markers.*.speed' => 'nullable|numeric|between:0,100000',
+            'markers.*.zoom' => 'nullable|numeric|between:0,20',
+            'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
+
+            // Or they may contain a locations array, with each location containing the below
+            'markers.*.locations' => 'array|required_without_all:markers.*.lat,markers.*.lng|min:1',
+            'markers.*.locations.*.lat' => 'required|numeric|between:-90,90',
+            'markers.*.locations.*.lng' => 'required|numeric|between:-180,180',
+            'markers.*.locations.*.heading' => 'nullable|numeric|between:0,360',
+            'markers.*.locations.*.pitch' => 'nullable|numeric|between:-90,90',
+            'markers.*.locations.*.roll' => 'nullable|numeric|between:-180,180',
+            'markers.*.locations.*.speed' => 'nullable|numeric|between:0,100000',
+            'markers.*.locations.*.zoom' => 'nullable|numeric|between:0,20',
+            'markers.*.locations.*.elevation' => 'nullable|numeric|between:-100000,100000',
+            'markers.*.locations.*.created_at' => 'nullable|date',
+            'markers.*.locations.*.updated_at' => 'nullable|date',
+        ]);
+
+        // The first foreach validates and prepares the marker data
+        foreach ($validated_data['markers'] as $marker) {
+            $locations = Marker::formatLocations($marker);
+            // The first foreach validates and prepares the marker data
+            foreach ($locations as $location) {
+                self::validateCreate($request, $marker, $map, new Point($location['lat'], $location['lng']));
+            }
+        }
+
+        return $validated_data;
+    }
+
+    public static function validateCreate(Request $request, $marker, Map $map, Point $point)
+    {
+        // Merge the point to the marker
+        $marker['point'] = $point;
+
+        // Instantiate a new validator instance.
+        $validator = Validator::make($marker, [
+            'point' => ['required'],
+        ]);
+
+        // If a link is present, check it
+        $validator->sometimes('link', 'url', function ($input) use ($map) {
+            return $input->link !== null && optional($map->options)['links'] && optional($map->options)['links'] !== "disabled";
+        });
+
+        $validator->sometimes(
+            'point',
+            [
+                new \App\Rules\UniqueInRadius(
+                    optional($map->options)['require_minimum_seperation_radius'] ?? 15,
+                    $map->id,
+                    $request->input('category')
+                )
+            ],
+            function ($input) use ($map) {
+                return !optional($map->options)['require_minimum_seperation_radius'];
+            }
+        );
+
+        if (!optional($map->options)['limit_to_geographical_body_type']) {
+            return $validator->validate();
+        }
+
+        return $validator->sometimes('point', [new \App\Rules\OnGeographicalBodyType($map->options['limit_to_geographical_body_type'])], function ($input) use ($map) {
+            return $map->options && isset($map->options['limit_to_geographical_body_type']) && $map->options['limit_to_geographical_body_type'] != 'no';
+        })->validate();
     }
 }

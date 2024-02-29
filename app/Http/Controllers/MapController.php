@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\MapImageGenerator;
 use App\Http\Resources\MapResource;
 use App\Models\Map;
+use App\Models\Marker;
 use App\Parsers\Files\GeoJSONParser;
 use App\Parsers\Files\GPXParser;
 use Illuminate\Http\Request;
@@ -139,9 +140,6 @@ class MapController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
-     *
-     * @deprecated Not yet implemented
-     * @todo Implement this method
      */
     public function storeFromFile(Request $request)
     {
@@ -181,14 +179,14 @@ class MapController extends Controller
         // Attach the markers to the request
         $request->merge(['markers' => $parsedData['markers']]);
 
-        // Call the Marker Controller to store the markers
-        $markerController = new MarkerController();
         try {
-            $markerController->storeInBulk($request, $map);
-            return response()->json(['uuid' => $map->uuid, 'token' => $map->token], 201);
+            $validated_data = Marker::validateRequestForBulkInsert($request, $map);
+            Marker::bulkInsertWithLocations($validated_data['markers'], $map);
+            // Set response code
+            return response()->json(new MapResource($map), 201);
         } catch (\Exception $e) {
             $map->delete();
-            return response()->json(['error' => 'Error while saving markers'], 500);
+            return response()->json(['error' => 'Error while saving map'], 500);
         }
 
         return response()->json(['error' => 'Error while saving map'], 500);

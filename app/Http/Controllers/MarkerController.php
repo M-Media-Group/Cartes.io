@@ -101,7 +101,7 @@ class MarkerController extends Controller
 
         $point = new Point($request->lat, $request->lng);
 
-        $this->validateCreate($request, $request->input(), $map, $point);
+        Marker::validateCreate($request, $request->input(), $map, $point);
 
         return Marker::createWithLocation([
             'category_id' => $request->input('category'),
@@ -130,49 +130,10 @@ class MarkerController extends Controller
     {
         $this->authorize('createInBulk', [Marker::class, $map, $request->input('map_token')]);
 
-        $validated_data = $request->validate([
-            'markers' => 'required|array|min:1|max:1000',
-            'markers.*.category' => 'required_without:markers.*.category_name|exists:categories,id',
-            'markers.*.description' => ['nullable', 'string', 'max:191'],
-            'markers.*.category_name' => ['required_without:markers.*.category', 'min:3', 'max:32', new \App\Rules\NotContainsString()],
-            'markers.*.created_at' => 'nullable|date',
-            'markers.*.updated_at' => 'nullable|date',
-            'markers.*.expires_at' => 'nullable|date',
-            'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
-            'markers.*.meta' => 'nullable|array|max:10',
-            'markers.*.meta.*' => ['nullable', 'max:255'],
-
-            // The markers may contain the below
-            'markers.*.lat' => 'required_without:markers.*.locations|numeric|between:-90,90',
-            'markers.*.lng' => 'required_without:markers.*.locations|numeric|between:-180,180',
-            'markers.*.heading' => 'nullable|numeric|between:0,360',
-            'markers.*.pitch' => 'nullable|numeric|between:-90,90',
-            'markers.*.roll' => 'nullable|numeric|between:-180,180',
-            'markers.*.speed' => 'nullable|numeric|between:0,100000',
-            'markers.*.zoom' => 'nullable|numeric|between:0,20',
-            'markers.*.elevation' => 'nullable|numeric|between:-100000,100000',
-
-            // Or they may contain a locations array, with each location containing the below
-            'markers.*.locations' => 'array|required_without_all:markers.*.lat,markers.*.lng|min:1',
-            'markers.*.locations.*.lat' => 'required|numeric|between:-90,90',
-            'markers.*.locations.*.lng' => 'required|numeric|between:-180,180',
-            'markers.*.locations.*.heading' => 'nullable|numeric|between:0,360',
-            'markers.*.locations.*.pitch' => 'nullable|numeric|between:-90,90',
-            'markers.*.locations.*.roll' => 'nullable|numeric|between:-180,180',
-            'markers.*.locations.*.speed' => 'nullable|numeric|between:0,100000',
-            'markers.*.locations.*.zoom' => 'nullable|numeric|between:0,20',
-            'markers.*.locations.*.elevation' => 'nullable|numeric|between:-100000,100000',
-            'markers.*.locations.*.created_at' => 'nullable|date',
-            'markers.*.locations.*.updated_at' => 'nullable|date',
-        ]);
-
-        // The first foreach validates and prepares the marker data
-        foreach ($validated_data['markers'] as $marker) {
-            $locations = Marker::formatLocations($marker);
-            // The first foreach validates and prepares the marker data
-            foreach ($locations as $location) {
-                $this->validateCreate($request, $marker, $map, new Point($location['lat'], $location['lng']));
-            }
+        try {
+            $validated_data = Marker::validateRequestForBulkInsert($request, $map);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
         }
 
         return Marker::bulkInsertWithLocations($validated_data['markers'], $map);

@@ -231,8 +231,7 @@ class MapTest extends TestCase
         $this->actingAs($user, 'api');
 
         $response = $this->postJson('/api/maps/file', [
-            'file' => $file,
-            'user_id' => $user->id,
+            'file' => $file
         ]);
 
         // Assert returns 201
@@ -245,6 +244,8 @@ class MapTest extends TestCase
 
 Braxton carried an eTrex Venture in his Camelbak for the three laps on the mountain bike loop.  Vil carried his new eTrex Venture on the first run, but the GPS shut off during the first mountain bike loop due to battery vibration.
 ',
+            'user_id' => $user->id,
+            'uuid' => $response->json('uuid'),
         ]);
 
         // Assert that the response contains the map token
@@ -288,6 +289,28 @@ Braxton carried an eTrex Venture in his Camelbak for the three laps on the mount
         $this->assertEquals(64, $map->markers()->orderBy('id', 'desc')->first()->currentLocation->z);
         // The last marker should have a total of 59 locations
         $this->assertEquals(59, $map->markers()->orderBy('id', 'desc')->first()->locations()->count());
+    }
+
+    /**
+     * Test create a map from a GPX file.
+     *
+     * @return void
+     */
+    public function testCreateMapFromGpxTestFailUnauthenticated()
+    {
+
+
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $file = new UploadedFile(base_path('tests/fixtures/ashland.gpx'), 'ashland.gpx', 'application/gpx+xml', null, true);
+
+        $response = $this->postJson('/api/maps/file', [
+            'file' => $file
+        ]);
+
+        $response->assertStatus(401);
     }
 
     /**

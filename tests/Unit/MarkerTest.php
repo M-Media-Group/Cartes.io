@@ -498,6 +498,38 @@ class MarkerTest extends TestCase
         $this->assertEquals(59, $map->markers()->orderBy('id', 'desc')->first()->locations()->count());
     }
 
+
+    /**
+     * Test creating markers in bulk by uploading a GPX file
+     *
+     * @return void
+     */
+    public function testCreateMarkerInBulkWithGpxFileFailWithRequiredLinks()
+    {
+        // We need to clean up the database before we start
+        DB::table('markers')->delete();
+        DB::table('marker_locations')->delete();
+
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'yes';
+        $map->options = ['links' => 'required'];
+        $map->save();
+
+        $user = User::factory()->create();
+
+        /**
+         * @var \Illuminate\Contracts\Auth\Authenticatable
+         */
+        $user = $user->givePermissionTo('create markers in bulk');
+
+        $this->actingAs($user, 'api');
+
+        $file = new UploadedFile(base_path('tests/fixtures/ashland.gpx'), 'ashland.gpx', 'application/gpx+xml', null, true);
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
+        $response->assertStatus(422);
+    }
+
     /**
      * Test creating markers in bulk by uploading a GPX file
      *
