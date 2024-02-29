@@ -567,6 +567,13 @@ class MarkerTest extends TestCase
 
         $response = $this->postJson('/api/maps/' . $map->uuid . '/markers/file', ['file' => $file]);
         $response->assertStatus(200);
+
+        // Assert 86 wpt + 46 rtept (1 rte)
+        $this->assertEquals(87, $map->markers()->count());
+        $this->assertEquals(132, $map->markerLocations()->count());
+
+        // None of the markers should have metadata->trkseg
+        $this->assertEquals(0, $map->markers()->whereJsonContains('meta', 'trkseg')->count());
     }
 
     public function testCreateMarkerInBulkWithGeoJSONFile()

@@ -17,6 +17,7 @@ class GPXParser extends FIleParser
         'link',
         'time',
         '@attributes',
+        'trkseg',
     ];
 
     public function parseMarkersFromFile(string $filepath): array
@@ -125,6 +126,72 @@ class GPXParser extends FIleParser
                     'locations' => $markerlocations,
                     // The category_name is the name of the track - parsed CDATA
                     'category_name' => $track['name'],
+                    // Meta needs to be encoded as JSON
+                    'meta' => $markerMeta,
+                ];
+            }
+        }
+
+        // We need to handle rte as well. Each rte will be a single marker, and each rtept will be a location for that marker.
+        if (isset($array['rte'])) {
+
+            // Sometimes the rte is not an array, but a single element, so we need to handle that. We can be sure its just a single element if it directly has rtept as a child
+            if (isset($array['rte']['rtept'])) {
+                $array['rte'] = [$array['rte']];
+            }
+
+            foreach ($array['rte'] as $route) {
+                $markerlocations = [];
+
+                if (!isset($route['rtept'])) {
+                    continue;
+                }
+
+                foreach ($route['rtept'] as $rtept) {
+                    $markerlocations[] = [
+                        'lat' => $rtept['@attributes']['lat'],
+                        'lng' => $rtept['@attributes']['lon'],
+                        'elevation' => $rtept['ele'] ?? null,
+                        'created_at' => $rtept['time'] ?? null,
+                        'updated_at' => $rtept['time'] ?? null,
+                    ];
+                }
+
+                if (!count($markerlocations)) {
+                    continue;
+                }
+
+                // If the route name is not a string, we can't use it as a category name, so we use "Route" as the default
+                if (
+                    !is_string($route['name']) ||
+                    empty($route['name'])
+                ) {
+                    $route['name'] = 'Route';
+                }
+
+                if (
+                    !is_string($route['desc']) ||
+                    empty($route['desc'])
+                ) {
+                    $route['desc'] = null;
+                }
+
+                $markerMeta = [];
+
+                // Add all direct children of the rte element as metadata, except for the name and desc
+                foreach ($route as $key => $value) {
+                    if (in_array($key, $this->metadataKeys)) {
+                        continue;
+                    }
+
+                    $markerMeta[$key] = $value;
+                }
+
+                $markers[] = [
+                    'description' => $route['desc'],
+                    'locations' => $markerlocations,
+                    // The category_name is the name of the route - parsed CDATA
+                    'category_name' => $route['name'],
                     // Meta needs to be encoded as JSON
                     'meta' => $markerMeta,
                 ];
