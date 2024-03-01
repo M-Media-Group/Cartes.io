@@ -18,7 +18,7 @@ class UserFactory extends Factory
         $faker = $this->faker;
         return
             [
-                'username' => $faker->userName,
+                'username' => $faker->userName . time(),
                 'name' => $faker->firstName,
                 'surname' => $faker->lastName,
                 'email' => $faker->unique()->safeEmail,

@@ -3,6 +3,8 @@
   <coverage processUncoveredFiles="true">
     <exclude>
       <directory suffix=".php">./app/Extensions</directory>
+      <!-- Exclude the TelescopeServiceProvider -->
+      <directory suffix="TelescopeServiceProvider.php">./app/Providers</directory>
     </exclude>
     <include>
       <directory suffix=".php">./app</directory>
@@ -29,5 +31,8 @@
 
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
+
+    <!-- Set the memory limit to be 128MB (prod has around 2x more) -->
+    <ini name="memory_limit" value="128M"/>
   </php>
 </phpunit>
