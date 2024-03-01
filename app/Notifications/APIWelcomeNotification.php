@@ -49,7 +49,7 @@ class APIWelcomeNotification extends Notification implements ShouldQueue
             ->line('Please note that access tokens are sensitive and should be kept secret.')
             ->line('For your security, we automatically expire access tokens after 1 year.')
             // Read the docs
-            ->action('Read the API docs', 'https://github.com/M-Media-Group/Cartes.io/wiki/API')
+            ->action('Read the API docs', 'https://docs.cartes.io/')
             ->line('Thank you for using our Cartes.io!');
     }
 

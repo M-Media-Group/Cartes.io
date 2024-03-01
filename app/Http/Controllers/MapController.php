@@ -218,17 +218,7 @@ class MapController extends Controller
             return new MapResource($map);
         }
 
-        // Redirect away to the app.cartes.io version
-        if ($map->shouldUseNewApp) {
-            return redirect(config('app.spa_url') . '/maps/' . $map->slug);
-        }
-
-        $data = [
-            'token' => $request->session()->get('token'),
-            'map' => $map,
-        ];
-
-        return View::make('map', $data);
+        return redirect(config('app.spa_url') . '/maps/' . $map->slug);
     }
 
     /**
