@@ -24,12 +24,6 @@ Artisan::command('fill-missing-marker-elevation', function () {
     $this->info('Done');
 })->describe('Fill missing marker elevation');
 
-Artisan::command('migrate:locations', function () {
-    $this->info('Migrating locations');
-    App\Jobs\AddMissingMarkerLocations::dispatch();
-    $this->info('Done');
-})->describe('Migrate the legacy format of locations to the new one');
-
 Artisan::command('make:permissions', function () {
     $this->info('Making permissions');
 
