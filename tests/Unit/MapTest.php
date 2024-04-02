@@ -43,6 +43,60 @@ class MapTest extends TestCase
     }
 
     /**
+     * Trying to fetch a private map without a token should return a 403
+     *
+     * @return void
+     */
+    public function testSeeSinglePrivateMapWithoutTokenTest()
+    {
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+        ]);
+
+        $response = $this->getJson('/api/maps/' . $map->uuid);
+        $response->assertStatus(403);
+    }
+
+    /**
+     * The owner of the private map should be able to see it without a token
+     *
+     * @return void
+     */
+    public function testSeeSinglePrivateMapWithoutTokenAsOwnerTest()
+    {
+        $user = User::factory()->create();
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->getJson('/api/maps/' . $map->uuid);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * A logged in user that is not the owner of a private map should not be able to see it without a token
+     *
+     * @return void
+     */
+    public function testSeeSinglePrivateMapWithoutTokenAsNonOwnerTest()
+    {
+        $user = User::factory()->create();
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->getJson('/api/maps/' . $map->uuid);
+        $response->assertStatus(403);
+    }
+
+    /**
      * Test that it is possible to get the maps static image
      *
      * @todo we need to add separate tests for maps with and without markers
@@ -298,8 +352,6 @@ Braxton carried an eTrex Venture in his Camelbak for the three laps on the mount
      */
     public function testCreateMapFromGpxTestFailUnauthenticated()
     {
-
-
         // We need to clean up the database before we start
         DB::table('markers')->delete();
         DB::table('marker_locations')->delete();

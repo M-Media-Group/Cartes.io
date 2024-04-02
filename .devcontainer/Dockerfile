@@ -12,13 +12,15 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get autoremove -y && apt-get autoclean -y
 
 # Install php-mysql driver and GD
-RUN docker-php-ext-install mysqli pdo pdo_mysql exif
+RUN docker-php-ext-install mysqli pdo pdo_mysql exif pcntl
 
 # Enable php extensions like GD
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     # Also enable Sodium
     && docker-php-ext-enable sodium
+    # Also enable pcntl which is used for Unit Test time measurements
+    && docker-php-ext-enable pcntl
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
