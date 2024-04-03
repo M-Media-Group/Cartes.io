@@ -170,6 +170,29 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test creating a marker on a private map. An unauthenticated user should not be able to create a marker on a private map
+     *
+     */
+    public function testFailCreateMarkerOnPrivateMapUnauthenticated()
+    {
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'no';
+        $map->save();
+
+        $marker = Marker::factory()->make();
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers', $marker->toArray());
+        $response->assertStatus(403);
+
+        // Making the same request but logged in should behave the same
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers', $marker->toArray());
+        $response->assertStatus(403);
+    }
+
+    /**
      * A basic test example.
      *
      * @return void
