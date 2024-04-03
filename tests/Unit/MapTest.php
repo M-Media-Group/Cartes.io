@@ -97,6 +97,185 @@ class MapTest extends TestCase
     }
 
     /**
+     * Test see map as an invited user
+     *
+     * @return void
+     */
+    public function testSeeSinglePrivateMapAsInvitedUserTest()
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $user2->id,
+        ]);
+
+        $map->users()->attach($user->id, [
+            'can_create_markers' => true,
+            'added_by_user_id' => $user2->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->getJson('/api/maps/' . $map->uuid);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * The owner of a map should be able to add additional users to the map using their username
+     *
+     * @return void
+     */
+    public function testAddUserToMapTest()
+    {
+        // Show errors
+        $this->withoutExceptionHandling();
+
+        $username = 'uniquetestuser29' . microtime(true);
+
+        $user = User::factory()->create([
+            'username' => $username,
+        ]);
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/users', [
+            'username' => $username,
+            'can_create_markers' => true
+        ]);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('map_users', [
+            'map_id' => $map->id,
+            'user_id' => $user->id,
+            'can_create_markers' => true,
+        ]);
+    }
+
+    /**
+     * The map owner should be able to delete a user from the map
+     *
+     * @return void
+     */
+    public function testDeleteUserFromMapTest()
+    {
+        $username = 'uniquetestuser239' . microtime(true);
+
+        $user = User::factory()->create([
+            'username' => $username,
+        ]);
+        $mapUser = User::factory()->create();
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $mapUser->id,
+        ]);
+
+        $this->actingAs($mapUser, 'api');
+
+        $map->users()->attach($user->id, [
+            'can_create_markers' => true,
+            'added_by_user_id' => $mapUser->id,
+        ]);
+
+        $response = $this->deleteJson('/api/maps/' . $map->uuid . '/users/' . $username);
+
+        $response->assertStatus(204);
+
+        $this->assertDatabaseMissing('map_users', [
+            'map_id' => $map->id,
+            'user_id' => $user->id,
+            'can_create_markers' => true,
+        ]);
+    }
+
+    /**
+     * It should be possible to list the users of a map
+     *
+     * @return void
+     */
+    public function testListUsersOfMapTest()
+    {
+        $username = 'uniquetestuser239' . microtime(true);
+
+        $user = User::factory()->create([
+            'username' => $username,
+        ]);
+
+        $mapUser = User::factory()->create();
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $mapUser->id,
+        ]);
+
+        $this->actingAs($mapUser, 'api');
+
+        $map->users()->attach($user->id, [
+            'can_create_markers' => true,
+            'added_by_user_id' => $mapUser->id,
+        ]);
+
+        $response = $this->getJson('/api/maps/' . $map->uuid . '/users');
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'username' => $username,
+            'can_create_markers' => true,
+        ]);
+
+        // We should not see an email address, password or any other sensitive information. We will see email_verified_at, but not email. We cannot test with DontSee because the email_verified_at is in the response, so we will test with DontSee the at symbol
+        $response->assertJsonMissing([
+            'email',
+            'password',
+            '@',
+            'name',
+            'surname',
+            'token'
+        ]);
+    }
+
+    /**
+     * A person without the rights to the map should not be able to add users to the map
+     *
+     * @return void
+     */
+    public function testAddUserToMapWithoutRightsTest()
+    {
+        $username = 'uniquetestuser239' . microtime(true);
+
+        $user = User::factory()->create([
+            'username' => $username,
+        ]);
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/users', [
+            'username' => $username,
+            'can_create_markers' => true
+        ]);
+
+        $response->assertStatus(403);
+
+        $this->assertDatabaseMissing('map_users', [
+            'map_id' => $map->id,
+            'user_id' => $user->id,
+            'can_create_markers' => true,
+        ]);
+    }
+
+    /**
      * Test that it is possible to get the maps static image
      *
      * @todo we need to add separate tests for maps with and without markers

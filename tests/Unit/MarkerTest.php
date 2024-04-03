@@ -193,6 +193,70 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test creating a marker on a private map. As a user that has been invited to the map with the `can_create_markers` permission, they should be able to create a marker
+     *
+     * @return void
+     */
+    public function testCreateMarkerOnPrivateMapWithPermission()
+    {
+        $mapOwner = User::factory()->create();
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'no';
+        $map->user_id = $mapOwner->id;
+        $map->save();
+
+        $user = User::factory()->create();
+
+        // Attach the user to the map with the permission to create markers
+        $map->users()->attach($user, [
+            'can_create_markers' => true,
+            'added_by_user_id' => $mapOwner->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $marker = Marker::factory()->make();
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = 40.139;
+        $marker['lng'] = 44.139;
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers', $marker->toArray());
+        $response->assertStatus(201);
+    }
+
+    /**
+     * An invited user without the `can_create_markers` permission should not be able to create a marker on a private map
+     *
+     * @return void
+     */
+    public function testFailCreateMarkerOnPrivateMapWithoutPermission()
+    {
+        $mapOwner = User::factory()->create();
+        $map = new \App\Models\Map();
+        $map->users_can_create_markers = 'no';
+        $map->user_id = $mapOwner->id;
+        $map->save();
+
+        $user = User::factory()->create();
+
+        // Attach the user to the map without the permission to create markers
+        $map->users()->attach($user, [
+            'can_create_markers' => false,
+            'added_by_user_id' => $mapOwner->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $marker = Marker::factory()->make();
+        $marker['category'] = $marker['category_id'];
+        $marker['lat'] = 40.139;
+        $marker['lng'] = 44.139;
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers', $marker->toArray());
+        $response->assertStatus(403);
+    }
+
+    /**
      * A basic test example.
      *
      * @return void

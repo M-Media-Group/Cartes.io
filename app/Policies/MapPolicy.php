@@ -39,6 +39,10 @@ class MapPolicy
         if ($user && $map->user_id == $user->id) {
             return true;
         }
+        // If the user is in the map->users relationship, they can view the map
+        if ($user && $map->users->contains($user)) {
+            return true;
+        }
 
         return false;
     }

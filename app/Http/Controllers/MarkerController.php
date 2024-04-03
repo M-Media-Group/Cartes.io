@@ -91,6 +91,8 @@ class MarkerController extends Controller
      */
     public function store(StoreMarkerRequest $request, Map $map)
     {
+        $this->authorize('create', [Marker::class, $map, $request->input('map_token')]);
+
         if (!$request->input('category')) {
             $category = \App\Models\Category::firstOrCreate(
                 ['slug' => Str::slug($request->input('category_name'))],

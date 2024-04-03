@@ -106,6 +106,12 @@ class Map extends Model
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    // The additional users that are attached to this map via MapUser model
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'map_users')->using(MapUser::class)->withPivot(['can_create_markers'])->withTimestamps();
+    }
+
     public function contributors(): HasManyThrough
     {
         return $this->hasManyThrough(\App\Models\User::class, \App\Models\Marker::class, 'map_id', 'id', 'id', 'user_id')->groupBy([

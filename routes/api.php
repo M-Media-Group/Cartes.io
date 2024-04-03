@@ -63,6 +63,10 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('maps/{map}/claim', 'MapController@unclaim');
 
     Route::apiResource('users', 'UserController')->except(['create', 'index', 'show']);
+
+    Route::get('maps/{map}/users', 'MapUserController@index');
+    Route::post('maps/{map}/users', 'MapUserController@store');
+    Route::delete('maps/{map}/users/{user}', 'MapUserController@destroy');
 });
 
 Route::get('{any}', function () {
