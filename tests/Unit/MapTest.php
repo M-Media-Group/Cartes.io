@@ -160,6 +160,40 @@ class MapTest extends TestCase
     }
 
     /**
+     * Adding a user that has already been added to the map should return a 409
+     *
+     * @return void
+     */
+    public function testAddUserToMapTwiceTest()
+    {
+        $username = 'uniquetestuser239' . microtime(true);
+
+        $user = User::factory()->create([
+            'username' => $username,
+        ]);
+
+        $map = \App\Models\Map::create([
+            'privacy' => 'private',
+            'user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user, 'api');
+
+        $map->users()->attach($user->id, [
+            'can_create_markers' => true,
+            'added_by_user_id' => $user->id,
+        ]);
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/users', [
+            'username' => $username,
+            'can_create_markers' => true
+        ]);
+
+        $response->assertStatus(409);
+    }
+
+
+    /**
      * The map owner should be able to delete a user from the map
      *
      * @return void

@@ -40,6 +40,11 @@ class MapUserController extends Controller
         // Attach the user to the map. We need to find the user by the username
         $user = \App\Models\User::where('username', $request->username)->firstOrFail();
 
+        // If the user is already attached to the map, return a 409 response
+        if ($map->users->contains($user)) {
+            return response()->json(null, 409);
+        }
+
         // The map hasMany users, so we can use the users() relationship to attach the user to the map
         $map->users()->attach($user->id, [
             'can_create_markers' => $request->can_create_markers ?? false,
