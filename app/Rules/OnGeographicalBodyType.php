@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class OnGeographicalBodyType implements Rule
 {
@@ -31,7 +32,16 @@ class OnGeographicalBodyType implements Rule
         $lon = $value->longitude;
 
         $api_url = 'https://api.onwater.io/api/v1/results/' . $lon . ',' . $lat;
-        $json = json_decode(file_get_contents($api_url), true);
+
+        try {
+            $json = json_decode(file_get_contents($api_url), true);
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Error while trying to get geographical body type: ' . $e->getMessage());
+
+            // If the API is down, we'll just let it pass
+            return true;
+        }
 
         // If the API is down, we'll just let it pass
         if (!isset($json['water'])) {
