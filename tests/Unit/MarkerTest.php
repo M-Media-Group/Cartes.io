@@ -225,6 +225,37 @@ class MarkerTest extends TestCase
     }
 
     /**
+     * Test creating a marker on an unlisted map whre only_logged_in users can create markers, as the map owner.
+     *
+     * @return void
+     */
+    public function testCreateMarkerOnUnlistedMapWithPermission()
+    {
+        $mapOwner = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $mapOwner->givePermissionTo('create markers');
+
+        $map = new \App\Models\Map();
+        $map->privacy = 'unlisted';
+        $map->users_can_create_markers = 'only_logged_in';
+        $map->user_id = $mapOwner->id;
+        $map->save();
+
+        $this->actingAs($mapOwner, 'api');
+
+        $marker = Marker::factory()->make();
+        $marker['category_name'] = 'Test Category';
+        $marker['lat'] = 40.139;
+        $marker['lng'] = 44.139;
+
+        $response = $this->postJson('/api/maps/' . $map->uuid . '/markers', $marker->toArray());
+
+        $response->assertStatus(201);
+    }
+
+    /**
      * An invited user without the `can_create_markers` permission should not be able to create a marker on a private map
      *
      * @return void

@@ -55,11 +55,11 @@ class MarkerPolicy
         if ($map->users_can_create_markers == 'yes') {
             return true;
         }
-        if ($map->users_can_create_markers == 'only_logged_in') {
-            return $user && $user->hasVerifiedEmail() && $user->can('create markers');
-        }
         if ($user && $map->user_id == $user->id) {
             return true;
+        }
+        if ($map->users_can_create_markers == 'only_logged_in') {
+            return $user && $user->hasVerifiedEmail() && $user->can('create markers');
         }
         // If the user is a member of the map and has the `can_create_markers` permission, they can create markers
         if ($user && $map->users->contains($user) && $map->users->find($user->id)->pivot->can_create_markers) {
