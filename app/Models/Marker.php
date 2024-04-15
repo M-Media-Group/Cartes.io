@@ -419,7 +419,7 @@ class Marker extends Pivot
             'markers.*.updated_at' => 'nullable|date',
             'markers.*.expires_at' => 'nullable|date',
             'markers.*.link' => [Rule::requiredIf(optional($map->options)['links'] === "required")],
-            'markers.*.meta' => 'nullable|array|max:10',
+            'markers.*.meta' => 'nullable|array|max:25',
             'markers.*.meta.*' => ['nullable', 'max:255'],
 
             // The markers may contain the below
