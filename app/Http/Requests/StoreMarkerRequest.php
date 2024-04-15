@@ -42,7 +42,7 @@ class StoreMarkerRequest extends FormRequest
             'elevation' => 'nullable|numeric|between:-100000,100000',
             'zoom' => 'nullable|numeric|between:0,20',
             "expires_at" => ['nullable', 'date', 'after_or_equal:today'],
-            'meta' => 'nullable|array|max:10',
+            'meta' => 'nullable|array|max:25',
             // Each meta tag must be a max of 255 characters
             'meta.*' => ['nullable', 'max:255'],
             'heading' => 'nullable|numeric|between:0,360',
