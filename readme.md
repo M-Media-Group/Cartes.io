@@ -30,7 +30,7 @@ Note, to see markers on some of these maps, you need to go into "Map display opt
 
 - [Ukraine crisis](https://cartes.io/maps/139c1aa3-228e-4a8d-9d77-289dc6c70d8e#2/43.7/7.3): Live tracking from multiple sources of the unfolding events in Ukraine
 - [Coronavirus Drive-Thru testing points](https://cartes.io/maps/a61bce50-20be-4b31-a7ee-cfaa31325813#2/43.7/7.3): This map shows identified Coronavirus drive-thru testing points around the world.
-- [Twin Cities riots](https://cartes.io/maps/651107a9-1d22-46a8-8254-111f7ac74a2b#2/43.7/7.3): This map evolved from the Minnesota protests and was used by locals to mark dangerous markers as they happend. 135 events were reported.
+- [Twin Cities riots](https://cartes.io/maps/651107a9-1d22-46a8-8254-111f7ac74a2b#2/43.7/7.3): This map evolved from the Minnesota protests and was used by locals to mark dangerous markers as they happened. 135 events were reported.
 - [Places to get help in Beirut](https://cartes.io/maps/a7967e04-38e6-4328-a0b4-e5d2c3282687#13/33.8889/35.5291): Following the 2020 explosion in Beirut, this map was created to raise awareness within the local community on where they can get help.
 - [Little free libraries on the French Riviera](https://cartes.io/maps/4b8e280f-0682-42a7-be43-f3d2ea729f7b#12/43.7111/7.2970): This map shows the locations of public little free libraries - a box where you can leave and borrow books out in the open.
 - [The hardest airports to fly in to](https://cartes.io/maps/9dec23f1-5fa9-4841-a1c2-5086968ba8f1): Here's a non exhaustive map of some of the hardest places to land a plane around the world!
@@ -56,7 +56,7 @@ Run tests with `composer test`.
 
 ## Roadmap
 
-The general plan is that this repo will be simplified to containing just the core app and its API, while the frontend will be developed in a seperate repo, [here](https://github.com/M-Media-Group/Cartes.io-Web-App). If you're a frontend developer, please feel free to contribute on that repo to the development of the web-app.
+The general plan is that this repo will be simplified to containing just the core app and its API, while the frontend will be developed in a separate repo, [here](https://github.com/M-Media-Group/Cartes.io-Web-App). If you're a frontend developer, please feel free to contribute on that repo to the development of the web-app.
 
 ## Thanks to
 open-elevation.com - used to get elevation data for a given point
